@@ -20,36 +20,43 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   Future<void> register(AuthRegisterInput user) async {
     try {
-      print('register x');
-      state = state.copyWith(isLoading: true, errorMessage: null);
-      print(state);
+      print('➡️ register start');
+
+      state = state.copyWith(
+        isLoading: true,
+        errorMessage: null, // ✅ limpiar error global
+      );
 
       final auth = await authRepository.userRegister(user);
-      print(auth);
+
+      print('✅ register success: $auth');
 
       state = state.copyWith(
         registerUser: auth,
         loginUser: null,
         isLoading: false,
       );
-      print(state);
     } on DioException catch (e) {
       _handleDioError(e);
     } catch (e) {
       final message = e.toString().replaceFirst('Exception: ', '');
       setError(message);
-      print('e $e');
     }
   }
 
   Future<void> login(AuthLoginInput user) async {
     try {
-      print('login x');
-      state = state.copyWith(isLoading: true, errorMessage: null);
-      print('login x1 $state');
+      print('➡️ login start');
+
+      state = state.copyWith(
+        isLoading: true,
+        errorMessage: null, // ✅ consistente con register
+      );
 
       final auth = await authRepository.loginUser(user);
-      print('auth $auth');
+
+      print('✅ login success: $auth');
+
       state = state.copyWith(
         loginUser: auth,
         registerUser: null,
@@ -60,7 +67,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
     } catch (e) {
       final message = e.toString().replaceFirst('Exception: ', '');
       setError(message);
-      print('e $e');
     }
   }
 
@@ -70,9 +76,18 @@ class AuthNotifier extends StateNotifier<AuthState> {
     if (e.response != null) {
       final data = e.response?.data;
 
-      if (data['message'] is List) {
+      // 🔥 NUEVO: manejar { field, message }
+      if (data is Map && data['message'] is Map) {
+        final field = data['message']['field'];
+        final msg = data['message']['message'];
+
+        message = msg ?? 'Error';
+
+        // 👉 Aquí podrías luego enviar el field a UI (opcional)
+        print('Field error: $field');
+      } else if (data is Map && data['message'] is List) {
         message = (data['message'] as List).join(', ');
-      } else if (data['message'] is String) {
+      } else if (data is Map && data['message'] is String) {
         message = data['message'];
       } else {
         message = data.toString();

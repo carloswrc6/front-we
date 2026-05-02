@@ -6,6 +6,9 @@ class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
+  final Function(String)? onChanged;
+  final String? errorText;
+  final Widget? suffixIcon;
 
   const CustomTextField({
     super.key,
@@ -14,6 +17,9 @@ class CustomTextField extends StatelessWidget {
     required this.controller,
     this.keyboardType,
     this.textInputAction,
+    this.onChanged,
+    this.errorText,
+    this.suffixIcon,
   });
 
   @override
@@ -23,6 +29,7 @@ class CustomTextField extends StatelessWidget {
       obscureText: obscureText,
       keyboardType: keyboardType,
       textInputAction: textInputAction,
+      onChanged: onChanged,
       onSubmitted: (_) {
         if (textInputAction == TextInputAction.next) {
           FocusScope.of(context).nextFocus();
@@ -33,6 +40,8 @@ class CustomTextField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: label,
         border: const OutlineInputBorder(),
+        errorText: errorText,
+        suffixIcon: suffixIcon,
       ),
     );
   }

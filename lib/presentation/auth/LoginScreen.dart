@@ -23,7 +23,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
+  String? emailError;
+  String? passwordError;
+  String? fullNameError;
+
   bool isRegister = false;
+  bool obscurePassword = true;
 
   void _setError(String message) {
     ref.read(authProvider.notifier).setError(message);
@@ -34,37 +39,50 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     return regex.hasMatch(email);
   }
 
+  bool _isValidPassword(String password) {
+    final regex = RegExp(r'(?:(?=.*\d)|(?=.*\W+))(?=.*[A-Z])(?=.*[a-z]).*');
+    return regex.hasMatch(password);
+  }
+
   bool _validateInputs({
     required String email,
     required String password,
     required String fullName,
   }) {
-    if (email.isEmpty) {
-      _setError("El email es obligatorio");
-      return false;
-    }
+    // limpiar errores antes de validar
+    emailError = null;
+    passwordError = null;
+    fullNameError = null;
 
-    if (!_isValidEmail(email)) {
-      _setError("El email no es válido");
-      return false;
+    bool isValid = true;
+
+    if (email.isEmpty) {
+      emailError = "El email es obligatorio";
+      isValid = false;
+    } else if (!_isValidEmail(email)) {
+      emailError = "Email no válido";
+      isValid = false;
     }
 
     if (password.isEmpty) {
-      _setError("La contraseña es obligatoria");
-      return false;
-    }
-
-    if (password.length < 6) {
-      _setError("Mínimo 6 caracteres en la contraseña");
-      return false;
+      passwordError = "La contraseña es obligatoria";
+      isValid = false;
+    } else if (password.length < 6) {
+      passwordError = "Mínimo 6 caracteres";
+      isValid = false;
+    } else if (!_isValidPassword(password)) {
+      passwordError = "Debe tener mayúscula, minúscula y un número";
+      isValid = false;
     }
 
     if (isRegister && fullName.isEmpty) {
-      _setError("El nombre completo es obligatorio");
-      return false;
+      fullNameError = "El nombre es obligatorio";
+      isValid = false;
     }
 
-    return true;
+    setState(() {});
+
+    return isValid;
   }
 
   Future<void> _handleAuth(BuildContext context) async {
@@ -101,6 +119,35 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
   }
 
+  late final ProviderSubscription _authSub;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _authSub = ref.listenManual(authProvider, (previous, next) {
+      if (next.errorMessage != null) {
+        setState(() {
+          emailError = null;
+          passwordError = null;
+          fullNameError = null;
+        });
+
+        if (next.errorField == 'email') {
+          setState(() => emailError = next.errorMessage);
+        } else if (next.errorField == 'password') {
+          setState(() => passwordError = next.errorMessage);
+        } else if (next.errorField == 'fullName') {
+          setState(() => fullNameError = next.errorMessage);
+        } else {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(next.errorMessage!)));
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
@@ -125,25 +172,45 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               CustomTextField(
                 label: t.fullName,
                 controller: fullNameController,
-                keyboardType: TextInputType.visiblePassword,
+                keyboardType: TextInputType.text,
                 textInputAction: TextInputAction.done,
+                errorText: fullNameError,
+                onChanged: (_) {
+                  setState(() => fullNameError = null);
+                },
               ),
 
             const SizedBox(height: 15),
             CustomTextField(
               label: t.email,
               controller: emailController,
-              keyboardType: TextInputType.visiblePassword,
+              keyboardType: TextInputType.emailAddress,
               textInputAction: TextInputAction.done,
+              errorText: emailError,
+              onChanged: (value) {
+                setState(() => emailError = null);
+              },
             ),
             const SizedBox(height: 15),
 
             CustomTextField(
               label: t.password,
-              obscureText: true,
+              obscureText: obscurePassword,
               controller: passwordController,
               keyboardType: TextInputType.visiblePassword,
               textInputAction: TextInputAction.done,
+              errorText: passwordError,
+              onChanged: (_) {
+                setState(() => passwordError = null);
+              },
+              suffixIcon: IconButton(
+                icon: Icon(
+                  obscurePassword ? Icons.visibility : Icons.visibility_off,
+                ),
+                onPressed: () {
+                  setState(() => obscurePassword = !obscurePassword);
+                },
+              ),
             ),
 
             const SizedBox(height: 5),
@@ -153,6 +220,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               onPressed: () {
                 setState(() {
                   isRegister = !isRegister;
+
+                  emailError = null;
+                  passwordError = null;
+                  fullNameError = null;
+
+                  emailController.clear();
+                  passwordController.clear();
+                  fullNameController.clear();
                 });
               },
               child: Text(
@@ -164,32 +239,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
             const SizedBox(height: 5),
 
-            SizedBox(
-              width: double.infinity,
-              child: CustomButton(
-                label: authState.isLoading
-                    ? "Cargando..."
-                    : isRegister
-                    ? "Registrarse"
-                    : "Iniciar sesión",
-                onPressed: () {
-                  _handleAuth(context);
-                },
-              ),
+            CustomButton(
+              label: isRegister ? "Registrarse" : "Iniciar sesión",
+              isLoading: authState.isLoading,
+              onPressed: authState.isLoading
+                  ? null
+                  : () => _handleAuth(context),
             ),
-            const SizedBox(height: 10),
-            if (authState.errorMessage != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: Text(
-                  authState.errorMessage!,
-                  style: const TextStyle(color: Colors.red),
-                ),
-              ),
+
             const SizedBox(height: 20),
-            if (authState.registerUser != null)
+            if (authState.loginUser != null || authState.registerUser != null)
               const Text(
-                "Login exitoso",
+                "Autenticación exitosa",
                 style: TextStyle(color: Colors.green),
               ),
             const SocialLoginRow(),
