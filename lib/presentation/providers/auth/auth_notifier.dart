@@ -20,28 +20,36 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   Future<void> register(AuthRegisterInput user) async {
     try {
+      print('register x');
       state = state.copyWith(isLoading: true, errorMessage: null);
+      print(state);
 
       final auth = await authRepository.userRegister(user);
+      print(auth);
 
       state = state.copyWith(
         registerUser: auth,
         loginUser: null,
         isLoading: false,
       );
+      print(state);
     } on DioException catch (e) {
       _handleDioError(e);
     } catch (e) {
-      setError('Error inesperado');
+      final message = e.toString().replaceFirst('Exception: ', '');
+      setError(message);
+      print('e $e');
     }
   }
 
   Future<void> login(AuthLoginInput user) async {
     try {
+      print('login x');
       state = state.copyWith(isLoading: true, errorMessage: null);
+      print('login x1 $state');
 
       final auth = await authRepository.loginUser(user);
-
+      print('auth $auth');
       state = state.copyWith(
         loginUser: auth,
         registerUser: null,
@@ -50,7 +58,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
     } on DioException catch (e) {
       _handleDioError(e);
     } catch (e) {
-      setError('Error inesperado');
+      final message = e.toString().replaceFirst('Exception: ', '');
+      setError(message);
+      print('e $e');
     }
   }
 

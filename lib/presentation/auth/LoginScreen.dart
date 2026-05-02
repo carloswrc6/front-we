@@ -25,45 +25,79 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   bool isRegister = false;
 
+  void _setError(String message) {
+    ref.read(authProvider.notifier).setError(message);
+  }
+
+  bool _isValidEmail(String email) {
+    final regex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+    return regex.hasMatch(email);
+  }
+
+  bool _validateInputs({
+    required String email,
+    required String password,
+    required String fullName,
+  }) {
+    if (email.isEmpty) {
+      _setError("El email es obligatorio");
+      return false;
+    }
+
+    if (!_isValidEmail(email)) {
+      _setError("El email no es válido");
+      return false;
+    }
+
+    if (password.isEmpty) {
+      _setError("La contraseña es obligatoria");
+      return false;
+    }
+
+    if (password.length < 6) {
+      _setError("Mínimo 6 caracteres en la contraseña");
+      return false;
+    }
+
+    if (isRegister && fullName.isEmpty) {
+      _setError("El nombre completo es obligatorio");
+      return false;
+    }
+
+    return true;
+  }
+
   Future<void> _handleAuth(BuildContext context) async {
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
     final fullName = fullNameController.text.trim();
 
-    if (email.isEmpty || password.isEmpty) {
-      ref
-          .read(authProvider.notifier)
-          .setError("Email y contraseña son obligatorios");
+    if (!_validateInputs(email: email, password: password, fullName: fullName))
       return;
-    }
 
-    if (isRegister && fullName.isEmpty) {
-      ref
-          .read(authProvider.notifier)
-          .setError("Email y contraseña son obligatorios");
-      return;
-    }
+    final notifier = ref.read(authProvider.notifier);
 
     if (isRegister) {
-      final user = AuthRegisterInput(
-        email: email,
-        password: password,
-        fullName: fullName,
+      print('en el register');
+      await notifier.register(
+        AuthRegisterInput(email: email, password: password, fullName: fullName),
       );
-
-      await ref.read(authProvider.notifier).register(user);
     } else {
-      final user = AuthLoginInput(email: email, password: password);
-
-      await ref.read(authProvider.notifier).login(user);
+      print('en el login');
+      await notifier.login(AuthLoginInput(email: email, password: password));
     }
 
     if (!mounted) return;
 
-    final updatedState = ref.read(authProvider);
+    final state = ref.read(authProvider);
 
-    if (updatedState.loginUser != null) {
-      context.go('/subscription');
+    final success = isRegister
+        ? state.registerUser != null
+        : state.loginUser != null;
+
+    if (success) {
+      print('a subscription');
+      // context.go('/subscription');
     }
   }
 
