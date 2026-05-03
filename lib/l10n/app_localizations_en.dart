@@ -37,4 +37,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get subtitle => 'Subtitle app EN';
+
+  // Validation auth
+  @override
+  String get valFullname => "Name is required";
+  @override
+  String get valMayusMinusNumber =>
+      "It must have an uppercase letter, a lowercase letter, and a number.";
+  @override
+  String get valMinSixStr => "Minimum 6 characters";
+
+  @override
+  String get valPwd => "A password is required";
+
+  @override
+  String get valEmailInvalid => "Invalid email";
+
+  @override
+  String get valRequiredEmail => "Email is required";
 }

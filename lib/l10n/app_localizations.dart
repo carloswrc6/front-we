@@ -45,6 +45,12 @@ abstract class AppLocalizations {
   String get password;
   String get title;
   String get subtitle;
+  String get valFullname;
+  String get valMayusMinusNumber;
+  String get valMinSixStr;
+  String get valPwd;
+  String get valEmailInvalid;
+  String get valRequiredEmail;
 }
 
 class _AppLocalizationsDelegate

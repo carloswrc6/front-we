@@ -48,6 +48,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     required String email,
     required String password,
     required String fullName,
+    required AppLocalizations t,
   }) {
     // limpiar errores antes de validar
     emailError = null;
@@ -57,26 +58,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     bool isValid = true;
 
     if (email.isEmpty) {
-      emailError = "El email es obligatorio";
+      emailError = t.valRequiredEmail;
       isValid = false;
     } else if (!_isValidEmail(email)) {
-      emailError = "Email no válido";
+      emailError = t.valEmailInvalid;
       isValid = false;
     }
 
     if (password.isEmpty) {
-      passwordError = "La contraseña es obligatoria";
+      passwordError = t.valPwd;
       isValid = false;
     } else if (password.length < 6) {
-      passwordError = "Mínimo 6 caracteres";
+      passwordError = t.valMinSixStr;
       isValid = false;
     } else if (!_isValidPassword(password)) {
-      passwordError = "Debe tener mayúscula, minúscula y un número";
+      passwordError = t.valMayusMinusNumber;
       isValid = false;
     }
 
     if (isRegister && fullName.isEmpty) {
-      fullNameError = "El nombre es obligatorio";
+      fullNameError = t.valFullname;
       isValid = false;
     }
 
@@ -89,8 +90,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
     final fullName = fullNameController.text.trim();
+    final t = AppLocalizations.of(context)!;
 
-    if (!_validateInputs(email: email, password: password, fullName: fullName))
+    if (!_validateInputs(
+      email: email,
+      password: password,
+      fullName: fullName,
+      t: t,
+    ))
       return;
 
     final notifier = ref.read(authProvider.notifier);
