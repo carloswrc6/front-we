@@ -14,24 +14,8 @@ final appRouter = GoRouter(
     GoRoute(path: '/login', builder: (context, state) => LoginScreen()),
     GoRoute(path: '/home', builder: (context, state) => const HomeScreen()),
     GoRoute(
-      path: '/theme_changer',
-      builder: (context, state) => const ThemeChangerScreen(),
-    ),
-    GoRoute(
       path: '/subscription',
       builder: (context, state) => const SubscriptionScreen(),
-    ),
-    GoRoute(
-      path: '/other-screen-1',
-      builder: (context, state) => const OtherScreen1(),
-    ),
-    GoRoute(
-      path: '/other-screen-2',
-      builder: (context, state) => const OtherScreen2(),
-    ),
-    GoRoute(
-      path: '/other-screen-3',
-      builder: (context, state) => const OtherScreen3(),
     ),
   ],
 );

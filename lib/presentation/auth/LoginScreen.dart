@@ -30,10 +30,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   bool isRegister = false;
   bool obscurePassword = true;
 
-  void _setError(String message) {
-    ref.read(authProvider.notifier).setError(message);
-  }
-
   bool _isValidEmail(String email) {
     final regex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
     return regex.hasMatch(email);
@@ -116,13 +112,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     final state = ref.read(authProvider);
 
-    final success = isRegister
-        ? state.registerUser != null
-        : state.loginUser != null;
-
-    if (success) {
-      print('a subscription');
-      // context.go('/subscription');
+    // TODO: Modificar con el login de google and apple
+    if (state.loginUser != null) {
+      context.go('/home');
+    }
+    if (state.registerUser != null) {
+      context.go('/subscription');
     }
   }
 
@@ -222,7 +217,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
             const SizedBox(height: 5),
 
-            /// 🔁 Toggle login/register
             TextButton(
               onPressed: () {
                 setState(() {
@@ -253,11 +247,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             ),
 
             const SizedBox(height: 20),
-            if (authState.loginUser != null || authState.registerUser != null)
-              const Text(
-                "Autenticación exitosa",
-                style: TextStyle(color: Colors.green),
-              ),
             const SocialLoginRow(),
           ],
         ),

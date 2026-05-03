@@ -42,8 +42,7 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get valFullname => "El nombre es obligatorio";
   @override
-  String get valMayusMinusNumber =>
-      "Debe tener mayúscula, minúscula y un número";
+  String get valMayusMinusNumber => "mayúscula, minúscula y un número";
   @override
   String get valMinSixStr => "Mínimo 6 caracteres";
 
@@ -55,4 +54,20 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get valRequiredEmail => "El email es obligatorio";
+
+  // Menu
+  @override
+  String get menuProfile => "Perfil";
+  @override
+  String get menuProfileSubtitle => "Tu información personal";
+  @override
+  String get menuSubscription => "Suscripción";
+  @override
+  String get menuSubscriptionSubtitle => "Tu plan actual";
+  @override
+  String get menuTheme => "Tema";
+  @override
+  String get menuThemeSubtitle => "Personaliza la app";
+  @override
+  String get menuLogout => "Cerrar sesión";
 }

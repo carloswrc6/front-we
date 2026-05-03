@@ -43,7 +43,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get valFullname => "Name is required";
   @override
   String get valMayusMinusNumber =>
-      "It must have an uppercase letter, a lowercase letter, and a number.";
+      "Uppercase letter, a lowercase letter, and a number.";
   @override
   String get valMinSixStr => "Minimum 6 characters";
 
@@ -55,4 +55,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get valRequiredEmail => "Email is required";
+
+  // Menu
+  @override
+  String get menuProfile => "Profile";
+  @override
+  String get menuProfileSubtitle => "Your personal info";
+  @override
+  String get menuSubscription => "Subscription";
+  @override
+  String get menuSubscriptionSubtitle => "Your plan";
+  @override
+  String get menuTheme => "Theme";
+  @override
+  String get menuThemeSubtitle => "Customize app";
+  @override
+  String get menuLogout => "Logout";
 }

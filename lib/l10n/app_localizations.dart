@@ -51,6 +51,13 @@ abstract class AppLocalizations {
   String get valPwd;
   String get valEmailInvalid;
   String get valRequiredEmail;
+  String get menuProfile;
+  String get menuProfileSubtitle;
+  String get menuSubscription;
+  String get menuSubscriptionSubtitle;
+  String get menuTheme;
+  String get menuThemeSubtitle;
+  String get menuLogout;
 }
 
 class _AppLocalizationsDelegate
