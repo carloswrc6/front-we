@@ -163,7 +163,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             CustomHeader(
               icon: const Icon(Icons.touch_app, size: 32),
               title: t!.title,
-              subtitle: isRegister ? "Crear cuenta" : "Iniciar sesión",
+              subtitle: isRegister ? t.authTitleRegister : t.authTitleLogin,
             ),
 
             const SizedBox(height: 30),
@@ -231,16 +231,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 });
               },
               child: Text(
-                isRegister
-                    ? "¿Ya tienes cuenta? Inicia sesión"
-                    : "¿No tienes cuenta? Regístrate",
+                isRegister ? t.authDescriptionRegister : t.authDescriptionLogin,
               ),
             ),
 
             const SizedBox(height: 5),
 
             CustomButton(
-              label: isRegister ? "Registrarse" : "Iniciar sesión",
+              label: isRegister ? t.authTitleRegister : t.authTitleLogin,
               isLoading: authState.isLoading,
               onPressed: authState.isLoading
                   ? null

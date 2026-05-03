@@ -35,6 +35,10 @@ abstract class AppLocalizations {
     Locale('es'),
   ];
 
+  String get authTitleLogin;
+  String get authTitleRegister;
+  String get authDescriptionLogin;
+  String get authDescriptionRegister;
   String get loginButton;
   String get fullName;
   String get email;

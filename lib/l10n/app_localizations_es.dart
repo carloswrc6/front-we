@@ -9,6 +9,18 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
+  String get authTitleLogin => 'Iniciar sesión';
+
+  @override
+  String get authTitleRegister => 'Crear cuenta';
+
+  @override
+  String get authDescriptionLogin => '¿No tienes cuenta? Regístrate';
+
+  @override
+  String get authDescriptionRegister => 'Ya tienes cuenta? Inicia sesión';
+
+  @override
   String get loginButton => 'Iniciar sesión';
 
   @override

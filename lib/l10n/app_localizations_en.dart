@@ -9,6 +9,18 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get authTitleLogin => 'Log in';
+
+  @override
+  String get authTitleRegister => 'Create an account';
+
+  @override
+  String get authDescriptionLogin => "Don't have an account? Register";
+
+  @override
+  String get authDescriptionRegister => 'Already have an account? Log in';
+
+  @override
   String get loginButton => 'Login';
 
   @override
