@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontwe/l10n/app_localizations.dart';
 import 'package:frontwe/presentation/providers/plan/plans_providers.dart';
 import 'package:frontwe/presentation/subscription/widgets/SubscriptionCard.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +30,10 @@ class _SubscriptionViewState extends ConsumerState<_SubscriptionView> {
   @override
   Widget build(BuildContext context) {
     final plans = ref.watch(nowPlayingPlansProvider);
+    final t = AppLocalizations.of(
+      context,
+    ); // no tiene el lang correcto del login register..se pierde
+    // y esta q se duplica los planes .. en el register
 
     return Scaffold(
       appBar: AppBar(title: const Text('Planes de suscripción')),
@@ -40,11 +45,11 @@ class _SubscriptionViewState extends ConsumerState<_SubscriptionView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Elige tu plan',
+                    t!.subsTitle,
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
                   const SizedBox(height: 8),
-                  Text('Desbloquea todas las funcionalidades'),
+                  Text(t.subsDescription),
                   const SizedBox(height: 20),
 
                   Expanded(
@@ -56,6 +61,7 @@ class _SubscriptionViewState extends ConsumerState<_SubscriptionView> {
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 16),
                           child: SubscriptionCard(
+                            txtRecommented: t!.subsRecommended,
                             title: plan.title,
                             price: plan.priceFormatted,
                             description: plan.description,

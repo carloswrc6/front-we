@@ -2,6 +2,7 @@ import 'package:frontwe/presentation/home/HomeScreen.dart';
 import 'package:flutter/material.dart';
 
 class SubscriptionCard extends StatelessWidget {
+  final String txtRecommented;
   final String title;
   final String price;
   final String description;
@@ -12,6 +13,7 @@ class SubscriptionCard extends StatelessWidget {
 
   const SubscriptionCard({
     super.key,
+    required this.txtRecommented,
     required this.title,
     required this.price,
     required this.description,
@@ -59,7 +61,7 @@ class SubscriptionCard extends StatelessWidget {
 
                 if (isRecommended)
                   Text(
-                    '⭐ Recomendado',
+                    '⭐ $txtRecommented',
                     style: TextStyle(
                       fontSize: 12,
                       color: theme.colorScheme.primary,
@@ -145,7 +147,7 @@ class SubscriptionCard extends StatelessWidget {
                   ).push(MaterialPageRoute(builder: (_) => const HomeScreen()));
                 },
                 child: Text(
-                  ctaText ?? 'Elegir plan',
+                  ctaText ?? 'Choose a plan',
                   style: const TextStyle(fontSize: 16),
                 ),
               ),

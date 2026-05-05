@@ -70,4 +70,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get menuThemeSubtitle => "Personaliza la app";
   @override
   String get menuLogout => "Cerrar sesión";
+
+  // Susb
+  @override
+  String get subsTitle => "Choose your plan";
+  @override
+  String get subsDescription => "Unlock all features";
+  @override
+  String get subsRecommended => "Recommended";
 }

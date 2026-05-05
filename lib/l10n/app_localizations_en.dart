@@ -10,31 +10,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get authTitleLogin => 'Log in';
-
   @override
   String get authTitleRegister => 'Create an account';
-
   @override
   String get authDescriptionLogin => "Don't have an account? Register";
-
   @override
   String get authDescriptionRegister => 'Already have an account? Log in';
 
   @override
   String get loginButton => 'Login';
-
   @override
   String get fullName => 'Full Name';
-
   @override
   String get email => 'Email';
-
   @override
   String get password => 'Password';
 
   @override
   String get title => 'Title app EN';
-
   @override
   String get subtitle => 'Subtitle app EN';
 
@@ -46,13 +39,10 @@ class AppLocalizationsEn extends AppLocalizations {
       "Uppercase letter, a lowercase letter, and a number.";
   @override
   String get valMinSixStr => "Minimum 6 characters";
-
   @override
   String get valPwd => "A password is required";
-
   @override
   String get valEmailInvalid => "Invalid email";
-
   @override
   String get valRequiredEmail => "Email is required";
 
@@ -71,4 +61,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get menuThemeSubtitle => "Customize app";
   @override
   String get menuLogout => "Logout";
+
+  @override
+  String get subsTitle => "Elige tu plan";
+  @override
+  String get subsDescription => "Desbloquea todas las funcionalidades";
+  @override
+  String get subsRecommended => "Recomendado";
 }

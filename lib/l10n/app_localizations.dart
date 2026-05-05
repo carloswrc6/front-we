@@ -58,6 +58,9 @@ abstract class AppLocalizations {
   String get menuTheme;
   String get menuThemeSubtitle;
   String get menuLogout;
+  String get subsTitle;
+  String get subsDescription;
+  String get subsRecommended;
 }
 
 class _AppLocalizationsDelegate
