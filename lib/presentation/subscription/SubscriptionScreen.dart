@@ -9,7 +9,7 @@ class SubscriptionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const _SubscriptionView();
+    return _SubscriptionView();
   }
 }
 
@@ -22,21 +22,26 @@ class _SubscriptionView extends ConsumerStatefulWidget {
 
 class _SubscriptionViewState extends ConsumerState<_SubscriptionView> {
   @override
+  @override
   void initState() {
     super.initState();
-    ref.read(nowPlayingPlansProvider.notifier).loadNextPage();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final plans = ref.read(nowPlayingPlansProvider);
+
+      if (plans.isEmpty) {
+        ref.read(nowPlayingPlansProvider.notifier).loadNextPage();
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final plans = ref.watch(nowPlayingPlansProvider);
-    final t = AppLocalizations.of(
-      context,
-    ); // no tiene el lang correcto del login register..se pierde
-    // y esta q se duplica los planes .. en el register
+    final t = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Planes de suscripción')),
+      appBar: AppBar(title: Text(t!.subsTitleMenu)),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: plans.isEmpty
@@ -49,9 +54,9 @@ class _SubscriptionViewState extends ConsumerState<_SubscriptionView> {
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
                   const SizedBox(height: 8),
+
                   Text(t.subsDescription),
                   const SizedBox(height: 20),
-
                   Expanded(
                     child: ListView.builder(
                       itemCount: plans.length,

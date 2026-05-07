@@ -71,11 +71,12 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get menuLogout => "Cerrar sesión";
 
-  // Susb
   @override
-  String get subsTitle => "Choose your plan";
+  String get subsTitleMenu => "Planes de suscripción";
   @override
-  String get subsDescription => "Unlock all features";
+  String get subsTitle => "Elige tu plan";
   @override
-  String get subsRecommended => "Recommended";
+  String get subsDescription => "Desbloquea todas las funcionalidades";
+  @override
+  String get subsRecommended => "Recomendado";
 }
