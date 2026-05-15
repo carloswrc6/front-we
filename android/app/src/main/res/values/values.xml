@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Firebase Configuration from google-services.json -->
+    <string name="google_app_id">1:233050502322:android:d38561ff53670eff53c5ab</string>
+    <string name="google_api_key">AIzaSyCIq4cavl_9qzL28qQnbm7EOsriy2NFpVU</string>
+    <string name="firebase_database_url">https://signin-d89db.firebaseio.com</string>
+    <string name="ga_trackingId">UA-0-0</string>
+    <string name="gcm_defaultSenderId">233050502322</string>
+    <string name="default_web_client_id">233050502322-l6el0eqfmbtl9j2sjn5f8mtg2srd5vbi.apps.googleusercontent.com</string>
+    <string name="firebase_project_id">signin-d89db</string>
+</resources>

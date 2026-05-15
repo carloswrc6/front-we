@@ -1,5 +1,6 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontwe/config/router/app_router.dart';
+import 'package:frontwe/infrastructure/datasource/google_auth_datasource.dart';
 import 'package:frontwe/l10n/app_localizations.dart';
 import 'package:frontwe/providers/lang/locale_provider.dart';
 import 'package:frontwe/providers/theme/theme_provider.dart';
@@ -8,7 +9,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: '.env');
+  await GoogleSignInService.init();
   runApp(const ProviderScope(child: MyApp()));
 }
 

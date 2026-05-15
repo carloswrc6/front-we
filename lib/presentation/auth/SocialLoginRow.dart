@@ -1,3 +1,4 @@
+import 'package:frontwe/infrastructure/datasource/google_auth_datasource.dart';
 import 'package:frontwe/presentation/shared/widgets/CustomButton.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +15,9 @@ class SocialLoginRow extends StatelessWidget {
             child: CustomButton(
               label: 'Google',
               icon: Image.asset('assets/login/google.png', height: 20),
-              onPressed: () {},
+              onPressed: () {
+                GoogleSignInService.signInWithGoogle();
+              },
             ),
           ),
           const SizedBox(width: 15),

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "233050502322",
+    "project_id": "signin-d89db",
+    "storage_bucket": "signin-d89db.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:233050502322:android:d38561ff53670eff53c5ab",
+        "android_client_info": {
+          "package_name": "com.calochop.flutterauthv1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "233050502322-l6el0eqfmbtl9j2sjn5f8mtg2srd5vbi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIq4cavl_9qzL28qQnbm7EOsriy2NFpVU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "233050502322-l6el0eqfmbtl9j2sjn5f8mtg2srd5vbi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

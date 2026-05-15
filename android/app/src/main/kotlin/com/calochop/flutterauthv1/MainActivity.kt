@@ -1,4 +1,4 @@
-package com.example.front_we
+package com.calochop.flutterauthv1
 
 import io.flutter.embedding.android.FlutterActivity
 
