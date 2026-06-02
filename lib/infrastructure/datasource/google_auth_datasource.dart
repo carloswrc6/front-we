@@ -14,6 +14,12 @@ class GoogleSignInService {
       );
 
       print('account: $account');
+      
+      // Get tokens
+      final GoogleSignInAuthentication auth = account.authentication;
+      // auth.idToken
+      // auth.accessToken
+
 
       return account;
     } catch (e) {
