@@ -1,6 +1,7 @@
 import 'package:frontwe/infrastructure/datasource/google_auth_datasource.dart';
 import 'package:frontwe/presentation/shared/widgets/CustomButton.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class SocialLoginRow extends StatelessWidget {
   const SocialLoginRow({super.key});
@@ -15,8 +16,15 @@ class SocialLoginRow extends StatelessWidget {
             child: CustomButton(
               label: 'Google',
               icon: Image.asset('assets/login/google.png', height: 20),
-              onPressed: () {
-                GoogleSignInService.signInWithGoogle();
+              onPressed: () async {
+                final account = await GoogleSignInService.signInWithGoogle();
+
+                print('ACCOUNT RETORNADA: $account');
+
+                if (account != null && context.mounted) {
+                  print('NAVEGANDO A HOME');
+                  context.go('/home');
+                }
               },
             ),
           ),

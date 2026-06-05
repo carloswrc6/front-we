@@ -27,6 +27,24 @@ class AuthRegisterOutput {
   });
 }
 
+class AuthSocialOutput {
+  final String id;
+  final String provider;
+  final String email;
+  final String fullName;
+  final String token;
+  final List<String> roles;
+
+  AuthSocialOutput({
+    required this.id,
+    required this.provider,
+    required this.email,
+    required this.fullName,
+    required this.token,
+    required this.roles,
+  });
+}
+
 // Login local
 class AuthLoginInput {
   final String email;

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontwe/domain/entities/auth.dart';
 import 'package:frontwe/domain/repository/auth_repository.dart';
 import 'auth_state.dart';
+import 'package:frontwe/infrastructure/datasource/auth_storage.dart';
 
 class AuthNotifier extends StateNotifier<AuthState> {
   final AuthRepository authRepository;
@@ -55,10 +56,14 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
       final auth = await authRepository.loginUser(user);
 
+      await AuthStorage.saveToken(auth.token);
+
       print('✅ login success: $auth');
 
       state = state.copyWith(
         loginUser: auth,
+        isAuthenticated: true,
+        token: auth.token,
         registerUser: null,
         isLoading: false,
       );

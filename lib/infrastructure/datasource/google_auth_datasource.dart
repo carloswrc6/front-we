@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:frontwe/infrastructure/datasource/api_client.dart';
+import 'package:frontwe/infrastructure/datasource/auth_storage.dart';
 
 class GoogleSignInService {
   static final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
@@ -28,10 +29,16 @@ class GoogleSignInService {
       final idToken = auth.idToken;
 
       if (idToken != null) {
-        final backendResp =
-            await sendIdTokenToBackend(idToken);
+        final backendResp = await sendIdTokenToBackend(idToken);
 
-        print('BACKEND RESPONSE: $backendResp');
+        if (backendResp != null) {
+
+          await AuthStorage.saveToken(
+            backendResp['token'],
+          );
+
+          print('Token guardado');
+        }
       }
 
       return account;
