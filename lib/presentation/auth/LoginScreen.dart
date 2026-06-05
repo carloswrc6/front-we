@@ -117,7 +117,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       context.go('/home');
     }
     if (state.registerUser != null) {
-      context.go('/subscription');
+      // context.go('/subscription');
+      context.go('/home');
     }
   }
 

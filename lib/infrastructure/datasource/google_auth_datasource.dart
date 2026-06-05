@@ -1,4 +1,6 @@
+import 'package:dio/dio.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:frontwe/infrastructure/datasource/api_client.dart';
 
 class GoogleSignInService {
   static final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
@@ -9,23 +11,62 @@ class GoogleSignInService {
 
   static Future<GoogleSignInAccount?> signInWithGoogle() async {
     try {
-      final GoogleSignInAccount account = await _googleSignIn.authenticate(
+      print('INICIO LOGIN GOOGLE');
+
+      final GoogleSignInAccount account =
+          await _googleSignIn.authenticate(
         scopeHint: ['email'],
       );
 
-      print('account: $account');
-      
-      // Get tokens
-      final GoogleSignInAuthentication auth = account.authentication;
-      // auth.idToken
-      // auth.accessToken
+      print('ACCOUNT: $account');
 
+      final GoogleSignInAuthentication auth =
+          account.authentication;
+
+      print('ID TOKEN: ${auth.idToken != null}');
+
+      final idToken = auth.idToken;
+
+      if (idToken != null) {
+        final backendResp =
+            await sendIdTokenToBackend(idToken);
+
+        print('BACKEND RESPONSE: $backendResp');
+      }
 
       return account;
     } catch (e) {
-      print('Error in google signin');
+      print('ERROR LOGIN GOOGLE');
       print(e);
+      return null;
+    }
+  }
 
+  static Future<Map<String, dynamic>?> sendIdTokenToBackend(
+    String idToken,
+  ) async {
+    try {
+      print('ENVIANDO TOKEN AL BACKEND');
+      final response = await ApiClient.dio.post(
+        '/auth/google',
+        data: {'idToken': idToken},
+      );
+
+      if (response.statusCode != null &&
+          response.statusCode! >= 200 &&
+          response.statusCode! < 300) {
+        return response.data as Map<String, dynamic>;
+      }
+      print('Backend error: ${response.statusCode} ${response.data}');
+      return null;
+    } on DioException catch (e) {
+      print('Error sending idToken to backend');
+      print(e.message);
+      print('Response data: ${e.response?.data}');
+      return null;
+    } catch (e) {
+      print('Error sending idToken to backend');
+      print(e);
       return null;
     }
   }

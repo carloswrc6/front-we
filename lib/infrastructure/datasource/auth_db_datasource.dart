@@ -1,13 +1,13 @@
 import 'package:dio/dio.dart';
-import 'package:frontwe/config/constants/enviroment.dart';
 import 'package:frontwe/domain/datasource/auth_datasource.dart';
 import 'package:frontwe/domain/entities/auth.dart';
+import 'package:frontwe/infrastructure/datasource/api_client.dart';
 import 'package:frontwe/infrastructure/mappers/auth_mappers.dart';
 import 'package:frontwe/infrastructure/models/auth_bd/register.dart';
 import 'package:frontwe/infrastructure/models/auth_bd/login.dart';
 
 class AuthDbDatasource extends AuthDatasource {
-  final dio = Dio(BaseOptions(baseUrl: Enviroment.API_URL_BACK));
+  final dio = ApiClient.dio;
 
   @override
   Future<LoginGoogleApple> loginGoogleApple(LoginGoogleApple user) {
