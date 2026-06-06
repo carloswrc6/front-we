@@ -6,7 +6,7 @@ class ApiClient {
 
   static final Dio dio = Dio(
     BaseOptions(
-      baseUrl: Enviroment.API_URL_BACK,
+      baseUrl: Environment.API_URL_BACK,
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 10),
       headers: {

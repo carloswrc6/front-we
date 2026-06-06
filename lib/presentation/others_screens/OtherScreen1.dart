@@ -119,7 +119,7 @@ class _OtherScreen1State extends State<OtherScreen1> {
                 icon: const Icon(Icons.fastfood, size: 32),
                 // title: t?.title ?? "¿Qué comer?",
                 // title: dotenv.env['THE_FOOD_KEY'] ?? 'no hay pk',
-                title: Enviroment.THE_FOOD_KEY,
+                title: Environment.THE_FOOD_KEY,
                 subtitle: t?.subtitle ?? "Elige una opción al azar",
               ),
 
