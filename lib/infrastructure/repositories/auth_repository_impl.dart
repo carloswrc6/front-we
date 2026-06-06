@@ -6,12 +6,6 @@ class AuthRepositoryImpl extends AuthRepository {
   final AuthDatasource datasource;
   AuthRepositoryImpl(this.datasource);
 
-  // @override
-  // Future<Auth> loginGoogleApple(LoginGoogleApple user) {
-  //   // TODO: implement loginGoogleApple
-  //   throw UnimplementedError();
-  // }
-
   @override
   Future<AuthLoginOutput> loginUser(AuthLoginInput user) {
     return datasource.loginUser(user);
