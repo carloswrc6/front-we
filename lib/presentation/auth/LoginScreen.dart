@@ -99,12 +99,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final notifier = ref.read(authProvider.notifier);
 
     if (isRegister) {
-      print('en el register');
       await notifier.register(
         AuthRegisterInput(email: email, password: password, fullName: fullName),
       );
     } else {
-      print('en el login');
       await notifier.login(AuthLoginInput(email: email, password: password));
     }
 
@@ -112,12 +110,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     final state = ref.read(authProvider);
 
-    // TODO: Modificar con el login de google and apple
     if (state.loginUser != null) {
       context.go('/home');
     }
     if (state.registerUser != null) {
-      // context.go('/subscription');
       context.go('/home');
     }
   }
