@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontwe/domain/entities/auth.dart';
 import 'package:frontwe/domain/repository/auth_repository.dart';
 import 'auth_state.dart';
-import 'package:frontwe/infrastructure/datasource/auth_storage.dart';
 
 class AuthNotifier extends StateNotifier<AuthState> {
   final AuthRepository authRepository;
@@ -56,8 +55,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
       final auth = await authRepository.loginUser(user);
 
-      await AuthStorage.saveToken(auth.token);
-
       print('✅ login success: $auth');
 
       state = state.copyWith(
@@ -72,6 +69,25 @@ class AuthNotifier extends StateNotifier<AuthState> {
     } catch (e) {
       final message = e.toString().replaceFirst('Exception: ', '');
       setError(message);
+    }
+  }
+
+  // Future<void> loginApple()
+  Future<void> loginGoogle() async {
+    try {
+      state = state.copyWith(isLoading: true, errorMessage: null);
+
+      final token = await authRepository.loginWithGoogle();
+
+      state = state.copyWith(
+        isAuthenticated: true,
+        token: token,
+        loginUser: null,
+        registerUser: null,
+        isLoading: false,
+      );
+    } catch (e) {
+      setError(e.toString().replaceFirst('Exception: ', ''));
     }
   }
 

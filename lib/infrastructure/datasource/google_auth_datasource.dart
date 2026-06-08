@@ -1,52 +1,41 @@
 import 'package:dio/dio.dart';
+import 'package:frontwe/domain/datasource/auth/social_auth_datasource.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:frontwe/infrastructure/datasource/api_client.dart';
-import 'package:frontwe/infrastructure/datasource/auth_storage.dart';
 
-class GoogleSignInService {
-  static final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
+class GoogleSignInService implements SocialAuthDatasource {
+  final GoogleSignIn googleSignIn;
 
-  static Future<void> init() async {
-    await _googleSignIn.initialize();
+  GoogleSignInService(this.googleSignIn);
+
+  Future<void> init() async {
+    await googleSignIn.initialize();
   }
 
-  static Future<GoogleSignInAccount?> signInWithGoogle() async {
-    try {
-      print('INICIO LOGIN GOOGLE');
+  @override
+  Future<String> loginWithGoogle() async {
+    final account = await googleSignIn.authenticate(scopeHint: ['email']);
 
-      final GoogleSignInAccount account =
-          await _googleSignIn.authenticate(
-        scopeHint: ['email'],
-      );
+    final auth = account.authentication;
 
-      print('ACCOUNT: $account');
+    final idToken = auth.idToken;
 
-      final GoogleSignInAuthentication auth =
-          account.authentication;
-
-      print('ID TOKEN: ${auth.idToken != null}');
-
-      final idToken = auth.idToken;
-
-      if (idToken != null) {
-        final backendResp = await sendIdTokenToBackend(idToken);
-
-        if (backendResp != null) {
-
-          await AuthStorage.saveToken(
-            backendResp['token'],
-          );
-
-          print('Token guardado');
-        }
-      }
-
-      return account;
-    } catch (e) {
-      print('ERROR LOGIN GOOGLE');
-      print(e);
-      return null;
+    if (idToken == null) {
+      throw Exception('Google no devolvió idToken');
     }
+
+    final backendResp = await sendIdTokenToBackend(idToken);
+
+    if (backendResp == null) {
+      throw Exception('Error autenticando con backend');
+    }
+
+    return backendResp['token'];
+  }
+
+  @override
+  Future<void> signOut() async {
+    await googleSignIn.signOut();
   }
 
   static Future<Map<String, dynamic>?> sendIdTokenToBackend(
@@ -77,15 +66,10 @@ class GoogleSignInService {
       return null;
     }
   }
-
-  static Future<void> signOut() async {
-    try {
-      await _googleSignIn.signOut();
-
-      print('User signed out');
-    } catch (e) {
-      print('Error signing out');
-      print(e);
-    }
+  
+  @override
+  Future<String> loginWithApple() {
+    // TODO: implement loginWithApple
+    throw UnimplementedError();
   }
 }

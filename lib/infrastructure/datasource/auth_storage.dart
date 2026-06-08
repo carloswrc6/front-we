@@ -1,20 +1,26 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:frontwe/domain/datasource/auth/token_storage_datasource.dart';
 
-class AuthStorage {
-  static const _storage = FlutterSecureStorage();
+class AuthStorage implements TokenStorageDatasource {
+  final FlutterSecureStorage storage;
 
-  static Future<void> saveToken(String token) async {
-    await _storage.write(
+  AuthStorage(this.storage);
+
+  @override
+  Future<void> saveToken(String token) async {
+    await storage.write(
       key: 'token',
       value: token,
     );
   }
 
-  static Future<String?> getToken() async {
-    return await _storage.read(key: 'token');
+  @override
+  Future<String?> getToken() async {
+    return storage.read(key: 'token');
   }
 
-  static Future<void> deleteToken() async {
-    await _storage.delete(key: 'token');
+  @override
+  Future<void> deleteToken() async {
+    await storage.delete(key: 'token');
   }
 }

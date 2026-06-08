@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:frontwe/domain/datasource/auth_datasource.dart';
+import 'package:frontwe/domain/datasource/auth/auth_datasource.dart';
 import 'package:frontwe/domain/entities/auth.dart';
 import 'package:frontwe/infrastructure/datasource/api_client.dart';
 import 'package:frontwe/infrastructure/mappers/auth_mappers.dart';
