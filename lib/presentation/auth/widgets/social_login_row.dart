@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:frontwe/presentation/providers/auth/auth_providers.dart';
+import 'package:frontwe/presentation/auth/providers/auth_providers.dart';
 import 'package:frontwe/presentation/shared/widgets/CustomButton.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

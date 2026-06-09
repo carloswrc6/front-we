@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontwe/config/constants/enviroment.dart';
 import 'package:frontwe/l10n/app_localizations.dart';
-import 'package:frontwe/presentation/auth/widgets/CustomHeader.dart';
+import 'package:frontwe/presentation/auth/widgets/custom_header.dart';
 import 'package:frontwe/presentation/shared/widgets/SideMenu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';

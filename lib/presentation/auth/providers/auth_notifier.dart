@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontwe/domain/entities/auth.dart';
 import 'package:frontwe/domain/repository/auth_repository.dart';
-import 'auth_state.dart';
+import 'package:frontwe/presentation/auth/state/auth_state.dart';
 
 class AuthNotifier extends StateNotifier<AuthState> {
   final AuthRepository authRepository;

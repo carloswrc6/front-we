@@ -1,6 +1,6 @@
 import 'package:frontwe/l10n/app_localizations.dart';
-import 'package:frontwe/presentation/auth/LoginScreen.dart';
-import 'package:frontwe/presentation/auth/widgets/CustomHeader.dart';
+import 'package:frontwe/presentation/auth/screens/login_screen.dart';
+import 'package:frontwe/presentation/auth/widgets/custom_header.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {

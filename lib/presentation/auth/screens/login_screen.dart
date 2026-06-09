@@ -1,8 +1,8 @@
 import 'package:frontwe/domain/entities/auth.dart';
 import 'package:frontwe/l10n/app_localizations.dart';
-import 'package:frontwe/presentation/auth/SocialLoginRow.dart';
-import 'package:frontwe/presentation/auth/widgets/CustomHeader.dart';
-import 'package:frontwe/presentation/providers/auth/auth_providers.dart';
+import 'package:frontwe/presentation/auth/widgets/social_login_row.dart';
+import 'package:frontwe/presentation/auth/widgets/custom_header.dart';
+import 'package:frontwe/presentation/auth/providers/auth_providers.dart';
 import 'package:frontwe/presentation/shared/widgets/CustomButton.dart';
 import 'package:frontwe/presentation/shared/widgets/LanguageButton.dart';
 import 'package:frontwe/presentation/shared/widgets/TextFieldWidget.dart';

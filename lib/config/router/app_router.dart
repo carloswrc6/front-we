@@ -1,4 +1,4 @@
-import 'package:frontwe/presentation/auth/LoginScreen.dart';
+import 'package:frontwe/presentation/auth/screens/login_screen.dart';
 import 'package:frontwe/presentation/home/HomeScreen.dart';
 import 'package:frontwe/presentation/home/ThemeChangerScreen.dart';
 import 'package:frontwe/presentation/subscription/SubscriptionScreen.dart';
