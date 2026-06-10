@@ -1,6 +1,7 @@
 import 'package:frontwe/presentation/auth/screens/forgot_password_screen.dart';
 import 'package:frontwe/presentation/auth/screens/login_screen.dart';
 import 'package:frontwe/presentation/auth/screens/register_screen.dart';
+import 'package:frontwe/presentation/auth/screens/reset_password_screen.dart';
 import 'package:frontwe/presentation/home/HomeScreen.dart';
 import 'package:frontwe/presentation/home/ThemeChangerScreen.dart';
 import 'package:frontwe/presentation/subscription/SubscriptionScreen.dart';
@@ -18,6 +19,14 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/forgot-password',
       builder: (context, state) => const ForgotPasswordScreen(),
+    ),
+    GoRoute(
+      path: '/reset-password',
+      builder: (context, state) {
+        final email = state.extra as String;
+
+        return ResetPasswordScreen(email: email);
+      },
     ),
     GoRoute(
       path: '/subscription',
