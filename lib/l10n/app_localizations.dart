@@ -63,6 +63,8 @@ abstract class AppLocalizations {
   String get subsDescription;
   String get subsRecommended;
   String get forgotPassword;
+  String get sendCodeEmail;
+  String get returnLogin;
 }
 
 class _AppLocalizationsDelegate

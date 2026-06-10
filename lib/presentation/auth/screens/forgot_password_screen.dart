@@ -68,6 +68,7 @@ class _ForgotPasswordScreenState
         const SnackBar(
           content: Text(
             'Código enviado al correo',
+            // t.sendCodeEmail,
           ),
         ),
       );
@@ -141,7 +142,7 @@ class _ForgotPasswordScreenState
             const SizedBox(height: 25),
 
             CustomButton(
-              label: 'Enviar código',
+              label: t.sendCodeEmail,
               isLoading: isLoading,
               onPressed: isLoading ? null : _sendCode,
             ),
@@ -152,8 +153,8 @@ class _ForgotPasswordScreenState
               onPressed: () {
                 context.pop();
               },
-              child: const Text(
-                'Volver al login',
+              child: Text(
+                t.returnLogin,
               ),
             ),
           ],
