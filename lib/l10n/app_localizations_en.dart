@@ -71,4 +71,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subsDescription => "Unlock all features";
   @override
   String get subsRecommended => "Recommended";
+
+  @override
+  String get forgotPassword => "You have forgotten your password";
 }

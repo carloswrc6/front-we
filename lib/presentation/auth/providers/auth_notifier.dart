@@ -18,14 +18,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
     );
   }
 
-  Future<void> register(AuthRegisterInput user) async {
+  Future register(AuthRegisterInput user) async {
     try {
       print('➡️ register start');
 
-      state = state.copyWith(
-        isLoading: true,
-        errorMessage: null, // ✅ limpiar error global
-      );
+      state = state.copyWith(isLoading: true, errorMessage: null);
 
       final auth = await authRepository.userRegister(user);
 
@@ -33,7 +30,15 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
       state = state.copyWith(
         registerUser: auth,
-        loginUser: null,
+        loginUser: AuthLoginOutput(
+          id: auth.id,
+          provider: 'local',
+          email: auth.email,
+          fullName: auth.fullName,
+          token: auth.token,
+        ),
+        isAuthenticated: true,
+        token: auth.token,
         isLoading: false,
       );
     } on DioException catch (e) {

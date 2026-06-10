@@ -3,7 +3,6 @@ import 'package:frontwe/l10n/app_localizations.dart';
 import 'package:frontwe/presentation/auth/providers/auth_providers.dart';
 import 'package:frontwe/presentation/auth/state/auth_state.dart';
 import 'package:frontwe/presentation/auth/widgets/custom_header.dart';
-import 'package:frontwe/presentation/auth/widgets/social_login_row.dart';
 import 'package:frontwe/presentation/shared/widgets/CustomButton.dart';
 import 'package:frontwe/presentation/shared/widgets/LanguageButton.dart';
 import 'package:frontwe/presentation/shared/widgets/TextFieldWidget.dart';
@@ -12,17 +11,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class LoginScreen extends ConsumerStatefulWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends ConsumerStatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  ConsumerState<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends ConsumerState<LoginScreen> {
+class _RegisterScreenState extends ConsumerState<RegisterScreen> {
+  final fullNameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
+  String? fullNameError;
   String? emailError;
   String? passwordError;
 
@@ -41,14 +42,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   bool _validateInputs({
+    required String fullName,
     required String email,
     required String password,
     required AppLocalizations t,
   }) {
+    fullNameError = null;
     emailError = null;
     passwordError = null;
 
     bool isValid = true;
+
+    if (fullName.isEmpty) {
+      fullNameError = t.valFullname;
+      isValid = false;
+    }
 
     if (email.isEmpty) {
       emailError = t.valRequiredEmail;
@@ -74,13 +82,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     return isValid;
   }
 
-  Future<void> _handleLogin(BuildContext context) async {
+  Future<void> _handleRegister(BuildContext context) async {
+    final fullName = fullNameController.text.trim();
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
 
     final t = AppLocalizations.of(context)!;
 
     if (!_validateInputs(
+      fullName: fullName,
       email: email,
       password: password,
       t: t,
@@ -90,8 +100,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     final notifier = ref.read(authProvider.notifier);
 
-    await notifier.login(
-      AuthLoginInput(
+    await notifier.register(
+      AuthRegisterInput(
+        fullName: fullName,
         email: email,
         password: password,
       ),
@@ -101,7 +112,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     final state = ref.read(authProvider);
 
-    if (state.loginUser != null) {
+    if (state.registerUser != null) {
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(
+      //     content: Text('msj authRegisterSuccess'),
+      //   ),
+      // );
       context.go('/home');
     }
   }
@@ -115,11 +131,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     _authSub = ref.listenManual(authProvider, (previous, next) {
       if (next.errorMessage != null) {
         setState(() {
+          fullNameError = null;
           emailError = null;
           passwordError = null;
         });
 
-        if (next.errorField == 'email') {
+        if (next.errorField == 'fullName') {
+          setState(() => fullNameError = next.errorMessage);
+        } else if (next.errorField == 'email') {
           setState(() => emailError = next.errorMessage);
         } else if (next.errorField == 'password') {
           setState(() => passwordError = next.errorMessage);
@@ -138,6 +157,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   void dispose() {
     _authSub.close();
 
+    fullNameController.dispose();
     emailController.dispose();
     passwordController.dispose();
 
@@ -162,14 +182,27 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           children: [
             CustomHeader(
               icon: const Icon(
-                Icons.touch_app,
+                Icons.person_add_alt_1,
                 size: 32,
               ),
               title: t.title,
-              subtitle: t.authTitleLogin,
+              subtitle: t.authTitleRegister,
             ),
 
             const SizedBox(height: 30),
+
+            CustomTextField(
+              label: t.fullName,
+              controller: fullNameController,
+              keyboardType: TextInputType.text,
+              textInputAction: TextInputAction.next,
+              errorText: fullNameError,
+              onChanged: (_) {
+                setState(() => fullNameError = null);
+              },
+            ),
+
+            const SizedBox(height: 15),
 
             CustomTextField(
               label: t.email,
@@ -208,42 +241,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               ),
             ),
 
-            const SizedBox(height: 5),
-
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: () {
-                  context.push('/forgot-password');
-                },
-                child: Text(
-                  t.forgotPassword,
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 10),
+            const SizedBox(height: 20),
 
             CustomButton(
-              label: t.authTitleLogin,
+              label: t.authTitleRegister,
               isLoading: authState.isLoading,
               onPressed: authState.isLoading
                   ? null
-                  : () => _handleLogin(context),
+                  : () => _handleRegister(context),
             ),
-
-            const SizedBox(height: 20),
-
-            const SocialLoginRow(),
 
             const SizedBox(height: 20),
 
             TextButton(
               onPressed: () {
-                context.push('/register');
+                context.pop();
               },
               child: Text(
-                t.authDescriptionLogin,
+                t.authDescriptionRegister,
               ),
             ),
           ],

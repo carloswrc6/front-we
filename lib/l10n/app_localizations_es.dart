@@ -71,7 +71,7 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get menuLogout => "Cerrar sesión";
 
-  @override
+    @override
   String get subsTitleMenu => "Planes de suscripción";
   @override
   String get subsTitle => "Elige tu plan";
@@ -79,4 +79,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get subsDescription => "Desbloquea todas las funcionalidades";
   @override
   String get subsRecommended => "Recomendado";
+  @override
+  String get forgotPassword => "Has olvidado tu contraseña?";
+
 }
