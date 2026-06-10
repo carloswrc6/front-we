@@ -16,6 +16,7 @@ class AuthMapper {
         id: authLoginDB.id,
         provider: authLoginDB.provider,
         email: authLoginDB.email,
+        fullName: authLoginDB.fullName,
         token: authLoginDB.token,
       );
 }

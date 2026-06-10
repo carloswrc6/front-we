@@ -77,12 +77,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
     try {
       state = state.copyWith(isLoading: true, errorMessage: null);
 
-      final token = await authRepository.loginWithGoogle();
+      final auth = await authRepository.loginWithGoogle();
 
       state = state.copyWith(
         isAuthenticated: true,
-        token: token,
-        loginUser: null,
+        token: auth.token,
+        loginUser: auth,
         registerUser: null,
         isLoading: false,
       );
@@ -118,5 +118,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
 
     setError(message);
+  }
+
+  Future<void> logout() async {
+    await authRepository.logout();
+
+    state = AuthState();
   }
 }

@@ -55,12 +55,14 @@ class AuthLoginInput {
 class AuthLoginOutput {
   final String id;
   final String provider;
+  final String fullName;
   final String email;
   final String token;
   AuthLoginOutput({
     required this.id,
     required this.provider,
     required this.email,
+    required this.fullName,
     required this.token,
   });
 }

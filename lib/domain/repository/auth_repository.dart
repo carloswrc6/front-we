@@ -4,7 +4,7 @@ abstract class AuthRepository {
   Future<AuthRegisterOutput> userRegister(AuthRegisterInput user);
   Future<AuthLoginOutput> loginUser(AuthLoginInput user);
 
-  Future<String> loginWithGoogle();
+  Future<AuthLoginOutput> loginWithGoogle();
   Future<String> loginWithApple();
   Future<void> logout();
 

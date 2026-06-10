@@ -1,5 +1,6 @@
 import 'package:frontwe/config/menu/menu_items.dart';
 import 'package:frontwe/l10n/app_localizations.dart';
+import 'package:frontwe/presentation/auth/providers/auth_providers.dart';
 import 'package:frontwe/providers/menu/side_menu_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +12,7 @@ class SideMenu extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final authState = ref.watch(authProvider);
     final navDrawerIndex = ref.watch(navDrawerIndexProvider);
     final hasNotch = MediaQuery.of(context).viewPadding.top > 35;
     final t = AppLocalizations.of(context)!;
@@ -34,11 +36,11 @@ class SideMenu extends ConsumerWidget {
               const CircleAvatar(radius: 25, child: Icon(Icons.person)),
               const SizedBox(height: 10),
               Text(
-                'Carlos Rivas',
+                authState.loginUser?.fullName ?? '',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               Text(
-                'carlos@email.com',
+                authState.loginUser?.email ?? '',
                 style: Theme.of(context).textTheme.bodySmall,
               ),
             ],
@@ -78,8 +80,12 @@ class SideMenu extends ConsumerWidget {
         ListTile(
           leading: const Icon(Icons.logout),
           title: Text(t.menuLogout),
-          onTap: () {
-            context.go('/login');
+          onTap: () async {
+            await ref.read(authProvider.notifier).logout();
+
+            if (context.mounted) {
+              context.go('/login');
+            }
           },
         ),
       ],

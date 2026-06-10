@@ -38,15 +38,15 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<String> loginWithGoogle() async {
-    final token =
+  Future<AuthLoginOutput> loginWithGoogle() async {
+    final auth =
         await socialDatasource.loginWithGoogle();
 
     await storageDatasource.saveToken(
-      token,
+      auth.token,
     );
 
-    return token;
+    return auth;
   }
 
   @override

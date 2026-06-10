@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:frontwe/domain/datasource/auth/social_auth_datasource.dart';
+import 'package:frontwe/domain/entities/auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:frontwe/infrastructure/datasource/api_client.dart';
 
@@ -13,7 +14,7 @@ class GoogleSignInService implements SocialAuthDatasource {
   }
 
   @override
-  Future<String> loginWithGoogle() async {
+  Future<AuthLoginOutput> loginWithGoogle() async {
     final account = await googleSignIn.authenticate(scopeHint: ['email']);
 
     final auth = account.authentication;
@@ -30,7 +31,14 @@ class GoogleSignInService implements SocialAuthDatasource {
       throw Exception('Error autenticando con backend');
     }
 
-    return backendResp['token'];
+    // return backendResp['token'];
+    return AuthLoginOutput(
+      id: backendResp['id'],
+      provider: backendResp['provider'],
+      email: backendResp['email'],
+      fullName: backendResp['fullName'],
+      token: backendResp['token'],
+    );
   }
 
   @override
@@ -66,7 +74,7 @@ class GoogleSignInService implements SocialAuthDatasource {
       return null;
     }
   }
-  
+
   @override
   Future<String> loginWithApple() {
     // TODO: implement loginWithApple

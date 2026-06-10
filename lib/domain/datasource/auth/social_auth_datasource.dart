@@ -1,5 +1,7 @@
+import 'package:frontwe/domain/entities/auth.dart';
+
 abstract class SocialAuthDatasource {
-  Future<String> loginWithGoogle();
+  Future<AuthLoginOutput> loginWithGoogle();
   Future<String> loginWithApple();
   Future<void> signOut();
 }
