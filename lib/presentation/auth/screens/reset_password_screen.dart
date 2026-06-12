@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontwe/presentation/auth/providers/auth_providers.dart';
 import 'package:go_router/go_router.dart';
 import 'package:frontwe/l10n/app_localizations.dart';
 import 'package:frontwe/presentation/auth/widgets/custom_header.dart';
@@ -7,21 +9,17 @@ import 'package:frontwe/presentation/shared/widgets/LanguageButton.dart';
 import 'package:frontwe/presentation/shared/widgets/TextFieldWidget.dart';
 import 'package:frontwe/presentation/shared/widgets/ThemeButton.dart';
 
-class ResetPasswordScreen extends StatefulWidget {
+class ResetPasswordScreen extends ConsumerStatefulWidget {
   final String email;
 
-  const ResetPasswordScreen({
-    super.key,
-    required this.email,
-  });
+  const ResetPasswordScreen({super.key, required this.email});
 
   @override
-  State<ResetPasswordScreen> createState() =>
+  ConsumerState<ResetPasswordScreen> createState() =>
       _ResetPasswordScreenState();
 }
 
-class _ResetPasswordScreenState
-    extends State<ResetPasswordScreen> {
+class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
   final codeController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
@@ -35,9 +33,7 @@ class _ResetPasswordScreenState
   bool isLoading = false;
 
   bool _isValidPassword(String password) {
-    final regex = RegExp(
-      r'(?:(?=.*\d)|(?=.*\W+))(?=.*[A-Z])(?=.*[a-z]).*',
-    );
+    final regex = RegExp(r'(?:(?=.*\d)|(?=.*\W+))(?=.*[A-Z])(?=.*[a-z]).*');
 
     return regex.hasMatch(password);
   }
@@ -49,8 +45,13 @@ class _ResetPasswordScreenState
 
     bool isValid = true;
 
-    if (codeController.text.trim().isEmpty) {
+    final code = codeController.text.trim();
+
+    if (code.isEmpty) {
       codeError = 'Ingrese el código';
+      isValid = false;
+    } else if (!RegExp(r'^\d{6}$').hasMatch(code)) {
+      codeError = 'El código debe tener 6 dígitos';
       isValid = false;
     }
 
@@ -60,9 +61,7 @@ class _ResetPasswordScreenState
     } else if (passwordController.text.trim().length < 6) {
       passwordError = t.valMinSixStr;
       isValid = false;
-    } else if (!_isValidPassword(
-      passwordController.text.trim(),
-    )) {
+    } else if (!_isValidPassword(passwordController.text.trim())) {
       passwordError = t.valMayusMinusNumber;
       isValid = false;
     }
@@ -72,8 +71,7 @@ class _ResetPasswordScreenState
       isValid = false;
     } else if (confirmPasswordController.text.trim() !=
         passwordController.text.trim()) {
-      confirmPasswordError =
-          'Las contraseñas no coinciden';
+      confirmPasswordError = 'Las contraseñas no coinciden';
       isValid = false;
     }
 
@@ -95,37 +93,23 @@ class _ResetPasswordScreenState
       final code = codeController.text.trim();
       final password = passwordController.text.trim();
 
-      // TODO:
-      // await ref.read(authProvider.notifier)
-      //   .resetPassword(
-      //      email: widget.email,
-      //      code: code,
-      //      newPassword: password,
-      //   );
-
-      await Future.delayed(
-        const Duration(seconds: 1),
-      );
+      await ref
+          .read(authProvider.notifier)
+          .resetPassword(email: widget.email, code: code, password: password);
 
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Contraseña actualizada correctamente',
-          ),
-        ),
+        const SnackBar(content: Text('Contraseña actualizada correctamente')),
       );
 
-      context.go('/login');
+      context.go('/home');
     } catch (e) {
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.toString()),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.toString())));
     } finally {
       if (mounted) {
         setState(() {
@@ -148,33 +132,20 @@ class _ResetPasswordScreenState
     final t = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(
-        actions: const [
-          LanguageButton(),
-          ThemeButton(),
-        ],
-      ),
+      appBar: AppBar(actions: const [LanguageButton(), ThemeButton()]),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             CustomHeader(
-              icon: const Icon(
-                Icons.password,
-                size: 32,
-              ),
+              icon: const Icon(Icons.password, size: 32),
               title: t.title,
               subtitle: 'Cambiar contraseña',
             ),
 
             const SizedBox(height: 30),
 
-            Text(
-              widget.email,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium,
-            ),
+            Text(widget.email, style: Theme.of(context).textTheme.bodyMedium),
 
             const SizedBox(height: 20),
 
@@ -197,8 +168,7 @@ class _ResetPasswordScreenState
               label: t.password,
               controller: passwordController,
               obscureText: obscurePassword,
-              keyboardType:
-                  TextInputType.visiblePassword,
+              keyboardType: TextInputType.visiblePassword,
               textInputAction: TextInputAction.next,
               errorText: passwordError,
               onChanged: (_) {
@@ -208,14 +178,11 @@ class _ResetPasswordScreenState
               },
               suffixIcon: IconButton(
                 icon: Icon(
-                  obscurePassword
-                      ? Icons.visibility
-                      : Icons.visibility_off,
+                  obscurePassword ? Icons.visibility : Icons.visibility_off,
                 ),
                 onPressed: () {
                   setState(() {
-                    obscurePassword =
-                        !obscurePassword;
+                    obscurePassword = !obscurePassword;
                   });
                 },
               ),
@@ -225,12 +192,9 @@ class _ResetPasswordScreenState
 
             CustomTextField(
               label: 'Confirmar contraseña',
-              controller:
-                  confirmPasswordController,
-              obscureText:
-                  obscureConfirmPassword,
-              keyboardType:
-                  TextInputType.visiblePassword,
+              controller: confirmPasswordController,
+              obscureText: obscureConfirmPassword,
+              keyboardType: TextInputType.visiblePassword,
               textInputAction: TextInputAction.done,
               errorText: confirmPasswordError,
               onChanged: (_) {
@@ -246,8 +210,7 @@ class _ResetPasswordScreenState
                 ),
                 onPressed: () {
                   setState(() {
-                    obscureConfirmPassword =
-                        !obscureConfirmPassword;
+                    obscureConfirmPassword = !obscureConfirmPassword;
                   });
                 },
               ),
@@ -258,8 +221,7 @@ class _ResetPasswordScreenState
             CustomButton(
               label: 'Actualizar contraseña',
               isLoading: isLoading,
-              onPressed:
-                  isLoading ? null : _changePassword,
+              onPressed: isLoading ? null : _changePassword,
             ),
 
             const SizedBox(height: 15),
@@ -268,9 +230,7 @@ class _ResetPasswordScreenState
               onPressed: () {
                 context.go('/login');
               },
-              child: const Text(
-                'Volver al login',
-              ),
+              child: const Text('Volver al login'),
             ),
           ],
         ),

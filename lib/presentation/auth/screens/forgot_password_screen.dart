@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontwe/presentation/auth/providers/auth_providers.dart';
 import 'package:go_router/go_router.dart';
 import 'package:frontwe/l10n/app_localizations.dart';
 import 'package:frontwe/presentation/auth/widgets/custom_header.dart';
@@ -7,16 +9,15 @@ import 'package:frontwe/presentation/shared/widgets/LanguageButton.dart';
 import 'package:frontwe/presentation/shared/widgets/TextFieldWidget.dart';
 import 'package:frontwe/presentation/shared/widgets/ThemeButton.dart';
 
-class ForgotPasswordScreen extends StatefulWidget {
+class ForgotPasswordScreen extends ConsumerStatefulWidget {
   const ForgotPasswordScreen({super.key});
 
   @override
-  State<ForgotPasswordScreen> createState() =>
+  ConsumerState<ForgotPasswordScreen> createState() =>
       _ForgotPasswordScreenState();
 }
 
-class _ForgotPasswordScreenState
-    extends State<ForgotPasswordScreen> {
+class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   final emailController = TextEditingController();
 
   String? emailError;
@@ -54,37 +55,21 @@ class _ForgotPasswordScreenState
         isLoading = true;
       });
 
-      // TODO:
-      // await ref.read(authProvider.notifier)
-      //     .sendResetCode(email);
-
-      await Future.delayed(
-        const Duration(seconds: 1),
-      );
+      await ref.read(authProvider.notifier).forgotPassword(email);
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Código enviado al correo',
-            // t.sendCodeEmail,
-          ),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Código enviado al correo')));
 
-      context.push(
-        '/reset-password',
-        extra: email,
-      );
+      context.push('/reset-password', extra: email);
     } catch (e) {
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.toString()),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.toString())));
     } finally {
       if (mounted) {
         setState(() {
@@ -105,21 +90,13 @@ class _ForgotPasswordScreenState
     final t = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(
-        actions: const [
-          LanguageButton(),
-          ThemeButton(),
-        ],
-      ),
+      appBar: AppBar(actions: const [LanguageButton(), ThemeButton()]),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             CustomHeader(
-              icon: const Icon(
-                Icons.lock_reset,
-                size: 32,
-              ),
+              icon: const Icon(Icons.lock_reset, size: 32),
               title: t.title,
               subtitle: 'Recuperar contraseña',
             ),
@@ -153,9 +130,7 @@ class _ForgotPasswordScreenState
               onPressed: () {
                 context.pop();
               },
-              child: Text(
-                t.returnLogin,
-              ),
+              child: Text(t.returnLogin),
             ),
           ],
         ),

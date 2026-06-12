@@ -9,4 +9,12 @@ abstract class AuthRepository {
   Future<void> logout();
 
   Future<String?> getSavedToken();
+
+  Future<void> forgotPassword(String email);
+
+  Future<void> resetPassword({
+    required String email,
+    required String code,
+    required String password,
+  });
 }

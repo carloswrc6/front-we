@@ -17,46 +17,33 @@ class AuthRepositoryImpl implements AuthRepository {
   );
 
   @override
-  Future<AuthLoginOutput> loginUser(
-    AuthLoginInput user,
-  ) async {
-    final auth =
-        await authDatasource.loginUser(user);
+  Future<AuthLoginOutput> loginUser(AuthLoginInput user) async {
+    final auth = await authDatasource.loginUser(user);
 
-    await storageDatasource.saveToken(
-      auth.token,
-    );
+    await storageDatasource.saveToken(auth.token);
 
     return auth;
   }
 
   @override
-  Future<AuthRegisterOutput> userRegister(
-    AuthRegisterInput user,
-  ) {
+  Future<AuthRegisterOutput> userRegister(AuthRegisterInput user) {
     return authDatasource.userRegister(user);
   }
 
   @override
   Future<AuthLoginOutput> loginWithGoogle() async {
-    final auth =
-        await socialDatasource.loginWithGoogle();
+    final auth = await socialDatasource.loginWithGoogle();
 
-    await storageDatasource.saveToken(
-      auth.token,
-    );
+    await storageDatasource.saveToken(auth.token);
 
     return auth;
   }
 
   @override
   Future<String> loginWithApple() async {
-    final token =
-        await socialDatasource.loginWithApple();
+    final token = await socialDatasource.loginWithApple();
 
-    await storageDatasource.saveToken(
-      token,
-    );
+    await storageDatasource.saveToken(token);
 
     return token;
   }
@@ -71,5 +58,23 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<String?> getSavedToken() {
     return storageDatasource.getToken();
+  }
+
+  @override
+  Future<void> forgotPassword(String email) {
+    return authDatasource.forgotPassword(email);
+  }
+
+  @override
+  Future<void> resetPassword({
+    required String email,
+    required String code,
+    required String password,
+  }) {
+    return authDatasource.resetPassword(
+      email: email,
+      code: code,
+      password: password,
+    );
   }
 }

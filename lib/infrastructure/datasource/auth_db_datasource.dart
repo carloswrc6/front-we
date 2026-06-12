@@ -56,4 +56,21 @@ class AuthDbDatasource extends AuthDatasource {
       rethrow;
     }
   }
+
+  @override
+  Future<void> forgotPassword(String email) async {
+    await ApiClient.dio.post('/auth/forgot-password', data: {'email': email});
+  }
+
+  @override
+  Future<void> resetPassword({
+    required String email,
+    required String code,
+    required String password,
+  }) async {
+    await ApiClient.dio.post(
+      '/auth/reset-password',
+      data: {'email': email, 'code': code, 'password': password},
+    );
+  }
 }

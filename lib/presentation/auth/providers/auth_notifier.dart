@@ -130,4 +130,48 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
     state = AuthState();
   }
+
+  Future<void> forgotPassword(String email) async {
+    try {
+      state = state.copyWith(
+        isLoading: true,
+        errorMessage: null,
+        forgotPasswordSuccess: false,
+      );
+
+      await authRepository.forgotPassword(email);
+
+      state = state.copyWith(isLoading: false, forgotPasswordSuccess: true);
+    } on DioException catch (e) {
+      _handleDioError(e);
+    } catch (e) {
+      setError(e.toString().replaceFirst('Exception: ', ''));
+    }
+  }
+
+  Future<void> resetPassword({
+    required String email,
+    required String code,
+    required String password,
+  }) async {
+    try {
+      state = state.copyWith(
+        isLoading: true,
+        errorMessage: null,
+        resetPasswordSuccess: false,
+      );
+
+      await authRepository.resetPassword(
+        email: email,
+        code: code,
+        password: password,
+      );
+
+      state = state.copyWith(isLoading: false, resetPasswordSuccess: true);
+    } on DioException catch (e) {
+      _handleDioError(e);
+    } catch (e) {
+      setError(e.toString().replaceFirst('Exception: ', ''));
+    }
+  }
 }

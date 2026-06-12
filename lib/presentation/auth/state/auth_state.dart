@@ -12,6 +12,9 @@ class AuthState {
   final String? errorMessage;
   final String? errorField;
 
+  final bool forgotPasswordSuccess;
+  final bool resetPasswordSuccess;
+
   AuthState({
     this.registerUser,
     this.loginUser,
@@ -20,6 +23,8 @@ class AuthState {
     this.isLoading = false,
     this.errorMessage,
     this.errorField,
+    this.forgotPasswordSuccess = false,
+    this.resetPasswordSuccess = false,
   });
 
   AuthState copyWith({
@@ -30,6 +35,8 @@ class AuthState {
     bool? isLoading,
     String? errorMessage,
     String? errorField,
+    bool? forgotPasswordSuccess,
+    bool? resetPasswordSuccess,
   }) {
     return AuthState(
       registerUser: registerUser ?? this.registerUser,
@@ -39,6 +46,12 @@ class AuthState {
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage,
       errorField: errorField,
+      forgotPasswordSuccess:
+          forgotPasswordSuccess ??
+          this.forgotPasswordSuccess,
+      resetPasswordSuccess:
+          resetPasswordSuccess ??
+          this.resetPasswordSuccess,
     );
   }
 }
