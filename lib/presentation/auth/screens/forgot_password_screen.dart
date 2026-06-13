@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontwe/presentation/auth/providers/auth_providers.dart';
+import 'package:frontwe/presentation/shared/widgets/CustomDialog.dart';
 import 'package:go_router/go_router.dart';
 import 'package:frontwe/l10n/app_localizations.dart';
 import 'package:frontwe/presentation/auth/widgets/custom_header.dart';
@@ -57,19 +58,33 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
 
       await ref.read(authProvider.notifier).forgotPassword(email);
 
-      if (!mounted) return;
+      final authState = ref.read(authProvider);
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Código enviado al correo')));
+      if (!authState.forgotPasswordSuccess) {
+        print('MOSTRANDO DIALOGO DESDE A');
+
+        await CustomDialog.show(
+          context: context,
+          title: 'Error',
+          message: authState.errorMessage ?? 'No se pudo enviar el código',
+          type: DialogType.error,
+          acceptText: 'Ok',
+        );
+        return;
+      }
 
       context.push('/reset-password', extra: email);
     } catch (e) {
       if (!mounted) return;
+      print('MOSTRANDO DIALOGO DESDE B');
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(e.toString())));
+      await CustomDialog.show(
+        context: context,
+        title: 'Error',
+        message: e.toString(),
+        type: DialogType.error,
+        acceptText: 'Ok',
+      );
     } finally {
       if (mounted) {
         setState(() {

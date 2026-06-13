@@ -4,6 +4,7 @@ import 'package:frontwe/presentation/auth/providers/auth_providers.dart';
 import 'package:frontwe/presentation/auth/state/auth_state.dart';
 import 'package:frontwe/presentation/auth/widgets/custom_header.dart';
 import 'package:frontwe/presentation/shared/widgets/CustomButton.dart';
+import 'package:frontwe/presentation/shared/widgets/CustomDialog.dart';
 import 'package:frontwe/presentation/shared/widgets/LanguageButton.dart';
 import 'package:frontwe/presentation/shared/widgets/TextFieldWidget.dart';
 import 'package:frontwe/presentation/shared/widgets/ThemeButton.dart';
@@ -35,9 +36,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   }
 
   bool _isValidPassword(String password) {
-    final regex = RegExp(
-      r'(?:(?=.*\d)|(?=.*\W+))(?=.*[A-Z])(?=.*[a-z]).*',
-    );
+    final regex = RegExp(r'(?:(?=.*\d)|(?=.*\W+))(?=.*[A-Z])(?=.*[a-z]).*');
     return regex.hasMatch(password);
   }
 
@@ -101,11 +100,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     final notifier = ref.read(authProvider.notifier);
 
     await notifier.register(
-      AuthRegisterInput(
-        fullName: fullName,
-        email: email,
-        password: password,
-      ),
+      AuthRegisterInput(fullName: fullName, email: email, password: password),
     );
 
     if (!mounted) return;
@@ -113,11 +108,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     final state = ref.read(authProvider);
 
     if (state.registerUser != null) {
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   SnackBar(
-      //     content: Text('msj authRegisterSuccess'),
-      //   ),
-      // );
       context.go('/home');
     }
   }
@@ -128,7 +118,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   void initState() {
     super.initState();
 
-    _authSub = ref.listenManual(authProvider, (previous, next) {
+    _authSub = ref.listenManual(authProvider, (previous, next) async {
       if (next.errorMessage != null) {
         setState(() {
           fullNameError = null;
@@ -143,10 +133,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         } else if (next.errorField == 'password') {
           setState(() => passwordError = next.errorMessage);
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(next.errorMessage!),
-            ),
+          await CustomDialog.show(
+            context: context,
+            title: 'Error',
+            message: next.errorMessage!,
+            type: DialogType.error,
+            acceptText: 'Ok',
           );
         }
       }
@@ -170,21 +162,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     final t = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(
-        actions: const [
-          LanguageButton(),
-          ThemeButton(),
-        ],
-      ),
+      appBar: AppBar(actions: const [LanguageButton(), ThemeButton()]),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             CustomHeader(
-              icon: const Icon(
-                Icons.person_add_alt_1,
-                size: 32,
-              ),
+              icon: const Icon(Icons.person_add_alt_1, size: 32),
               title: t.title,
               subtitle: t.authTitleRegister,
             ),
@@ -229,9 +213,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               },
               suffixIcon: IconButton(
                 icon: Icon(
-                  obscurePassword
-                      ? Icons.visibility
-                      : Icons.visibility_off,
+                  obscurePassword ? Icons.visibility : Icons.visibility_off,
                 ),
                 onPressed: () {
                   setState(() {
@@ -257,9 +239,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               onPressed: () {
                 context.pop();
               },
-              child: Text(
-                t.authDescriptionRegister,
-              ),
+              child: Text(t.authDescriptionRegister),
             ),
           ],
         ),

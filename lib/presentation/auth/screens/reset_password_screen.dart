@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontwe/presentation/auth/providers/auth_providers.dart';
+import 'package:frontwe/presentation/shared/widgets/CustomDialog.dart';
+import 'package:frontwe/presentation/shared/widgets/CustomToast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:frontwe/l10n/app_localizations.dart';
 import 'package:frontwe/presentation/auth/widgets/custom_header.dart';
@@ -96,20 +98,42 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
       await ref
           .read(authProvider.notifier)
           .resetPassword(email: widget.email, code: code, password: password);
+      final authState = ref.read(authProvider);
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Contraseña actualizada correctamente')),
+      if (!authState.resetPasswordSuccess) {
+        print('MOSTRANDO DIALOGO DESDE _changePassword');
+
+        await CustomDialog.show(
+          context: context,
+          title: 'Error',
+          message:
+              authState.errorMessage ?? 'No se pudo actualizar la contraseña',
+          type: DialogType.error,
+          acceptText: 'Ok',
+        );
+        return;
+      }
+
+      CustomToast.show(
+        context,
+        message: 'Contraseña actualizada correctamente',
+        type: ToastType.success,
       );
 
       context.go('/home');
     } catch (e) {
       if (!mounted) return;
+      print('MOSTRANDO DIALOGO DESDE CATCH');
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(e.toString())));
+      await CustomDialog.show(
+        context: context,
+        title: 'Error',
+        message: e.toString(),
+        type: DialogType.error,
+        acceptText: 'Ok',
+      );
     } finally {
       if (mounted) {
         setState(() {

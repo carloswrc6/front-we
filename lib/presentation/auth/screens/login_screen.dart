@@ -5,6 +5,7 @@ import 'package:frontwe/presentation/auth/state/auth_state.dart';
 import 'package:frontwe/presentation/auth/widgets/custom_header.dart';
 import 'package:frontwe/presentation/auth/widgets/social_login_row.dart';
 import 'package:frontwe/presentation/shared/widgets/CustomButton.dart';
+import 'package:frontwe/presentation/shared/widgets/CustomDialog.dart';
 import 'package:frontwe/presentation/shared/widgets/LanguageButton.dart';
 import 'package:frontwe/presentation/shared/widgets/TextFieldWidget.dart';
 import 'package:frontwe/presentation/shared/widgets/ThemeButton.dart';
@@ -34,9 +35,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   bool _isValidPassword(String password) {
-    final regex = RegExp(
-      r'(?:(?=.*\d)|(?=.*\W+))(?=.*[A-Z])(?=.*[a-z]).*',
-    );
+    final regex = RegExp(r'(?:(?=.*\d)|(?=.*\W+))(?=.*[A-Z])(?=.*[a-z]).*');
     return regex.hasMatch(password);
   }
 
@@ -80,22 +79,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     final t = AppLocalizations.of(context)!;
 
-    if (!_validateInputs(
-      email: email,
-      password: password,
-      t: t,
-    )) {
+    if (!_validateInputs(email: email, password: password, t: t)) {
       return;
     }
 
     final notifier = ref.read(authProvider.notifier);
 
-    await notifier.login(
-      AuthLoginInput(
-        email: email,
-        password: password,
-      ),
-    );
+    await notifier.login(AuthLoginInput(email: email, password: password));
 
     if (!mounted) return;
 
@@ -112,7 +102,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   void initState() {
     super.initState();
 
-    _authSub = ref.listenManual(authProvider, (previous, next) {
+    _authSub = ref.listenManual(authProvider, (previous, next) async {
       if (next.errorMessage != null) {
         setState(() {
           emailError = null;
@@ -124,10 +114,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         } else if (next.errorField == 'password') {
           setState(() => passwordError = next.errorMessage);
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(next.errorMessage!),
-            ),
+          await CustomDialog.show(
+            context: context,
+            title: 'Error',
+            message: next.errorMessage!,
+            type: DialogType.error,
+            acceptText: 'Ok',
           );
         }
       }
@@ -150,21 +142,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final t = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(
-        actions: const [
-          LanguageButton(),
-          ThemeButton(),
-        ],
-      ),
+      appBar: AppBar(actions: const [LanguageButton(), ThemeButton()]),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             CustomHeader(
-              icon: const Icon(
-                Icons.touch_app,
-                size: 32,
-              ),
+              icon: const Icon(Icons.touch_app, size: 32),
               title: t.title,
               subtitle: t.authTitleLogin,
             ),
@@ -196,9 +180,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               },
               suffixIcon: IconButton(
                 icon: Icon(
-                  obscurePassword
-                      ? Icons.visibility
-                      : Icons.visibility_off,
+                  obscurePassword ? Icons.visibility : Icons.visibility_off,
                 ),
                 onPressed: () {
                   setState(() {
@@ -216,9 +198,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 onPressed: () {
                   context.push('/forgot-password');
                 },
-                child: Text(
-                  t.forgotPassword,
-                ),
+                child: Text(t.forgotPassword),
               ),
             ),
 
@@ -242,9 +222,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               onPressed: () {
                 context.push('/register');
               },
-              child: Text(
-                t.authDescriptionLogin,
-              ),
+              child: Text(t.authDescriptionLogin),
             ),
           ],
         ),
