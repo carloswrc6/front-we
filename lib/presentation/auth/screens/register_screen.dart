@@ -132,7 +132,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           setState(() => emailError = next.errorMessage);
         } else if (next.errorField == 'password') {
           setState(() => passwordError = next.errorMessage);
-        } else {
+        } else if (ModalRoute.of(context)?.isCurrent ?? false) {
           await CustomDialog.show(
             context: context,
             title: 'Error',

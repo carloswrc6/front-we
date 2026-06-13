@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontwe/presentation/auth/providers/auth_providers.dart';
 import 'package:frontwe/presentation/shared/widgets/CustomDialog.dart';
+import 'package:frontwe/presentation/shared/widgets/CustomToast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:frontwe/l10n/app_localizations.dart';
 import 'package:frontwe/presentation/auth/widgets/custom_header.dart';
@@ -61,7 +62,6 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
       final authState = ref.read(authProvider);
 
       if (!authState.forgotPasswordSuccess) {
-        print('MOSTRANDO DIALOGO DESDE A');
 
         await CustomDialog.show(
           context: context,
@@ -72,6 +72,12 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
         );
         return;
       }
+
+      CustomToast.show(
+        context,
+        message: 'Código enviado, revisa tu correo electrónico.',
+        type: ToastType.success,
+      );
 
       context.push('/reset-password', extra: email);
     } catch (e) {
