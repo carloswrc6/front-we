@@ -69,12 +69,12 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<void> resetPassword({
     required String email,
     required String code,
-    required String password,
+    required String newPassword,
   }) {
     return authDatasource.resetPassword(
       email: email,
       code: code,
-      password: password,
+      newPassword: newPassword,
     );
   }
 }

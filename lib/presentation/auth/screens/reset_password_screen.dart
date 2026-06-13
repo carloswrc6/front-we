@@ -95,9 +95,11 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
       final code = codeController.text.trim();
       final password = passwordController.text.trim();
 
-      await ref
-          .read(authProvider.notifier)
-          .resetPassword(email: widget.email, code: code, password: password);
+      await ref.read(authProvider.notifier).resetPassword(
+            email: widget.email,
+            code: code,
+            newPassword: password,
+          );
       final authState = ref.read(authProvider);
 
       if (!mounted) return;
@@ -122,7 +124,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
         type: ToastType.success,
       );
 
-      context.go('/home');
+      context.go('/login');
     } catch (e) {
       if (!mounted) return;
       print('MOSTRANDO DIALOGO DESDE CATCH');
@@ -169,6 +171,11 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
 
             const SizedBox(height: 30),
 
+            Text(
+              'Se envió un código de 6 dígitos a:',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            const SizedBox(height: 6),
             Text(widget.email, style: Theme.of(context).textTheme.bodyMedium),
 
             const SizedBox(height: 20),

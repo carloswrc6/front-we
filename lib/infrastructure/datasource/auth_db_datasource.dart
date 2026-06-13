@@ -66,11 +66,15 @@ class AuthDbDatasource extends AuthDatasource {
   Future<void> resetPassword({
     required String email,
     required String code,
-    required String password,
+    required String newPassword,
   }) async {
     await ApiClient.dio.post(
       '/auth/reset-password',
-      data: {'email': email, 'code': code, 'password': password},
+      data: {
+        'email': email,
+        'code': code,
+        'newPassword': newPassword,
+      },
     );
   }
 }

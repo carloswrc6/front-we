@@ -152,7 +152,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
   Future<void> resetPassword({
     required String email,
     required String code,
-    required String password,
+    required String newPassword,
   }) async {
     try {
       state = state.copyWith(
@@ -164,7 +164,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       await authRepository.resetPassword(
         email: email,
         code: code,
-        password: password,
+        newPassword: newPassword,
       );
 
       state = state.copyWith(isLoading: false, resetPasswordSuccess: true);

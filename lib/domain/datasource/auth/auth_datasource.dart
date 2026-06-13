@@ -7,6 +7,6 @@ abstract class AuthDatasource {
   Future<void> resetPassword({
     required String email,
     required String code,
-    required String password,
+    required String newPassword,
   });
 }
