@@ -145,7 +145,31 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
               onPressed: isLoading ? null : _sendCode,
             ),
 
-            const SizedBox(height: 15),
+            const SizedBox(height: 10),
+
+            TextButton.icon(
+              onPressed: () {
+                final email = emailController.text.trim();
+
+                if (email.isEmpty) {
+                  setState(() {
+                    emailError = t.valRequiredEmail;
+                  });
+                  return;
+                }
+
+                if (!_isValidEmail(email)) {
+                  setState(() {
+                    emailError = t.valEmailInvalid;
+                  });
+                  return;
+                }
+
+                context.push('/reset-password', extra: email);
+              },
+              icon: const Icon(Icons.key),
+              label: const Text('Ya tengo un código'),
+            ),
 
             TextButton(
               onPressed: () {
