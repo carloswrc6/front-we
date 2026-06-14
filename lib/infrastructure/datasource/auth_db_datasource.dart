@@ -1,13 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:frontwe/domain/datasource/auth/auth_datasource.dart';
 import 'package:frontwe/domain/entities/auth.dart';
-import 'package:frontwe/infrastructure/datasource/api_client.dart';
 import 'package:frontwe/infrastructure/mappers/auth_mappers.dart';
 import 'package:frontwe/infrastructure/models/auth_bd/register.dart';
 import 'package:frontwe/infrastructure/models/auth_bd/login.dart';
 
 class AuthDbDatasource extends AuthDatasource {
-  final dio = ApiClient.dio;
+  final Dio dio;
+
+  AuthDbDatasource({required this.dio});
 
   @override
   Future<AuthLoginOutput> loginUser(AuthLoginInput user) async {
@@ -59,7 +60,7 @@ class AuthDbDatasource extends AuthDatasource {
 
   @override
   Future<void> forgotPassword(String email) async {
-    await ApiClient.dio.post('/auth/forgot-password', data: {'email': email});
+    await dio.post('/auth/forgot-password', data: {'email': email});
   }
 
   @override
@@ -68,7 +69,7 @@ class AuthDbDatasource extends AuthDatasource {
     required String code,
     required String newPassword,
   }) async {
-    await ApiClient.dio.post(
+    await dio.post(
       '/auth/reset-password',
       data: {
         'email': email,

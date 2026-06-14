@@ -1,9 +1,11 @@
+import 'package:dio/dio.dart';
 import 'package:frontwe/domain/datasource/food_datasource.dart';
 import 'package:frontwe/domain/entities/food.dart';
-import 'package:frontwe/infrastructure/datasource/api_client.dart';
 
 class FoodDbDatasource extends FoodDatasource {
-  final dio = ApiClient.dio;
+  final Dio dio;
+
+  FoodDbDatasource({required this.dio});
 
   @override
   Future<List<Food>> getFoods({int page = 1}) async {

@@ -1,12 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:frontwe/domain/datasource/plan_datasource.dart';
 import 'package:frontwe/domain/entities/plan.dart';
-import 'package:frontwe/infrastructure/datasource/api_client.dart';
 import 'package:frontwe/infrastructure/mappers/plan_mappers.dart';
 import 'package:frontwe/infrastructure/models/food_bd/planbd_response.dart';
 
 class PlanDbDatasource extends PlanDatasource {
-  final dio = ApiClient.dio;
+  final Dio dio;
+
+  PlanDbDatasource({required this.dio});
 
   @override
   Future<List<Plan>> getPlans({int page = 1}) async {
