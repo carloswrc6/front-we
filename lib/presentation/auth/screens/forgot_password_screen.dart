@@ -66,7 +66,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
         await CustomDialog.show(
           context: context,
           title: 'Error',
-          message: authState.errorMessage ?? 'No se pudo enviar el código',
+          message: authState.errorMessage ?? t.forgotPasswordCodeSendError,
           type: DialogType.error,
           acceptText: 'Ok',
         );
@@ -75,14 +75,13 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
 
       CustomToast.show(
         context,
-        message: 'Código enviado, revisa tu correo electrónico.',
+        message: t.forgotPasswordCodeSentSuccess,
         type: ToastType.success,
       );
 
       context.push('/reset-password', extra: email);
     } catch (e) {
       if (!mounted) return;
-      print('MOSTRANDO DIALOGO DESDE B');
 
       await CustomDialog.show(
         context: context,
@@ -119,7 +118,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
             CustomHeader(
               icon: const Icon(Icons.lock_reset, size: 32),
               title: t.title,
-              subtitle: 'Recuperar contraseña',
+              subtitle: t.subtitleForgotPassword,
             ),
 
             const SizedBox(height: 30),

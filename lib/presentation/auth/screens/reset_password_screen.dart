@@ -50,10 +50,10 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
     final code = codeController.text.trim();
 
     if (code.isEmpty) {
-      codeError = 'Ingrese el código';
+      codeError = t.enterVerificationCode;
       isValid = false;
     } else if (!RegExp(r'^\d{6}$').hasMatch(code)) {
-      codeError = 'El código debe tener 6 dígitos';
+      codeError = t.verificationCodeMustBeSixDigits;
       isValid = false;
     }
 
@@ -69,11 +69,11 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
     }
 
     if (confirmPasswordController.text.trim().isEmpty) {
-      confirmPasswordError = 'Confirme la contraseña';
+      confirmPasswordError = t.confirmPassword;
       isValid = false;
     } else if (confirmPasswordController.text.trim() !=
         passwordController.text.trim()) {
-      confirmPasswordError = 'Las contraseñas no coinciden';
+      confirmPasswordError = t.passwordsDoNotMatch;
       isValid = false;
     }
 
@@ -105,13 +105,12 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
       if (!mounted) return;
 
       if (!authState.resetPasswordSuccess) {
-        print('MOSTRANDO DIALOGO DESDE _changePassword');
 
         await CustomDialog.show(
           context: context,
           title: 'Error',
           message:
-              authState.errorMessage ?? 'No se pudo actualizar la contraseña',
+              authState.errorMessage ?? t.passwordUpdateError,
           type: DialogType.error,
           acceptText: 'Ok',
         );
@@ -120,14 +119,13 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
 
       CustomToast.show(
         context,
-        message: 'Contraseña actualizada correctamente',
+        message: t.passwordUpdatedSuccessfully,
         type: ToastType.success,
       );
 
       context.go('/login');
     } catch (e) {
       if (!mounted) return;
-      print('MOSTRANDO DIALOGO DESDE CATCH');
 
       await CustomDialog.show(
         context: context,
@@ -166,13 +164,13 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
             CustomHeader(
               icon: const Icon(Icons.password, size: 32),
               title: t.title,
-              subtitle: 'Cambiar contraseña',
+              subtitle: t.subtitleChangePassword,
             ),
 
             const SizedBox(height: 30),
 
             Text(
-              'Se envió un código de 6 dígitos a:',
+              t.sixDigitCodeSentTo,
               style: Theme.of(context).textTheme.bodySmall,
             ),
             const SizedBox(height: 6),
@@ -181,7 +179,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
             const SizedBox(height: 20),
 
             CustomTextField(
-              label: 'Código',
+              label: t.verificationCode,
               controller: codeController,
               keyboardType: TextInputType.number,
               textInputAction: TextInputAction.next,
@@ -222,7 +220,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
             const SizedBox(height: 15),
 
             CustomTextField(
-              label: 'Confirmar contraseña',
+              label: t.confirmPasswordLabel,
               controller: confirmPasswordController,
               obscureText: obscureConfirmPassword,
               keyboardType: TextInputType.visiblePassword,
@@ -250,7 +248,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
             const SizedBox(height: 25),
 
             CustomButton(
-              label: 'Actualizar contraseña',
+              label: t.updatePassword,
               isLoading: isLoading,
               onPressed: isLoading ? null : _changePassword,
             ),
@@ -261,7 +259,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
               onPressed: () {
                 context.go('/login');
               },
-              child: const Text('Volver al login'),
+              child: Text(t.backToLogin),
             ),
           ],
         ),

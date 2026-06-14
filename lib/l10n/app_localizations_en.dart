@@ -31,6 +31,53 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get subtitle => 'Subtitle app EN';
 
+  @override
+  String get subtitleForgotPassword => 'Forgot Password';
+
+  @override
+  String get subtitleChangePassword => 'Change Password';
+
+  @override
+  String get forgotPasswordCodeSendError => 'Failed to send the code';
+
+  @override
+  String get forgotPasswordCodeSentSuccess =>
+      'Code sent, please check your email';
+
+  @override
+  String get enterVerificationCode => 'Enter the code';
+
+  @override
+  String get verificationCodeMustBeSixDigits =>
+      'The code must contain 6 digits';
+
+  @override
+  String get confirmPassword => 'Confirm your password';
+
+  @override
+  String get passwordsDoNotMatch => 'Passwords do not match';
+
+  @override
+  String get passwordUpdateError => 'Failed to update password';
+
+  @override
+  String get passwordUpdatedSuccessfully => 'Password updated successfully';
+
+  @override
+  String get sixDigitCodeSentTo => 'A 6-digit code has been sent to:';
+
+  @override
+  String get verificationCode => 'Code';
+
+  @override
+  String get confirmPasswordLabel => 'Confirm Password';
+
+  @override
+  String get updatePassword => 'Update Password';
+
+  @override
+  String get backToLogin => 'Back to Login';
+
   // Validation auth
   @override
   String get valFullname => "Name is required";

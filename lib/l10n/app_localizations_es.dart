@@ -38,6 +38,54 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get subtitle => 'Subtitle app ES';
 
+  @override
+  String get subtitleForgotPassword => 'Recuperar contraseña';
+
+  @override
+  String get subtitleChangePassword => 'Cambiar contraseña';
+
+  @override
+  String get forgotPasswordCodeSendError => 'No se pudo enviar el código';
+
+  @override
+  String get forgotPasswordCodeSentSuccess =>
+      'Código enviado, revisa tu correo electrónico';
+
+  @override
+  String get enterVerificationCode => 'Ingrese el código';
+
+  @override
+  String get verificationCodeMustBeSixDigits =>
+      'El código debe tener 6 dígitos';
+
+  @override
+  String get confirmPassword => 'Confirme la contraseña';
+
+  @override
+  String get passwordsDoNotMatch => 'Las contraseñas no coinciden';
+
+  @override
+  String get passwordUpdateError => 'No se pudo actualizar la contraseña';
+
+  @override
+  String get passwordUpdatedSuccessfully =>
+      'Contraseña actualizada correctamente';
+
+  @override
+  String get sixDigitCodeSentTo => 'Se envió un código de 6 dígitos a:';
+
+  @override
+  String get verificationCode => 'Código';
+
+  @override
+  String get confirmPasswordLabel => 'Confirmar contraseña';
+
+  @override
+  String get updatePassword => 'Actualizar contraseña';
+
+  @override
+  String get backToLogin => 'Volver al login';
+
   // Validation auth
   @override
   String get valFullname => "El nombre es obligatorio";
@@ -71,7 +119,7 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get menuLogout => "Cerrar sesión";
 
-    @override
+  @override
   String get subsTitleMenu => "Planes de suscripción";
   @override
   String get subsTitle => "Elige tu plan";
