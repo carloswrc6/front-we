@@ -4,14 +4,13 @@ import 'package:frontwe/presentation/auth/screens/register_screen.dart';
 import 'package:frontwe/presentation/auth/screens/reset_password_screen.dart';
 import 'package:frontwe/presentation/home/HomeScreen.dart';
 import 'package:frontwe/presentation/home/ThemeChangerScreen.dart';
-import 'package:frontwe/presentation/subscription/SubscriptionScreen.dart';
 import 'package:go_router/go_router.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/login',
   routes: [
     GoRoute(path: '/home', builder: (context, state) => const HomeScreen()),
-    GoRoute(path: '/login', builder: (context, state) => LoginScreen()),
+    GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
     GoRoute(
       path: '/register',
       builder: (context, state) => const RegisterScreen(),
@@ -27,10 +26,6 @@ final appRouter = GoRouter(
 
         return ResetPasswordScreen(email: email);
       },
-    ),
-    GoRoute(
-      path: '/subscription',
-      builder: (context, state) => SubscriptionScreen(),
     ),
     GoRoute(
       path: '/theme_changer',

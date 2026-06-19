@@ -37,7 +37,4 @@ flutter:
     - assets/login/google.png
     - assets/login/apple.png
 
-localization:
-  arb-dir: lib/l10n
-  # template-arb-file: app_en.arb
-  output-localization-file: app_localizations.dart
+

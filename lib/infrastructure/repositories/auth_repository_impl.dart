@@ -26,8 +26,12 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<AuthRegisterOutput> userRegister(AuthRegisterInput user) {
-    return authDatasource.userRegister(user);
+  Future<AuthRegisterOutput> userRegister(AuthRegisterInput user) async {
+    final auth = await authDatasource.userRegister(user);
+
+    await storageDatasource.saveToken(auth.token);
+
+    return auth;
   }
 
   @override

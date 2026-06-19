@@ -22,12 +22,6 @@ const appMenuItems = <MenuItem>[
     icon: Icons.person_outline,
   ),
   MenuItem(
-    titleKey: 'subscription',
-    subTitleKey: 'subscriptionSubtitle',
-    link: '/subscription',
-    icon: Icons.workspace_premium_outlined,
-  ),
-  MenuItem(
     titleKey: 'theme',
     subTitleKey: 'themeSubtitle',
     link: '/theme_changer',
