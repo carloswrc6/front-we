@@ -13,8 +13,13 @@ import 'package:frontwe/presentation/shared/widgets/ThemeButton.dart';
 
 class ResetPasswordScreen extends ConsumerStatefulWidget {
   final String email;
+  final String code;
 
-  const ResetPasswordScreen({super.key, required this.email});
+  const ResetPasswordScreen({
+    super.key,
+    required this.email,
+    required this.code,
+  });
 
   @override
   ConsumerState<ResetPasswordScreen> createState() =>
@@ -22,11 +27,9 @@ class ResetPasswordScreen extends ConsumerStatefulWidget {
 }
 
 class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
-  final codeController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
-  String? codeError;
   String? passwordError;
   String? confirmPasswordError;
 
@@ -36,26 +39,14 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
 
   bool _isValidPassword(String password) {
     final regex = RegExp(r'(?:(?=.*\d)|(?=.*\W+))(?=.*[A-Z])(?=.*[a-z]).*');
-
     return regex.hasMatch(password);
   }
 
   bool _validateInputs(AppLocalizations t) {
-    codeError = null;
     passwordError = null;
     confirmPasswordError = null;
 
     bool isValid = true;
-
-    final code = codeController.text.trim();
-
-    if (code.isEmpty) {
-      codeError = t.enterVerificationCode;
-      isValid = false;
-    } else if (!RegExp(r'^\d{6}$').hasMatch(code)) {
-      codeError = t.verificationCodeMustBeSixDigits;
-      isValid = false;
-    }
 
     if (passwordController.text.trim().isEmpty) {
       passwordError = t.valPwd;
@@ -92,12 +83,11 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
         isLoading = true;
       });
 
-      final code = codeController.text.trim();
       final password = passwordController.text.trim();
 
       await ref.read(authProvider.notifier).resetPassword(
             email: widget.email,
-            code: code,
+            code: widget.code,
             newPassword: password,
           );
       final authState = ref.read(authProvider);
@@ -105,12 +95,10 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
       if (!mounted) return;
 
       if (!authState.resetPasswordSuccess) {
-
         await CustomDialog.show(
           context: context,
           title: 'Error',
-          message:
-              authState.errorMessage ?? t.passwordUpdateError,
+          message: authState.errorMessage ?? t.passwordUpdateError,
           type: DialogType.error,
           acceptText: 'Ok',
         );
@@ -145,7 +133,6 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
 
   @override
   void dispose() {
-    codeController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
     super.dispose();
@@ -168,30 +155,6 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
             ),
 
             const SizedBox(height: 30),
-
-            Text(
-              t.sixDigitCodeSentTo,
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-            const SizedBox(height: 6),
-            Text(widget.email, style: Theme.of(context).textTheme.bodyMedium),
-
-            const SizedBox(height: 20),
-
-            CustomTextField(
-              label: t.verificationCode,
-              controller: codeController,
-              keyboardType: TextInputType.number,
-              textInputAction: TextInputAction.next,
-              errorText: codeError,
-              onChanged: (_) {
-                setState(() {
-                  codeError = null;
-                });
-              },
-            ),
-
-            const SizedBox(height: 15),
 
             CustomTextField(
               label: t.password,

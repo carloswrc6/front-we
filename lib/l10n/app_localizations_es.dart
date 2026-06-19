@@ -134,4 +134,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get sendCodeEmail => "Enviar codigo";
   @override
   String get returnLogin => "Regresar al login";
+
+  @override
+  String get verifyCodeButton => "Verificar código";
+
+  @override
+  String get resendCode => "Reenviar código";
+
+  @override
+  String get codeSentToEmail => "Hemos enviado un código de 6 dígitos a:";
+
+  @override
+  String get enterCodeDescription => "Ingresa el código a continuación para continuar";
 }

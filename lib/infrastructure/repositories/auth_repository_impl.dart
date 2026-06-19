@@ -70,6 +70,17 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<void> verifyResetCode({
+    required String email,
+    required String code,
+  }) {
+    return authDatasource.verifyResetCode(
+      email: email,
+      code: code,
+    );
+  }
+
+  @override
   Future<void> resetPassword({
     required String email,
     required String code,

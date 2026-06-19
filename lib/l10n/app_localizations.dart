@@ -80,6 +80,10 @@ abstract class AppLocalizations {
   String get forgotPassword;
   String get sendCodeEmail;
   String get returnLogin;
+  String get verifyCodeButton;
+  String get resendCode;
+  String get codeSentToEmail;
+  String get enterCodeDescription;
 }
 
 class _AppLocalizationsDelegate

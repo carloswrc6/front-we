@@ -79,7 +79,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
         type: ToastType.success,
       );
 
-      context.push('/reset-password', extra: email);
+      context.push('/verify-code', extra: email);
     } catch (e) {
       if (!mounted) return;
 

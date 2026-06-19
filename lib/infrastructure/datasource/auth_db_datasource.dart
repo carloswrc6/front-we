@@ -64,6 +64,20 @@ class AuthDbDatasource extends AuthDatasource {
   }
 
   @override
+  Future<void> verifyResetCode({
+    required String email,
+    required String code,
+  }) async {
+    await dio.post(
+      '/auth/verify-reset-code',
+      data: {
+        'email': email,
+        'code': code,
+      },
+    );
+  }
+
+  @override
   Future<void> resetPassword({
     required String email,
     required String code,
