@@ -9,6 +9,7 @@ import 'package:frontwe/domain/entities/dish.dart';
 import 'package:frontwe/l10n/app_localizations.dart';
 import 'package:frontwe/presentation/dishes/providers/dish_providers.dart';
 import 'package:frontwe/presentation/shared/widgets/country_selector.dart';
+import 'package:frontwe/presentation/shared/widgets/CustomButton.dart';
 
 class DishesScreen extends ConsumerStatefulWidget {
   const DishesScreen({super.key});
@@ -42,12 +43,50 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
       appBar: AppBar(title: Text(t.menuDishes)),
       body: dishesAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, _) => Center(child: Text('Error: $err')),
+        error: (err, _) => Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.error_outline,
+                size: 64,
+                color: Theme.of(context).colorScheme.error,
+              ),
+              const SizedBox(height: 16),
+              Text('Error: $err'),
+              const SizedBox(height: 16),
+              FilledButton.icon(
+                onPressed: () => ref.invalidate(localDishesProvider),
+                icon: const Icon(Icons.refresh),
+                label: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
         data: (dishes) {
-          if (dishes.isEmpty) return Center(child: Text(t.dishesEmpty));
+          if (dishes.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.restaurant,
+                    size: 64,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    t.dishesEmpty,
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                ],
+              ),
+            );
+          }
+
           return countriesAsync.when(
             loading: () => const LinearProgressIndicator(),
-            error: (err, _) => Text('Error: $err'),
+            error: (err, _) => Center(child: Text('Error: $err')),
             data: (countries) {
               if (!_defaultsInitialized) {
                 _defaultsInitialized = true;
@@ -55,7 +94,9 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                 final peru = countries.where((c) => c.code == 'PE').firstOrNull;
                 if (peru != null) _selectedCountryId = peru.id;
               }
+
               final filtered = _filter(dishes);
+
               return Column(
                 children: [
                   _buildFilters(t, countries, filtered),
@@ -75,6 +116,11 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
     List<Dish> filtered,
   ) {
     final mealTypes = ['breakfast', 'lunch', 'dinner'];
+    final mealTypeIcons = <String, IconData>{
+      'breakfast': Icons.free_breakfast,
+      'lunch': Icons.lunch_dining,
+      'dinner': Icons.dinner_dining,
+    };
 
     return Container(
       padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
@@ -84,53 +130,63 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
           bottom: BorderSide(color: Theme.of(context).dividerColor),
         ),
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: CountrySelector(
-              showAll: false,
-              countries: countries,
-              selectedCountryId: _selectedCountryId,
-              onChanged: (v) => setState(() {
-                _selectedCountryId = v;
-                _selectedDish = null;
-              }),
-            ),
+          CountrySelector(
+            showAll: false,
+            countries: countries,
+            selectedCountryId: _selectedCountryId,
+            onChanged: (v) => setState(() {
+              _selectedCountryId = v;
+              _selectedDish = null;
+            }),
           ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: DropdownButtonFormField<String?>(
-              value: _selectedMealType,
-              isExpanded: true,
-              decoration: InputDecoration(
-                labelText: t.filterMealType,
-                border: const OutlineInputBorder(),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-                isDense: true,
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Chip(
+                label: Text('${filtered.length}'),
+                visualDensity: VisualDensity.compact,
+                labelStyle: const TextStyle(fontSize: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
-              items: [
-                DropdownMenuItem(value: null, child: Text(t.filterAll)),
-                ...mealTypes.map(
-                  (mt) => DropdownMenuItem(
-                    value: mt,
-                    child: Text(_mealTypeLabel(t, mt)),
+              const SizedBox(width: 8),
+              Expanded(
+                child: SegmentedButton<String>(
+                  segments: mealTypes.map((mt) {
+                    return ButtonSegment(
+                      value: mt,
+                      label: const SizedBox.shrink(),
+                      icon: Icon(mealTypeIcons[mt], size: 20),
+                    );
+                  }).toList(),
+                  selected: _selectedMealType != null
+                      ? {_selectedMealType!}
+                      : <String>{},
+                  onSelectionChanged: (Set<String> selection) {
+                    setState(() {
+                      _selectedMealType = selection.isNotEmpty
+                          ? selection.first
+                          : null;
+                      _selectedDish = null;
+                    });
+                  },
+                  showSelectedIcon: false,
+                  style: const ButtonStyle(
+                    visualDensity: VisualDensity.compact,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
                 ),
-              ],
-              onChanged: (v) => setState(() {
-                _selectedMealType = v;
-                _selectedDish = null;
-              }),
-            ),
-          ),
-          const SizedBox(width: 8),
-          FilledButton.icon(
-            onPressed: filtered.isEmpty ? null : () => _spin(filtered),
-            icon: const Icon(Icons.shuffle),
-            label: Text(t.spinButton),
+              ),
+              const SizedBox(width: 8),
+              CustomButton(
+                label: t.spinButton,
+                onPressed: filtered.isEmpty ? null : () => _spin(filtered),
+                icon: const Icon(Icons.shuffle),
+              ),
+            ],
           ),
         ],
       ),
@@ -139,78 +195,189 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
 
   Widget _buildWheel(AppLocalizations t, List<Dish> dishes) {
     if (dishes.isEmpty) {
-      return Center(child: Text(t.filterEmpty));
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.search_off,
+              size: 64,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+            const SizedBox(height: 16),
+            Text(t.filterEmpty, style: Theme.of(context).textTheme.bodyLarge),
+          ],
+        ),
+      );
     }
 
     if (dishes.length <= 1) {
-      final dish = dishes.first;
-      return Center(
-        child: Card(
-          margin: const EdgeInsets.all(24),
-          color: Theme.of(context).colorScheme.secondaryContainer,
-          child: ListTile(
-            leading: CircleAvatar(
-              radius: 28,
-              backgroundImage: NetworkImage(dish.image),
-              onBackgroundImageError: (_, __) => const Icon(Icons.restaurant),
-            ),
-            title: Text(
-              dish.name,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-            subtitle: Text(
-              '${dish.country.name} · ${_mealTypeLabel(t, dish.mealType)}',
-            ),
-          ),
-        ),
-      );
+      return _buildSingleDishResult(t, dishes.first);
     }
 
-    final items = dishes.map((d) {
-      return FortuneItem(
-        child: Text(d.name, style: const TextStyle(fontSize: 11)),
-      );
-    }).toList();
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final wheelSize =
+            min(constraints.maxWidth, constraints.maxHeight * 0.6) * 0.85;
 
-    return Column(
-      children: [
-        const SizedBox(height: 8),
-        SizedBox(
-          width: 320,
-          height: 320,
-          child: FortuneWheel(
-            animateFirst: false,
-            selected: _controller.stream,
-            items: items,
-            onAnimationEnd: () {
-              if (_targetIndex >= 0 && _targetIndex < dishes.length) {
-                setState(() => _selectedDish = dishes[_targetIndex]);
-              }
-            },
-          ),
-        ),
-        if (_selectedDish != null) ...[
-          const SizedBox(height: 12),
-          Card(
-            margin: const EdgeInsets.symmetric(horizontal: 24),
-            color: Theme.of(context).colorScheme.secondaryContainer,
-            child: ListTile(
-              leading: CircleAvatar(
-                radius: 24,
-                backgroundImage: NetworkImage(_selectedDish!.image),
-                onBackgroundImageError: (_, __) => const Icon(Icons.restaurant),
-              ),
-              title: Text(
-                _selectedDish!.name,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              subtitle: Text(
-                '${_selectedDish!.country.name} · ${_mealTypeLabel(t, _selectedDish!.mealType)}',
+        final cs = Theme.of(context).colorScheme;
+        final palette = [cs.primary, cs.secondary, cs.tertiary];
+        final itemCount = dishes.length;
+
+        final items = dishes.asMap().entries.map((entry) {
+          final progress = entry.key / max(itemCount - 1, 1);
+          final segment = progress * (palette.length - 1);
+          final fromIndex = segment.floor();
+          final toIndex = (fromIndex + 1) % palette.length;
+          final t = segment - fromIndex;
+          final color = Color.lerp(palette[fromIndex], palette[toIndex], t)!;
+
+          return FortuneItem(
+            style: FortuneItemStyle(
+              color: color,
+              textStyle: const TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
               ),
             ),
+            child: Text(entry.value.name, overflow: TextOverflow.ellipsis),
+          );
+        }).toList();
+
+        return SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 8),
+              SizedBox(
+                width: wheelSize,
+                height: wheelSize,
+                child: FortuneWheel(
+                  animateFirst: false,
+                  selected: _controller.stream,
+                  items: items,
+                  onAnimationEnd: () {
+                    if (_targetIndex >= 0 && _targetIndex < dishes.length) {
+                      setState(() => _selectedDish = dishes[_targetIndex]);
+                    }
+                  },
+                ),
+              ),
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: _selectedDish != null
+                    ? _buildResultCard(t, _selectedDish!)
+                    : const SizedBox(key: ValueKey('empty')),
+              ),
+            ],
           ),
-        ],
-      ],
+        );
+      },
+    );
+  }
+
+  Widget _buildSingleDishResult(AppLocalizations t, Dish dish) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Card(
+          color: Theme.of(context).colorScheme.secondaryContainer,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircleAvatar(
+                  radius: 48,
+                  backgroundImage: NetworkImage(dish.image),
+                  onBackgroundImageError: (_, __) =>
+                      const Icon(Icons.restaurant, size: 48),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  dish.name,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  '${dish.country.name} · ${_mealTypeLabel(t, dish.mealType)}',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                if (dish.ingredients.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    dish.ingredients.join(', '),
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildResultCard(AppLocalizations t, Dish dish) {
+    return Padding(
+      key: const ValueKey('result'),
+      padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
+      child: Card(
+        color: Theme.of(context).colorScheme.secondaryContainer,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              CircleAvatar(
+                radius: 32,
+                backgroundImage: NetworkImage(dish.image),
+                onBackgroundImageError: (_, __) => const Icon(Icons.restaurant),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      dish.name,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '${dish.country.name} · ${_mealTypeLabel(t, dish.mealType)}',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    if (dish.ingredients.isNotEmpty) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        dish.ingredients.join(', '),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
