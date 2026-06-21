@@ -96,6 +96,9 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
               }
 
               final filtered = _filter(dishes);
+              if (filtered.length == 1) {
+                _selectedDish ??= filtered.first;
+              }
 
               return Column(
                 children: [
@@ -211,8 +214,8 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
       );
     }
 
-    if (dishes.length <= 1) {
-      return _buildSingleDishResult(t, dishes.first);
+    if (dishes.length == 1) {
+      return _buildSingleDishWheel(t, dishes.first);
     }
 
     return LayoutBuilder(
@@ -276,49 +279,116 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
     );
   }
 
-  Widget _buildSingleDishResult(AppLocalizations t, Dish dish) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
+  Widget _buildSingleDishWheel(AppLocalizations t, Dish dish) {
+    final cs = Theme.of(context).colorScheme;
+    final palette = [cs.primary, cs.secondary, cs.tertiary];
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final wheelSize =
+            min(constraints.maxWidth, constraints.maxHeight * 0.6) * 0.85;
+
+        return SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 8),
+              GestureDetector(
+                onTap: () => _showDishDetails(dish),
+                child: Container(
+                  width: wheelSize,
+                  height: wheelSize,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: SweepGradient(
+                      colors: [palette[0], palette[1], palette[2], palette[0]],
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.2),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    dish.name,
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: _selectedDish != null
+                    ? _buildResultCard(t, _selectedDish!)
+                    : const SizedBox(key: ValueKey('empty')),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildResultCard(AppLocalizations t, Dish dish) {
+    return Padding(
+      key: const ValueKey('result'),
+      padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
+      child: GestureDetector(
+        onTap: () => _showDishDetails(dish),
         child: Card(
           color: Theme.of(context).colorScheme.secondaryContainer,
           child: Padding(
             padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
+            child: Row(
               children: [
                 CircleAvatar(
-                  radius: 48,
+                  radius: 32,
                   backgroundImage: NetworkImage(dish.image),
                   onBackgroundImageError: (_, __) =>
-                      const Icon(Icons.restaurant, size: 48),
+                      const Icon(Icons.restaurant),
                 ),
-                const SizedBox(height: 16),
-                Text(
-                  dish.name,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        dish.name,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '${dish.country.name} · ${_mealTypeLabel(t, dish.mealType)}',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                      if (dish.ingredients.isNotEmpty) ...[
+                        const SizedBox(height: 4),
+                        Text(
+                          dish.ingredients.join(', '),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
+                              ),
+                        ),
+                      ],
+                    ],
                   ),
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  '${dish.country.name} · ${_mealTypeLabel(t, dish.mealType)}',
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                if (dish.ingredients.isNotEmpty) ...[
-                  const SizedBox(height: 8),
-                  Text(
-                    dish.ingredients.join(', '),
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                ],
               ],
             ),
           ),
@@ -327,57 +397,107 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
     );
   }
 
-  Widget _buildResultCard(AppLocalizations t, Dish dish) {
-    return Padding(
-      key: const ValueKey('result'),
-      padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
-      child: Card(
-        color: Theme.of(context).colorScheme.secondaryContainer,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              CircleAvatar(
-                radius: 32,
-                backgroundImage: NetworkImage(dish.image),
-                onBackgroundImageError: (_, __) => const Icon(Icons.restaurant),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      dish.name,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
+  void _showDishDetails(Dish dish) {
+    final t = AppLocalizations.of(context)!;
+    showModalBottomSheet(
+      context: context,
+      useSafeArea: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    margin: const EdgeInsets.only(bottom: 16),
+                    decoration: BoxDecoration(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
+                      borderRadius: BorderRadius.circular(2),
                     ),
-                    const SizedBox(height: 4),
+                  ),
+                ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Image.network(
+                    dish.image,
+                    width: double.infinity,
+                    height: 220,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => Container(
+                      height: 220,
+                      color: Theme.of(context).colorScheme.surfaceContainerHigh,
+                      child: const Icon(Icons.restaurant, size: 64),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  dish.name,
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.location_on_outlined,
+                      size: 18,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                    const SizedBox(width: 4),
                     Text(
-                      '${dish.country.name} · ${_mealTypeLabel(t, dish.mealType)}',
+                      dish.country.name,
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
-                    if (dish.ingredients.isNotEmpty) ...[
-                      const SizedBox(height: 4),
-                      Text(
-                        dish.ingredients.join(', '),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
+                    const SizedBox(width: 16),
+                    Icon(
+                      Icons.schedule_outlined,
+                      size: 18,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      _mealTypeLabel(t, dish.mealType),
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
                   ],
                 ),
-              ),
-            ],
+                if (dish.ingredients.isNotEmpty) ...[
+                  const SizedBox(height: 20),
+                  Text(
+                    'Ingredients',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 6,
+                    children: dish.ingredients.map((ing) {
+                      return Chip(
+                        label: Text(ing),
+                        visualDensity: VisualDensity.compact,
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
