@@ -19,11 +19,24 @@ class DishRepositoryImpl extends DishRepository {
   }
 
   @override
+  Future<List<Country>> getRemoteCountries() {
+    return remoteDatasource.getCountries();
+  }
+
+  @override
   Future<List<Dish>> syncDishes() async {
-    print('[syncDishes] fetching dishes from remote API...');
-    final dishes = await remoteDatasource.getDishes();
-    print('[syncDishes] got ${dishes.length} dishes from API');
+    print('[syncDishes] fetching dishes and countries from API...');
+    final results = await Future.wait([
+      remoteDatasource.getDishes(limit: 200),
+      remoteDatasource.getCountries(),
+    ]);
+    final dishes = results[0] as List<Dish>;
+    final countries = results[1] as List<Country>;
+    print(
+      '[syncDishes] got ${dishes.length} dishes and ${countries.length} countries from API',
+    );
     await localDatasource.saveDishes(dishes);
+    await localDatasource.saveCountries(countries);
     print('[syncDishes] saved to local DB');
     return dishes;
   }
@@ -36,6 +49,11 @@ class DishRepositoryImpl extends DishRepository {
   @override
   Future<List<Country>> getLocalCountries() {
     return localDatasource.getCountries();
+  }
+
+  @override
+  Future<int> getLocalDishCount() {
+    return localDatasource.dishCount();
   }
 
   @override

@@ -69,6 +69,11 @@ abstract class AppLocalizations {
   String get menuDishes;
   String get menuDishesSubtitle;
   String get dishesEmpty;
+  String get filterAll;
+  String get filterCountry;
+  String get filterMealType;
+  String get filterEmpty;
+  String get spinButton;
   String get mealTypeBreakfast;
   String get mealTypeLunch;
   String get mealTypeDinner;

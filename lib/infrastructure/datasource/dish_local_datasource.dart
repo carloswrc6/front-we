@@ -22,21 +22,19 @@ class DishLocalDatasource {
       },
     );
 
-    final countryMap = <String, Country>{};
-    for (final d in dishes) {
-      countryMap[d.country.id] = d.country;
-    }
-    final countryRows = countryMap.values.map(
-      (c) => {'id': c.id, 'code': c.code, 'name': c.name},
-    );
-
     await _db.clearDishes();
-    await _db.clearCountries();
     await _db.insertDishes(dishRows.toList());
-    await _db.insertCountries(countryRows.toList());
-    print(
-      '[saveDishes] inserted ${dishes.length} dishes and ${countryRows.length} countries',
-    );
+    print('[saveDishes] inserted ${dishes.length} dishes');
+  }
+
+  Future<void> saveCountries(List<Country> countries) async {
+    print('[saveCountries] saving ${countries.length} countries to SQLite...');
+    final rows = countries
+        .map((c) => {'id': c.id, 'code': c.code, 'name': c.name})
+        .toList();
+    await _db.clearCountries();
+    await _db.insertCountries(rows);
+    print('[saveCountries] inserted ${countries.length} countries');
   }
 
   Future<List<Dish>> getDishes() async {
@@ -68,6 +66,10 @@ class DishLocalDatasource {
           ),
         )
         .toList();
+  }
+
+  Future<int> dishCount() async {
+    return _db.dishCount();
   }
 
   Future<bool> hasData() async {

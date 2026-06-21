@@ -101,6 +101,16 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get dishesEmpty => "No dishes available";
   @override
+  String get filterAll => "All";
+  @override
+  String get filterCountry => "Country";
+  @override
+  String get filterMealType => "Meal type";
+  @override
+  String get filterEmpty => "No dishes match the filters";
+  @override
+  String get spinButton => "Spin!";
+  @override
   String get mealTypeBreakfast => "Breakfast";
   @override
   String get mealTypeLunch => "Lunch";
