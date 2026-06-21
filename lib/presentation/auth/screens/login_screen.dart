@@ -4,6 +4,7 @@ import 'package:frontwe/presentation/auth/providers/auth_providers.dart';
 import 'package:frontwe/presentation/auth/state/auth_state.dart';
 import 'package:frontwe/presentation/auth/widgets/custom_header.dart';
 import 'package:frontwe/presentation/auth/widgets/social_login_row.dart';
+import 'package:frontwe/presentation/dishes/providers/dish_providers.dart';
 import 'package:frontwe/presentation/shared/widgets/CustomButton.dart';
 import 'package:frontwe/presentation/shared/widgets/CustomDialog.dart';
 import 'package:frontwe/presentation/shared/widgets/LanguageButton.dart';
@@ -92,6 +93,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final state = ref.read(authProvider);
 
     if (state.loginUser != null) {
+      ref.read(dishRepositoryProvider).syncDishes();
       context.go('/home');
     }
   }

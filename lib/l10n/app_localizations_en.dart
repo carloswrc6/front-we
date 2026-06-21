@@ -95,6 +95,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   // Menu
   @override
+  String get menuDishes => "Dishes";
+  @override
+  String get menuDishesSubtitle => "Browse dishes";
+  @override
+  String get dishesEmpty => "No dishes available";
+  @override
+  String get mealTypeBreakfast => "Breakfast";
+  @override
+  String get mealTypeLunch => "Lunch";
+  @override
+  String get mealTypeDinner => "Dinner";
+  @override
   String get menuProfile => "Profile";
   @override
   String get menuProfileSubtitle => "Your personal info";

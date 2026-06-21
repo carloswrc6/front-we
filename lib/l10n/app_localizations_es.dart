@@ -105,6 +105,18 @@ class AppLocalizationsEs extends AppLocalizations {
 
   // Menu
   @override
+  String get menuDishes => "Platos";
+  @override
+  String get menuDishesSubtitle => "Explorar platos";
+  @override
+  String get dishesEmpty => "No hay platos disponibles";
+  @override
+  String get mealTypeBreakfast => "Desayuno";
+  @override
+  String get mealTypeLunch => "Almuerzo";
+  @override
+  String get mealTypeDinner => "Cena";
+  @override
   String get menuProfile => "Perfil";
   @override
   String get menuProfileSubtitle => "Tu información personal";
@@ -145,5 +157,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get codeSentToEmail => "Hemos enviado un código de 6 dígitos a:";
 
   @override
-  String get enterCodeDescription => "Ingresa el código a continuación para continuar";
+  String get enterCodeDescription =>
+      "Ingresa el código a continuación para continuar";
 }

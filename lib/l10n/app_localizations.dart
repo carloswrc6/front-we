@@ -66,6 +66,12 @@ abstract class AppLocalizations {
   String get valPwd;
   String get valEmailInvalid;
   String get valRequiredEmail;
+  String get menuDishes;
+  String get menuDishesSubtitle;
+  String get dishesEmpty;
+  String get mealTypeBreakfast;
+  String get mealTypeLunch;
+  String get mealTypeDinner;
   String get menuProfile;
   String get menuProfileSubtitle;
   String get menuSubscription;

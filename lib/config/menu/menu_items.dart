@@ -16,6 +16,12 @@ class MenuItem {
 
 const appMenuItems = <MenuItem>[
   MenuItem(
+    titleKey: 'dishes',
+    subTitleKey: 'dishesSubtitle',
+    link: '/dishes',
+    icon: Icons.restaurant_menu,
+  ),
+  MenuItem(
     titleKey: 'profile',
     subTitleKey: 'profileSubtitle',
     link: '/profile',

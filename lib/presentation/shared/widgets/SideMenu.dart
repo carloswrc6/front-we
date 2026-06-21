@@ -94,6 +94,10 @@ class SideMenu extends ConsumerWidget {
 
   String _translate(AppLocalizations t, String key) {
     switch (key) {
+      case 'dishes':
+        return t.menuDishes;
+      case 'dishesSubtitle':
+        return t.menuDishesSubtitle;
       case 'profile':
         return t.menuProfile;
       case 'profileSubtitle':
