@@ -10,8 +10,10 @@ import 'package:frontwe/l10n/app_localizations.dart';
 import 'package:frontwe/presentation/dishes/providers/dish_providers.dart';
 import 'package:frontwe/presentation/shared/widgets/country_selector.dart';
 import 'package:frontwe/presentation/shared/widgets/CustomButton.dart';
+import 'package:frontwe/presentation/shared/widgets/SideMenu.dart';
 
 class DishesScreen extends ConsumerStatefulWidget {
+  static const int maxWheelItems = 4;
   const DishesScreen({super.key});
 
   @override
@@ -25,7 +27,9 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
   final _controller = StreamController<int>.broadcast();
   final _random = Random();
   int _targetIndex = 0;
+  int _visualIndex = 0;
   bool _defaultsInitialized = false;
+  bool _fromSpin = false;
 
   @override
   void dispose() {
@@ -40,6 +44,7 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
     final countriesAsync = ref.watch(localCountriesProvider);
 
     return Scaffold(
+      drawer: const SideMenu(),
       appBar: AppBar(title: Text(t.menuDishes)),
       body: dishesAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -121,7 +126,7 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
     final mealTypes = ['breakfast', 'lunch', 'dinner'];
     final mealTypeIcons = <String, IconData>{
       'breakfast': Icons.free_breakfast,
-      'lunch': Icons.lunch_dining,
+      'lunch': Icons.restaurant,
       'dinner': Icons.dinner_dining,
     };
 
@@ -129,9 +134,6 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
       padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surfaceContainerLow,
-        border: Border(
-          bottom: BorderSide(color: Theme.of(context).dividerColor),
-        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -225,9 +227,11 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
 
         final cs = Theme.of(context).colorScheme;
         final palette = [cs.primary, cs.secondary, cs.tertiary];
-        final itemCount = dishes.length;
+        final displayDishes = dishes.take(DishesScreen.maxWheelItems).toList();
+        final remaining = dishes.length - DishesScreen.maxWheelItems;
+        final itemCount = displayDishes.length;
 
-        final items = dishes.asMap().entries.map((entry) {
+        final items = displayDishes.asMap().entries.map((entry) {
           final progress = entry.key / max(itemCount - 1, 1);
           final segment = progress * (palette.length - 1);
           final fromIndex = segment.floor();
@@ -248,6 +252,20 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
           );
         }).toList();
 
+        if (remaining > 0) {
+          items.add(FortuneItem(
+            style: FortuneItemStyle(
+              color: cs.surfaceContainerHighest,
+              textStyle: TextStyle(
+                color: cs.onSurfaceVariant,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            child: Text('+$remaining'),
+          ));
+        }
+
         return SingleChildScrollView(
           child: Column(
             children: [
@@ -255,15 +273,20 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
               SizedBox(
                 width: wheelSize,
                 height: wheelSize,
-                child: FortuneWheel(
-                  animateFirst: false,
-                  selected: _controller.stream,
-                  items: items,
-                  onAnimationEnd: () {
-                    if (_targetIndex >= 0 && _targetIndex < dishes.length) {
-                      setState(() => _selectedDish = dishes[_targetIndex]);
-                    }
-                  },
+                child: GestureDetector(
+                  onTapDown: (details) =>
+                      _onWheelTap(details, displayDishes, items.length, wheelSize),
+                  child: FortuneWheel(
+                    animateFirst: false,
+                    selected: _controller.stream,
+                    items: items,
+                    onAnimationEnd: () {
+                      if (_targetIndex >= 0 && _targetIndex < dishes.length) {
+                        _fromSpin = true;
+                        setState(() => _selectedDish = dishes[_targetIndex]);
+                      }
+                    },
+                  ),
                 ),
               ),
               AnimatedSwitcher(
@@ -337,22 +360,66 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
   }
 
   Widget _buildResultCard(AppLocalizations t, Dish dish) {
+    final cs = Theme.of(context).colorScheme;
     return Padding(
       key: const ValueKey('result'),
       padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
       child: GestureDetector(
         onTap: () => _showDishDetails(dish),
         child: Card(
-          color: Theme.of(context).colorScheme.secondaryContainer,
+          color: _fromSpin
+              ? cs.secondaryContainer
+              : cs.surfaceContainerHighest,
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
-                CircleAvatar(
-                  radius: 32,
-                  backgroundImage: NetworkImage(dish.image),
-                  onBackgroundImageError: (_, __) =>
-                      const Icon(Icons.restaurant),
+                Stack(
+                  children: [
+                    CircleAvatar(
+                      radius: 32,
+                      // backgroundImage: NetworkImage(dish.image),
+                      backgroundImage: const NetworkImage(
+                        'https://static.guruexplorers.com/uploads/2025/09/NPjfcIDb4kJ07mA5zKSKCBkftNYSYv3rCeQiVRjm.jpg',
+                      ),
+                      onBackgroundImageError: (_, __) =>
+                          const Icon(Icons.restaurant),
+                    ),
+                    if (_fromSpin)
+                      Positioned(
+                        right: 0,
+                        bottom: 0,
+                        child: Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: cs.primary,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.shuffle,
+                            size: 14,
+                            color: cs.onPrimary,
+                          ),
+                        ),
+                      )
+                    else
+                      Positioned(
+                        right: 0,
+                        bottom: 0,
+                        child: Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: cs.surfaceContainerHighest,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.remove_red_eye,
+                            size: 14,
+                            color: cs.onSurfaceVariant,
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -360,12 +427,25 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        dish.name,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                        ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              dish.name,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ),
+                          Icon(
+                            _fromSpin ? Icons.shuffle : Icons.remove_red_eye,
+                            size: 16,
+                            color: _fromSpin
+                                ? cs.primary
+                                : cs.onSurfaceVariant,
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 4),
                       Text(
@@ -428,7 +508,8 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(16),
                   child: Image.network(
-                    dish.image,
+                    // dish.image,
+                    'https://static.guruexplorers.com/uploads/2025/09/NPjfcIDb4kJ07mA5zKSKCBkftNYSYv3rCeQiVRjm.jpg',
                     width: double.infinity,
                     height: 220,
                     fit: BoxFit.cover,
@@ -501,11 +582,33 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
     );
   }
 
+  void _onWheelTap(TapDownDetails details, List<Dish> displayDishes,
+      int segmentCount, double wheelSize) {
+    final center = wheelSize / 2;
+    final dx = details.localPosition.dx - center;
+    final dy = details.localPosition.dy - center;
+    if (dx * dx + dy * dy > center * center) return;
+
+    double angle = atan2(dy, dx) + pi / 2;
+    if (angle < 0) angle += 2 * pi;
+
+    final segmentAngle = 2 * pi / segmentCount;
+    final rawIndex = (angle / segmentAngle).floor() % segmentCount;
+    final adjustedIndex = (rawIndex + _visualIndex) % segmentCount;
+
+    if (adjustedIndex < displayDishes.length) {
+      _fromSpin = false;
+      setState(() => _selectedDish = displayDishes[adjustedIndex]);
+    }
+  }
+
   void _spin(List<Dish> dishes) {
     if (dishes.isEmpty) return;
     _targetIndex = _random.nextInt(dishes.length);
+    _visualIndex = _targetIndex < DishesScreen.maxWheelItems ? _targetIndex : DishesScreen.maxWheelItems;
+    _fromSpin = true;
     setState(() => _selectedDish = null);
-    _controller.add(_targetIndex);
+    _controller.add(_visualIndex);
   }
 
   List<Dish> _filter(List<Dish> dishes) {
