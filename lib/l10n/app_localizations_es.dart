@@ -149,6 +149,8 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get tapHint => "Toca un segmento o gira la ruleta!";
   @override
+  String get viewList => "Ver lista";
+  @override
   String get themeTitle => "Preferencias";
   @override
   String get themeDarkMode => "Modo oscuro";

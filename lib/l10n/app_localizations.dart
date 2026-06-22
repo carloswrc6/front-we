@@ -88,6 +88,7 @@ abstract class AppLocalizations {
   String get errorLabel;
   String get ingredientsTitle;
   String get tapHint;
+  String get viewList;
   String get themeTitle;
   String get themeDarkMode;
   String get themeLanguage;

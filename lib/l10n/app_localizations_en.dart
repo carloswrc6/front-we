@@ -139,6 +139,8 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get tapHint => "Tap a segment or spin the wheel!";
   @override
+  String get viewList => "View list";
+  @override
   String get themeTitle => "Preferences";
   @override
   String get themeDarkMode => "Dark mode";

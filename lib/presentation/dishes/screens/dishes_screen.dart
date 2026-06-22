@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontwe/domain/entities/dish.dart';
 import 'package:frontwe/l10n/app_localizations.dart';
 import 'package:frontwe/presentation/dishes/providers/dish_providers.dart';
+import 'package:frontwe/presentation/dishes/screens/dish_list_screen.dart';
 import 'package:frontwe/presentation/dishes/widgets/dish_filter_bar.dart';
 import 'package:frontwe/presentation/dishes/widgets/dish_wheel.dart';
 import 'package:frontwe/presentation/shared/widgets/SideMenu.dart';
@@ -21,8 +22,6 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
   Dish? _selectedDish;
   bool _defaultsInitialized = false;
   bool _fromSpin = false;
-
-  final _wheelKey = GlobalKey<DishWheelState>();
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +97,6 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                     countries: countries,
                     selectedCountryId: _selectedCountryId,
                     selectedMealType: _selectedMealType,
-                    filteredCount: filtered.length,
                     onCountryChanged: (v) => setState(() {
                       _selectedCountryId = v;
                       _selectedDish = null;
@@ -107,19 +105,9 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                       _selectedMealType = v;
                       _selectedDish = null;
                     }),
-                    onSpinPressed: filtered.isEmpty
-                        ? null
-                        : () {
-                            setState(() {
-                              _fromSpin = true;
-                              _selectedDish = null;
-                            });
-                            _wheelKey.currentState?.spin();
-                          },
                   ),
                   Expanded(
                     child: DishWheel(
-                      key: _wheelKey,
                       dishes: filtered,
                       maxWheelItems: DishesScreen.maxWheelItems,
                       selectedDish: _selectedDish,
@@ -132,6 +120,16 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                         _fromSpin = false;
                         _selectedDish = dish;
                       }),
+                      onViewList: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => DishListScreen(
+                              dishes: filtered,
+                              title: '${t.menuDishes} (${filtered.length})',
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ],

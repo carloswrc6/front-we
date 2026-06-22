@@ -5,13 +5,11 @@ import 'package:frontwe/l10n/app_localizations.dart';
 class DishResultCard extends StatelessWidget {
   final Dish dish;
   final bool fromSpin;
-  final VoidCallback onTap;
 
   const DishResultCard({
     super.key,
     required this.dish,
     required this.fromSpin,
-    required this.onTap,
   });
 
   @override
@@ -22,9 +20,7 @@ class DishResultCard extends StatelessWidget {
     return Padding(
       key: const ValueKey('result'),
       padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
-      child: GestureDetector(
-        onTap: onTap,
-        child: Card(
+      child: Card(
           color: fromSpin
               ? cs.secondaryContainer
               : cs.surfaceContainerHighest,
@@ -126,7 +122,6 @@ class DishResultCard extends StatelessWidget {
                 ),
               ],
             ),
-          ),
         ),
       ),
     );

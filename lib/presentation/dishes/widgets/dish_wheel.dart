@@ -15,6 +15,7 @@ class DishWheel extends StatefulWidget {
   final bool fromSpin;
   final ValueChanged<Dish> onSpinResult;
   final ValueChanged<Dish> onTapResult;
+  final VoidCallback? onViewList;
 
   const DishWheel({
     super.key,
@@ -24,6 +25,7 @@ class DishWheel extends StatefulWidget {
     required this.fromSpin,
     required this.onSpinResult,
     required this.onTapResult,
+    this.onViewList,
   });
 
   @override
@@ -99,7 +101,7 @@ class DishWheelState extends State<DishWheel> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final wheelSize =
-            min(constraints.maxWidth, constraints.maxHeight * 0.6) * 0.85;
+            min(constraints.maxWidth - 96, constraints.maxHeight * 0.6) * 0.85;
 
         final cs = Theme.of(context).colorScheme;
         final palette = [cs.primary, cs.secondary, cs.tertiary];
@@ -146,24 +148,41 @@ class DishWheelState extends State<DishWheel> {
           child: Column(
             children: [
               const SizedBox(height: 8),
-              SizedBox(
-                width: wheelSize,
-                height: wheelSize,
-                child: GestureDetector(
-                  onTapDown: (details) => _onWheelTap(
-                      details, displayDishes, items.length, wheelSize),
-                  child: FortuneWheel(
-                    animateFirst: false,
-                    selected: _controller.stream,
-                    items: items,
-                    onAnimationEnd: () {
-                      if (_targetIndex >= 0 &&
-                          _targetIndex < dishes.length) {
-                        widget.onSpinResult(dishes[_targetIndex]);
-                      }
-                    },
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed: widget.onViewList,
+                    icon: const Icon(Icons.list),
+                    tooltip: t.viewList,
                   ),
-                ),
+                  SizedBox(
+                    width: wheelSize,
+                    height: wheelSize,
+                    child: GestureDetector(
+                      onTapDown: (details) => _onWheelTap(
+                          details, displayDishes, items.length, wheelSize),
+                      child: FortuneWheel(
+                        animateFirst: false,
+                        selected: _controller.stream,
+                        items: items,
+                        onAnimationEnd: () {
+                          if (_targetIndex >= 0 &&
+                              _targetIndex < dishes.length) {
+                            widget.onSpinResult(dishes[_targetIndex]);
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: widget.dishes.isEmpty
+                        ? null
+                        : () => spin(),
+                    icon: const Icon(Icons.shuffle),
+                    tooltip: t.spinButton,
+                  ),
+                ],
               ),
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
@@ -171,8 +190,6 @@ class DishWheelState extends State<DishWheel> {
                     ? DishResultCard(
                         dish: widget.selectedDish!,
                         fromSpin: widget.fromSpin,
-                        onTap: () =>
-                            DishDetailSheet.show(context, widget.selectedDish!),
                       )
                     : Padding(
                         key: const ValueKey('empty'),
@@ -192,6 +209,46 @@ class DishWheelState extends State<DishWheel> {
                         ),
                       ),
               ),
+              if (widget.selectedDish != null) ...[
+                const Divider(height: 1),
+                GestureDetector(
+                  onVerticalDragUpdate: (details) {
+                    if (details.delta.dy < -20) {
+                      widget.onViewList?.call();
+                    }
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            t.menuDishes,
+                            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ),
+                        Icon(
+                          Icons.keyboard_arrow_up,
+                          size: 18,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                ...dishes.map((d) => ListTile(
+                  dense: true,
+                  leading: CircleAvatar(
+                    radius: 16,
+                    child: Text(d.name[0], style: const TextStyle(fontSize: 12)),
+                  ),
+                  title: Text(d.name, style: const TextStyle(fontSize: 14)),
+                  subtitle: Text(d.country.name, style: const TextStyle(fontSize: 12)),
+                  onTap: () => DishDetailSheet.show(context, d),
+                )),
+              ],
             ],
           ),
         );
@@ -206,42 +263,57 @@ class DishWheelState extends State<DishWheel> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final wheelSize =
-            min(constraints.maxWidth, constraints.maxHeight * 0.6) * 0.85;
+            min(constraints.maxWidth - 96, constraints.maxHeight * 0.6) * 0.85;
 
         return SingleChildScrollView(
           child: Column(
             children: [
               const SizedBox(height: 8),
-              GestureDetector(
-                onTap: () => DishDetailSheet.show(context, dish),
-                child: Container(
-                  width: wheelSize,
-                  height: wheelSize,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: SweepGradient(
-                      colors: [palette[0], palette[1], palette[2], palette[0]],
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.2),
-                        blurRadius: 12,
-                        offset: const Offset(0, 4),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed: widget.onViewList,
+                    icon: const Icon(Icons.list),
+                    tooltip: t.viewList,
+                  ),
+                  GestureDetector(
+                    onTap: () => DishDetailSheet.show(context, dish),
+                    child: Container(
+                      width: wheelSize,
+                      height: wheelSize,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: SweepGradient(
+                          colors: [palette[0], palette[1], palette[2], palette[0]],
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.2),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    dish.name,
-                    textAlign: TextAlign.center,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                      alignment: Alignment.center,
+                      child: Text(
+                        dish.name,
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                  IconButton(
+                    onPressed: () => spin(),
+                    icon: const Icon(Icons.shuffle),
+                    tooltip: t.spinButton,
+                  ),
+                ],
               ),
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
@@ -249,8 +321,6 @@ class DishWheelState extends State<DishWheel> {
                     ? DishResultCard(
                         dish: widget.selectedDish!,
                         fromSpin: widget.fromSpin,
-                        onTap: () =>
-                            DishDetailSheet.show(context, widget.selectedDish!),
                       )
                     : Padding(
                         key: const ValueKey('empty'),

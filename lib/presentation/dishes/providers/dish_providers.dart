@@ -15,7 +15,7 @@ final dishRepositoryProvider = Provider<DishRepository>((ref) {
   );
 });
 
-final dishSyncProvider = FutureProvider.autoDispose<void>((ref) async {
+final _syncFutureProvider = FutureProvider<void>((ref) async {
   final repository = ref.watch(dishRepositoryProvider);
   await repository.syncDishes();
 });
@@ -23,16 +23,10 @@ final dishSyncProvider = FutureProvider.autoDispose<void>((ref) async {
 final localDishesProvider = FutureProvider.autoDispose<List<Dish>>((ref) async {
   final repository = ref.watch(dishRepositoryProvider);
   final count = await repository.getLocalDishCount();
-  print('[localDishesProvider] local dish count: $count');
   if (count < 200) {
-    print('[localDishesProvider] incomplete data, syncing from API...');
-    await repository.syncDishes();
-    print('[localDishesProvider] sync finished');
+    await ref.watch(_syncFutureProvider.future);
   }
   final dishes = await repository.getLocalDishes();
-  print(
-    '[localDishesProvider] returning ${dishes.length} dishes from local DB',
-  );
   return dishes;
 });
 
@@ -47,16 +41,13 @@ final localCountriesProvider = FutureProvider.autoDispose<List<Country>>((
   final repository = ref.watch(dishRepositoryProvider);
   final hasLocal = await repository.hasLocalData();
   if (!hasLocal) {
-    await repository.syncDishes();
+    await ref.watch(_syncFutureProvider.future);
   }
   final countries = await repository.getLocalCountries();
   if (countries.isEmpty || countries.any((c) => c.name.isEmpty)) {
-    print('[localCountriesProvider] countries invalid/empty, re-syncing...');
-    await repository.syncDishes();
+    await ref.watch(_syncFutureProvider.future);
     final fresh = await repository.getLocalCountries();
-    print('[localCountriesProvider] got ${fresh.length} valid countries');
     return fresh;
   }
-  print('[localCountriesProvider] returning ${countries.length} countries');
   return countries;
 });
