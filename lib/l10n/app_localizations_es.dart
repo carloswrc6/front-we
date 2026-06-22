@@ -135,11 +135,37 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get menuSubscriptionSubtitle => "Tu plan actual";
   @override
-  String get menuTheme => "Tema";
+  String get menuTheme => "Tema y idioma";
   @override
   String get menuThemeSubtitle => "Personaliza la app";
   @override
   String get menuLogout => "Cerrar sesión";
+  @override
+  String get themeTitle => "Preferencias";
+  @override
+  String get themeDarkMode => "Modo oscuro";
+  @override
+  String get themeLanguage => "Idioma";
+  @override
+  String get themeSelectColor => "Color de acento";
+  @override
+  String get colorDeepPurple => "Púrpura profundo";
+  @override
+  String get colorBlue => "Azul";
+  @override
+  String get colorTeal => "Verde azulado";
+  @override
+  String get colorGreen => "Verde";
+  @override
+  String get colorRed => "Rojo";
+  @override
+  String get colorPurple => "Púrpura";
+  @override
+  String get colorOrange => "Naranja";
+  @override
+  String get colorPink => "Rosa";
+  @override
+  String get colorPinkAccent => "Rosa acento";
 
   @override
   String get subsTitleMenu => "Planes de suscripción";

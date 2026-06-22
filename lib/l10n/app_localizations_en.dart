@@ -125,11 +125,37 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get menuSubscriptionSubtitle => "Your plan";
   @override
-  String get menuTheme => "Theme";
+  String get menuTheme => "Theme and language";
   @override
   String get menuThemeSubtitle => "Customize app";
   @override
   String get menuLogout => "Logout";
+  @override
+  String get themeTitle => "Preferences";
+  @override
+  String get themeDarkMode => "Dark mode";
+  @override
+  String get themeLanguage => "Language";
+  @override
+  String get themeSelectColor => "Accent color";
+  @override
+  String get colorDeepPurple => "Deep Purple";
+  @override
+  String get colorBlue => "Blue";
+  @override
+  String get colorTeal => "Teal";
+  @override
+  String get colorGreen => "Green";
+  @override
+  String get colorRed => "Red";
+  @override
+  String get colorPurple => "Purple";
+  @override
+  String get colorOrange => "Orange";
+  @override
+  String get colorPink => "Pink";
+  @override
+  String get colorPinkAccent => "Pink Accent";
 
   // Susb
   @override
