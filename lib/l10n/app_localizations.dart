@@ -84,6 +84,10 @@ abstract class AppLocalizations {
   String get menuTheme;
   String get menuThemeSubtitle;
   String get menuLogout;
+  String get retryButton;
+  String get errorLabel;
+  String get ingredientsTitle;
+  String get tapHint;
   String get themeTitle;
   String get themeDarkMode;
   String get themeLanguage;

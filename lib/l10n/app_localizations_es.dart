@@ -141,6 +141,14 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get menuLogout => "Cerrar sesión";
   @override
+  String get retryButton => "Reintentar";
+  @override
+  String get errorLabel => "Error";
+  @override
+  String get ingredientsTitle => "Ingredientes";
+  @override
+  String get tapHint => "Toca un segmento o gira la ruleta!";
+  @override
   String get themeTitle => "Preferencias";
   @override
   String get themeDarkMode => "Modo oscuro";

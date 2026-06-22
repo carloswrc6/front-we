@@ -131,6 +131,14 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get menuLogout => "Logout";
   @override
+  String get retryButton => "Retry";
+  @override
+  String get errorLabel => "Error";
+  @override
+  String get ingredientsTitle => "Ingredients";
+  @override
+  String get tapHint => "Tap a segment or spin the wheel!";
+  @override
   String get themeTitle => "Preferences";
   @override
   String get themeDarkMode => "Dark mode";
