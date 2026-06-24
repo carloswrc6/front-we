@@ -4,5 +4,5 @@ import 'package:frontwe/presentation/auth/state/auth_state.dart';
 import 'package:frontwe/presentation/auth/providers/auth_notifier.dart';
 
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
-  return AuthNotifier(authRepository: ref.watch(authRepositoryProvider));
+  return AuthNotifier(authRepository: ref.read(authRepositoryProvider));
 });

@@ -21,6 +21,12 @@ class AuthRepositoryImpl implements AuthRepository {
     final auth = await authDatasource.loginUser(user);
 
     await storageDatasource.saveToken(auth.token);
+    await storageDatasource.saveUserData(
+      id: auth.id,
+      fullName: auth.fullName,
+      email: auth.email,
+      provider: auth.provider,
+    );
 
     return auth;
   }
@@ -30,6 +36,12 @@ class AuthRepositoryImpl implements AuthRepository {
     final auth = await authDatasource.userRegister(user);
 
     await storageDatasource.saveToken(auth.token);
+    await storageDatasource.saveUserData(
+      id: auth.id,
+      fullName: auth.fullName,
+      email: auth.email,
+      provider: 'local',
+    );
 
     return auth;
   }
@@ -39,6 +51,12 @@ class AuthRepositoryImpl implements AuthRepository {
     final auth = await socialDatasource.loginWithGoogle();
 
     await storageDatasource.saveToken(auth.token);
+    await storageDatasource.saveUserData(
+      id: auth.id,
+      fullName: auth.fullName,
+      email: auth.email,
+      provider: auth.provider,
+    );
 
     return auth;
   }
@@ -57,11 +75,17 @@ class AuthRepositoryImpl implements AuthRepository {
     await socialDatasource.signOut();
 
     await storageDatasource.deleteToken();
+    await storageDatasource.deleteUserData();
   }
 
   @override
   Future<String?> getSavedToken() {
     return storageDatasource.getToken();
+  }
+
+  @override
+  Future<Map<String, String>?> getSavedUser() {
+    return storageDatasource.getUserData();
   }
 
   @override

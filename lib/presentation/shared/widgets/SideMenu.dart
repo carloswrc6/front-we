@@ -7,11 +7,29 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class SideMenu extends ConsumerWidget {
+class SideMenu extends ConsumerStatefulWidget {
   const SideMenu({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SideMenu> createState() => _SideMenuState();
+}
+
+class _SideMenuState extends ConsumerState<SideMenu> {
+  @override
+  void initState() {
+    super.initState();
+    _ensureUserData();
+  }
+
+  Future<void> _ensureUserData() async {
+    final authState = ref.read(authProvider);
+    if (authState.isAuthenticated && authState.loginUser == null) {
+      await ref.read(authProvider.notifier).checkAuthStatus();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
     final navDrawerIndex = ref.watch(navDrawerIndexProvider);
     final hasNotch = MediaQuery.of(context).viewPadding.top > 35;
