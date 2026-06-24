@@ -117,6 +117,8 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get filterMealType => "Tipo de comida";
   @override
+  String get searchDishes => "Buscar platos...";
+  @override
   String get filterEmpty => "Ningún plato coincide con los filtros";
   @override
   String get spinButton => "Girar!";
@@ -150,6 +152,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tapHint => "Toca un segmento o gira la ruleta!";
   @override
   String get viewList => "Ver lista";
+  @override
+  String get dishWinner => "Plato ganador";
+  @override
+  String get dishSelected => "Plato seleccionado";
   @override
   String get themeTitle => "Preferencias";
   @override

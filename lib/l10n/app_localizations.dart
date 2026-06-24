@@ -72,6 +72,7 @@ abstract class AppLocalizations {
   String get filterAll;
   String get filterCountry;
   String get filterMealType;
+  String get searchDishes;
   String get filterEmpty;
   String get spinButton;
   String get mealTypeBreakfast;
@@ -89,6 +90,8 @@ abstract class AppLocalizations {
   String get ingredientsTitle;
   String get tapHint;
   String get viewList;
+  String get dishWinner;
+  String get dishSelected;
   String get themeTitle;
   String get themeDarkMode;
   String get themeLanguage;

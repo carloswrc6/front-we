@@ -34,18 +34,15 @@ class DishDetailSheet {
                 ),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(16),
-                  child: Image.network(
-                    // dish.image,
-                    'https://static.guruexplorers.com/uploads/2025/09/NPjfcIDb4kJ07mA5zKSKCBkftNYSYv3rCeQiVRjm.jpg',
-                    width: double.infinity,
-                    height: 220,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
-                      height: 220,
-                      color: Theme.of(context).colorScheme.surfaceContainerHigh,
-                      child: const Icon(Icons.restaurant, size: 64),
-                    ),
-                  ),
+                  child: dish.image.isNotEmpty
+                      ? Image.network(
+                          dish.image,
+                          width: double.infinity,
+                          height: 220,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => _imagePlaceholder(context),
+                        )
+                      : _imagePlaceholder(context),
                 ),
                 const SizedBox(height: 20),
                 Text(
@@ -58,17 +55,6 @@ class DishDetailSheet {
                 Row(
                   children: [
                     Icon(
-                      Icons.location_on_outlined,
-                      size: 18,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      dish.country.name,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    const SizedBox(width: 16),
-                    Icon(
                       Icons.schedule_outlined,
                       size: 18,
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -77,6 +63,13 @@ class DishDetailSheet {
                     Text(
                       _mealTypeLabel(t, dish.mealType),
                       style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    const SizedBox(width: 16),
+                    Text(
+                      dish.country.name,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                     ),
                   ],
                 ),
@@ -106,6 +99,19 @@ class DishDetailSheet {
           ),
         );
       },
+    );
+  }
+
+  static Widget _imagePlaceholder(BuildContext context) {
+    return Container(
+      height: 220,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Center(
+        child: Icon(Icons.restaurant, size: 64, color: Theme.of(context).colorScheme.onSurfaceVariant),
+      ),
     );
   }
 

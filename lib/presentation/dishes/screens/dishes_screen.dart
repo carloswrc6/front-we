@@ -91,48 +91,55 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                 _selectedDish ??= filtered.first;
               }
 
-              return Column(
-                children: [
-                  DishFilterBar(
-                    countries: countries,
-                    selectedCountryId: _selectedCountryId,
-                    selectedMealType: _selectedMealType,
-                    onCountryChanged: (v) => setState(() {
-                      _selectedCountryId = v;
-                      _selectedDish = null;
-                    }),
-                    onMealTypeChanged: (v) => setState(() {
-                      _selectedMealType = v;
-                      _selectedDish = null;
-                    }),
-                  ),
-                  Expanded(
-                    child: DishWheel(
-                      dishes: filtered,
-                      maxWheelItems: DishesScreen.maxWheelItems,
-                      selectedDish: _selectedDish,
-                      fromSpin: _fromSpin,
-                      onSpinResult: (dish) => setState(() {
-                        _fromSpin = true;
-                        _selectedDish = dish;
+              return RefreshIndicator(
+                onRefresh: () async {
+                  ref.invalidate(localDishesProvider);
+                  await ref.read(localDishesProvider.future);
+                },
+                child: Column(
+                  children: [
+                    DishFilterBar(
+                      countries: countries,
+                      selectedCountryId: _selectedCountryId,
+                      selectedMealType: _selectedMealType,
+                      dishCount: filtered.length,
+                      onCountryChanged: (v) => setState(() {
+                        _selectedCountryId = v;
+                        _selectedDish = null;
                       }),
-                      onTapResult: (dish) => setState(() {
-                        _fromSpin = false;
-                        _selectedDish = dish;
+                      onMealTypeChanged: (v) => setState(() {
+                        _selectedMealType = v;
+                        _selectedDish = null;
                       }),
-                      onViewList: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => DishListScreen(
-                              dishes: filtered,
-                              title: '${t.menuDishes} (${filtered.length})',
-                            ),
-                          ),
-                        );
-                      },
                     ),
-                  ),
-                ],
+                    Expanded(
+                      child: DishWheel(
+                        dishes: filtered,
+                        maxWheelItems: DishesScreen.maxWheelItems,
+                        selectedDish: _selectedDish,
+                        fromSpin: _fromSpin,
+                        onSpinResult: (dish) => setState(() {
+                          _fromSpin = true;
+                          _selectedDish = dish;
+                        }),
+                        onTapResult: (dish) => setState(() {
+                          _fromSpin = false;
+                          _selectedDish = dish;
+                        }),
+                        onViewList: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => DishListScreen(
+                                dishes: filtered,
+                                title: '${t.menuDishes} (${filtered.length})',
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               );
             },
           );

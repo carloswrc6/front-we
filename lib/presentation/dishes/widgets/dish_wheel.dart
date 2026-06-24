@@ -212,8 +212,10 @@ class DishWheelState extends State<DishWheel> {
               if (widget.selectedDish != null) ...[
                 const Divider(height: 1),
                 GestureDetector(
-                  onVerticalDragUpdate: (details) {
-                    if (details.delta.dy < -20) {
+                  onTap: () => widget.onViewList?.call(),
+                  onVerticalDragEnd: (details) {
+                    if (details.primaryVelocity != null &&
+                        details.primaryVelocity! < -200) {
                       widget.onViewList?.call();
                     }
                   },
@@ -223,14 +225,14 @@ class DishWheelState extends State<DishWheel> {
                       children: [
                         Expanded(
                           child: Text(
-                            t.menuDishes,
+                            '${t.menuDishes} (${dishes.length})',
                             style: Theme.of(context).textTheme.titleSmall?.copyWith(
                               color: Theme.of(context).colorScheme.onSurfaceVariant,
                             ),
                           ),
                         ),
                         Icon(
-                          Icons.keyboard_arrow_up,
+                          Icons.keyboard_double_arrow_right_outlined,
                           size: 18,
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
@@ -238,17 +240,22 @@ class DishWheelState extends State<DishWheel> {
                     ),
                   ),
                 ),
-                ...dishes.map((d) => ListTile(
+                ...dishes.take(5).map((d) => ListTile(
                   dense: true,
                   leading: CircleAvatar(
                     radius: 16,
-                    child: Text(d.name[0], style: const TextStyle(fontSize: 12)),
+                    backgroundImage: d.image.isNotEmpty ? NetworkImage(d.image) : null,
+                    child: d.image.isEmpty
+                        ? Text(d.name[0], style: const TextStyle(fontSize: 12))
+                        : null,
+                    onBackgroundImageError: (_, __) {},
                   ),
                   title: Text(d.name, style: const TextStyle(fontSize: 14)),
                   subtitle: Text(d.country.name, style: const TextStyle(fontSize: 12)),
                   onTap: () => DishDetailSheet.show(context, d),
                 )),
               ],
+              const SizedBox(height: 24),
             ],
           ),
         );
@@ -340,6 +347,7 @@ class DishWheelState extends State<DishWheel> {
                         ),
                       ),
               ),
+              const SizedBox(height: 24),
             ],
           ),
         );

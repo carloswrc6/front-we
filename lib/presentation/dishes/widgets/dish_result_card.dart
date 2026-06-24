@@ -32,10 +32,12 @@ class DishResultCard extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 32,
-                      // backgroundImage: NetworkImage(dish.image),
-                      backgroundImage: const NetworkImage(
-                        'https://static.guruexplorers.com/uploads/2025/09/NPjfcIDb4kJ07mA5zKSKCBkftNYSYv3rCeQiVRjm.jpg',
-                      ),
+                      backgroundImage: dish.image.isNotEmpty
+                          ? NetworkImage(dish.image)
+                          : null,
+                      child: dish.image.isEmpty
+                          ? Text(dish.name[0], style: const TextStyle(fontWeight: FontWeight.bold))
+                          : null,
                       onBackgroundImageError: (_, __) =>
                           const Icon(Icons.restaurant),
                     ),
@@ -99,6 +101,14 @@ class DishResultCard extends StatelessWidget {
                                 : cs.onSurfaceVariant,
                           ),
                         ],
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        fromSpin ? t.dishWinner : t.dishSelected,
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: fromSpin ? cs.primary : cs.onSurfaceVariant,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                       const SizedBox(height: 4),
                       Text(

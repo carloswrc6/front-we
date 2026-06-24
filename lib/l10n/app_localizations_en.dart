@@ -107,6 +107,8 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get filterMealType => "Meal type";
   @override
+  String get searchDishes => "Search dishes...";
+  @override
   String get filterEmpty => "No dishes match the filters";
   @override
   String get spinButton => "Spin!";
@@ -140,6 +142,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tapHint => "Tap a segment or spin the wheel!";
   @override
   String get viewList => "View list";
+  @override
+  String get dishWinner => "Winner dish";
+  @override
+  String get dishSelected => "Selected dish";
   @override
   String get themeTitle => "Preferences";
   @override

@@ -7,6 +7,7 @@ class DishFilterBar extends StatelessWidget {
   final List<Country> countries;
   final String? selectedCountryId;
   final String? selectedMealType;
+  final int dishCount;
   final ValueChanged<String?> onCountryChanged;
   final ValueChanged<String?> onMealTypeChanged;
 
@@ -15,6 +16,7 @@ class DishFilterBar extends StatelessWidget {
     required this.countries,
     required this.selectedCountryId,
     required this.selectedMealType,
+    this.dishCount = 0,
     required this.onCountryChanged,
     required this.onMealTypeChanged,
   });
@@ -37,13 +39,28 @@ class DishFilterBar extends StatelessWidget {
       ),
       child: Column(
         children: [
-          CountrySelector(
+          Row(
+            children: [
+              Expanded(
+                child:           CountrySelector(
             showAll: false,
             countries: countries,
             selectedCountryId: selectedCountryId,
             onChanged: onCountryChanged,
           ),
-          const SizedBox(height: 8),
+                ),
+                if (dishCount > 0)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: Chip(
+                      label: Text('$dishCount', style: const TextStyle(fontSize: 12)),
+                      visualDensity: VisualDensity.compact,
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 8),
           Center(
             child: Wrap(
               spacing: 8,
