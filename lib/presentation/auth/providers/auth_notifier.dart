@@ -125,6 +125,16 @@ class AuthNotifier extends StateNotifier<AuthState> {
     setError(message);
   }
 
+  Future<void> checkAuthStatus() async {
+    final token = await authRepository.getSavedToken();
+    if (token != null) {
+      state = state.copyWith(
+        isAuthenticated: true,
+        token: token,
+      );
+    }
+  }
+
   Future<void> logout() async {
     await authRepository.logout();
 
