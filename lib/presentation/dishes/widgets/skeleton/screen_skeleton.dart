@@ -13,43 +13,44 @@ class DishesScreenSkeleton extends StatelessWidget {
         child: Column(
           children: [
             const DishFilterBarSkeleton(),
-            const SizedBox(height: 15),
+            const SizedBox(height: 18),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SkeletonCircle(radius: 18),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: AspectRatio(
-                      aspectRatio: 1,
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                    ),
+              padding: const EdgeInsets.symmetric(horizontal: 60),
+              child: AspectRatio(
+                aspectRatio: 1,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
                   ),
-                  const SizedBox(width: 12),
-                  const SkeletonCircle(radius: 18),
-                ],
+                ),
               ),
             ),
-            const SizedBox(height: 16),
-            Container(
-              width: 160,
-              height: 14,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(7),
-              ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buttonColumn(50),
+                const SizedBox(width: 32),
+                _buttonColumn(35),
+              ],
             ),
             const DishResultCardSkeleton(),
+            const SizedBox(height: 24),
           ],
         ),
       ),
     );
   }
+}
+
+Widget _buttonColumn(double labelWidth) {
+  return Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      const SkeletonCircle(radius: 18),
+      const SizedBox(height: 4),
+      SkeletonBox(width: labelWidth, height: 10),
+    ],
+  );
 }
