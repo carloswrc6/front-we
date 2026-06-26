@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:frontwe/presentation/wheel/widgets/skeleton/filter_bar_skeleton.dart';
-import 'package:frontwe/presentation/wheel/widgets/skeleton/list_preview_skeleton.dart';
-import 'package:frontwe/presentation/wheel/widgets/skeleton/result_card_skeleton.dart';
+import 'package:frontwe/presentation/dishes/widgets/skeleton/filter_bar_skeleton.dart';
+import 'package:frontwe/presentation/dishes/widgets/skeleton/list_preview_skeleton.dart';
+import 'package:frontwe/presentation/dishes/widgets/skeleton/result_card_skeleton.dart';
 import 'package:frontwe/presentation/shared/widgets/SkeletonWidget.dart';
 
 class DishesScreenSkeleton extends StatelessWidget {

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontwe/domain/entities/dish.dart';
 import 'package:frontwe/l10n/app_localizations.dart';
-import 'package:frontwe/presentation/wheel/providers/dish_providers.dart';
-import 'package:frontwe/presentation/wheel/widgets/detail_sheet.dart';
+import 'package:frontwe/presentation/dishes/providers/dish_providers.dart';
+import 'package:frontwe/presentation/dishes/widgets/detail_sheet.dart';
 import 'package:frontwe/presentation/shared/widgets/BottomNavBar.dart';
 import 'package:frontwe/presentation/shared/widgets/SideMenu.dart';
 

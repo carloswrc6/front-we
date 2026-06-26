@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontwe/domain/entities/dish.dart';
 import 'package:frontwe/l10n/app_localizations.dart';
-import 'package:frontwe/presentation/wheel/widgets/result_card.dart';
+import 'package:frontwe/presentation/dishes/widgets/result_card.dart';
 
 class DishListScreen extends StatefulWidget {
   final List<Dish> dishes;

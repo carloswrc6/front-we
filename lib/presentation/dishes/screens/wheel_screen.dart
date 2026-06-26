@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontwe/domain/entities/dish.dart';
 import 'package:frontwe/l10n/app_localizations.dart';
-import 'package:frontwe/presentation/wheel/providers/dish_providers.dart';
-import 'package:frontwe/presentation/wheel/screens/dish_list_screen.dart';
-import 'package:frontwe/presentation/wheel/widgets/filter_bar.dart';
-import 'package:frontwe/presentation/wheel/widgets/wheel.dart';
-import 'package:frontwe/presentation/wheel/widgets/skeleton/screen_skeleton.dart';
+import 'package:frontwe/presentation/dishes/providers/dish_providers.dart';
+import 'package:frontwe/presentation/dishes/screens/dish_list_screen.dart';
+import 'package:frontwe/presentation/dishes/widgets/filter_bar.dart';
+import 'package:frontwe/presentation/dishes/widgets/dish_wheel.dart';
+import 'package:frontwe/presentation/dishes/widgets/skeleton/screen_skeleton.dart';
 import 'package:frontwe/presentation/shared/widgets/BottomNavBar.dart';
 import 'package:frontwe/presentation/shared/widgets/SideMenu.dart';
 
