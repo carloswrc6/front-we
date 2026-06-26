@@ -14,29 +14,15 @@ class DishesScreenSkeleton extends StatelessWidget {
             color: Colors.white,
             child: Column(
               children: [
-                Row(
-                  children: [
-                    const Expanded(
-                      child: SkeletonBox(height: 48, borderRadius: 12),
-                    ),
-                    const SizedBox(width: 8),
-                    const SkeletonBox(width: 48, height: 32, borderRadius: 16),
-                  ],
-                ),
-                const SizedBox(height: 8),
                 const Row(
                   children: [
-                    SkeletonBox(width: 90, height: 32, borderRadius: 16),
-                    SizedBox(width: 8),
-                    SkeletonBox(width: 70, height: 32, borderRadius: 16),
-                    SizedBox(width: 8),
-                    SkeletonBox(width: 80, height: 32, borderRadius: 16),
+                    SkeletonBox(width: 90, height: 100, borderRadius: 16),
                   ],
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 30),
           Expanded(
             child: Column(
               children: [
@@ -60,6 +46,22 @@ class DishesScreenSkeleton extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
                 const Center(child: SkeletonBox(width: 160, height: 14)),
+                const SizedBox(height: 24),
+                Container(
+                  padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                  color: const Color.fromARGB(255, 119, 62, 62),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 8),
+                      const Row(
+                        children: [
+                          SkeletonBox(width: 90, height: 300, borderRadius: 16),
+                          SizedBox(width: 8),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
