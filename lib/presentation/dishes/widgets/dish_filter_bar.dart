@@ -33,34 +33,35 @@ class DishFilterBar extends StatelessWidget {
     };
 
     return Container(
-      padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainerLow,
-      ),
+      padding: const EdgeInsets.fromLTRB(25, 15, 25, 15),
+      decoration: BoxDecoration(color: cs.surfaceContainerLow),
       child: Column(
         children: [
           Row(
             children: [
               Expanded(
-                child:           CountrySelector(
-            showAll: false,
-            countries: countries,
-            selectedCountryId: selectedCountryId,
-            onChanged: onCountryChanged,
-          ),
+                child: CountrySelector(
+                  showAll: false,
+                  countries: countries,
+                  selectedCountryId: selectedCountryId,
+                  onChanged: onCountryChanged,
                 ),
-                if (dishCount > 0)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: Chip(
-                      label: Text('$dishCount', style: const TextStyle(fontSize: 12)),
-                      visualDensity: VisualDensity.compact,
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              if (dishCount > 0)
+                Padding(
+                  padding: const EdgeInsets.only(left: 8),
+                  child: Chip(
+                    label: Text(
+                      '$dishCount',
+                      style: const TextStyle(fontSize: 12),
                     ),
+                    visualDensity: VisualDensity.compact,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
-              ],
-            ),
-            const SizedBox(height: 8),
+                ),
+            ],
+          ),
+          const SizedBox(height: 8),
           Center(
             child: Wrap(
               spacing: 8,
