@@ -28,6 +28,12 @@ class _SideMenuState extends ConsumerState<SideMenu> {
     }
   }
 
+  void _navigate(int index) {
+    HapticFeedback.lightImpact();
+    ref.read(navDrawerIndexProvider.notifier).state = index;
+    context.go(appMenuItems[index].link);
+  }
+
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
@@ -36,15 +42,6 @@ class _SideMenuState extends ConsumerState<SideMenu> {
     final t = AppLocalizations.of(context)!;
 
     return NavigationDrawer(
-      selectedIndex: navDrawerIndex,
-      onDestinationSelected: (value) {
-        HapticFeedback.lightImpact();
-
-        ref.read(navDrawerIndexProvider.notifier).state = value;
-        final menuItem = appMenuItems[value];
-
-        context.go(menuItem.link);
-      },
       children: [
         Padding(
           padding: EdgeInsets.fromLTRB(20, hasNotch ? 10 : 30, 20, 10),
@@ -67,31 +64,19 @@ class _SideMenuState extends ConsumerState<SideMenu> {
 
         const Divider(),
 
-        ...appMenuItems.asMap().entries.map((entry) {
-          final index = entry.key;
-          final item = entry.value;
+        _sectionHeader(t.sectionNavigation),
 
-          return NavigationDrawerDestination(
-            icon: Icon(
-              item.icon,
-              color: navDrawerIndex == index
-                  ? Theme.of(context).colorScheme.primary
-                  : null,
-            ),
-            label: Column(
-              // crossAxisAlignment: CrossAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 10),
-                Text(_translate(t, item.titleKey)),
-                Text(
-                  _translate(t, item.subTitleKey),
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-              ],
-            ),
-          );
-        }),
+        _menuItem(0, Icons.casino, t.menuWheel, t.menuWheelSubtitle, navDrawerIndex),
+        _menuItem(1, Icons.dining, t.menuDishes, t.menuDishesSubtitle, navDrawerIndex),
+        _menuItem(2, Icons.favorite_border, t.menuFavorites, t.menuFavoritesSubtitle, navDrawerIndex),
+        _menuItem(3, Icons.history, t.menuHistory, t.menuHistorySubtitle, navDrawerIndex),
+
+        const Divider(),
+
+        _sectionHeader(t.sectionSettings),
+
+        _menuItem(4, Icons.person_outline, t.menuProfile, t.menuProfileSubtitle, navDrawerIndex),
+        _menuItem(5, Icons.palette_outlined, t.menuTheme, t.menuThemeSubtitle, navDrawerIndex),
 
         const Divider(),
 
@@ -100,7 +85,6 @@ class _SideMenuState extends ConsumerState<SideMenu> {
           title: Text(t.menuLogout),
           onTap: () async {
             await ref.read(authProvider.notifier).logout();
-
             if (context.mounted) {
               context.go('/login');
             }
@@ -110,26 +94,38 @@ class _SideMenuState extends ConsumerState<SideMenu> {
     );
   }
 
-  String _translate(AppLocalizations t, String key) {
-    switch (key) {
-      case 'dishes':
-        return t.menuDishes;
-      case 'dishesSubtitle':
-        return t.menuDishesSubtitle;
-      case 'profile':
-        return t.menuProfile;
-      case 'profileSubtitle':
-        return t.menuProfileSubtitle;
-      case 'subscription':
-        return t.menuSubscription;
-      case 'subscriptionSubtitle':
-        return t.menuSubscriptionSubtitle;
-      case 'theme':
-        return t.menuTheme;
-      case 'themeSubtitle':
-        return t.menuThemeSubtitle;
-      default:
-        return key;
-    }
+  Widget _sectionHeader(String label) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(28, 8, 28, 4),
+      child: Text(
+        label,
+        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+          color: Theme.of(context).colorScheme.primary,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 0.5,
+        ),
+      ),
+    );
+  }
+
+  Widget _menuItem(int index, IconData icon, String title, String subtitle, int selectedIndex) {
+    final cs = Theme.of(context).colorScheme;
+    final isSelected = index == selectedIndex;
+
+    return ListTile(
+      dense: true,
+      leading: Icon(icon, size: 20, color: isSelected ? cs.primary : null),
+      title: Text(title, style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+        color: isSelected ? cs.primary : null,
+        fontWeight: isSelected ? FontWeight.w600 : null,
+      )),
+      subtitle: Text(subtitle, style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 11)),
+      selected: isSelected,
+      selectedTileColor: cs.primaryContainer.withValues(alpha: 0.3),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+      visualDensity: VisualDensity.compact,
+      onTap: () => _navigate(index),
+    );
   }
 }

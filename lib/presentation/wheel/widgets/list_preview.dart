@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontwe/domain/entities/dish.dart';
 import 'package:frontwe/l10n/app_localizations.dart';
-import 'package:frontwe/presentation/dishes/widgets/dish_detail_sheet.dart';
+import 'package:frontwe/presentation/wheel/widgets/detail_sheet.dart';
 
 class DishListPreview extends StatelessWidget {
   final List<Dish> dishes;

@@ -16,10 +16,28 @@ class MenuItem {
 
 const appMenuItems = <MenuItem>[
   MenuItem(
+    titleKey: 'wheel',
+    subTitleKey: 'wheelSubtitle',
+    link: '/ruleta',
+    icon: Icons.casino,
+  ),
+  MenuItem(
     titleKey: 'dishes',
     subTitleKey: 'dishesSubtitle',
-    link: '/ruleta',
-    icon: Icons.restaurant_menu,
+    link: '/platos',
+    icon: Icons.dining,
+  ),
+  MenuItem(
+    titleKey: 'favorites',
+    subTitleKey: 'favoritesSubtitle',
+    link: '/favoritos',
+    icon: Icons.favorite_border,
+  ),
+  MenuItem(
+    titleKey: 'history',
+    subTitleKey: 'historySubtitle',
+    link: '/historial',
+    icon: Icons.history,
   ),
   MenuItem(
     titleKey: 'profile',

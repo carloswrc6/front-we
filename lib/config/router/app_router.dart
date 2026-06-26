@@ -3,11 +3,12 @@ import 'package:frontwe/presentation/auth/screens/login_screen.dart';
 import 'package:frontwe/presentation/auth/screens/register_screen.dart';
 import 'package:frontwe/presentation/auth/screens/reset_password_screen.dart';
 import 'package:frontwe/presentation/auth/screens/verify_code_screen.dart';
-import 'package:frontwe/presentation/dishes/screens/dishes_screen.dart';
+import 'package:frontwe/presentation/wheel/screens/wheel_screen.dart';
 import 'package:frontwe/presentation/favorites/screens/favorites_screen.dart';
 import 'package:frontwe/presentation/history/screens/history_screen.dart';
 import 'package:frontwe/presentation/home/ThemeChangerScreen.dart';
-import 'package:frontwe/presentation/platos/screens/platos_screen.dart';
+import 'package:frontwe/presentation/dishes/screens/dishes_screen.dart';
+import 'package:frontwe/presentation/profile/screens/profile_screen.dart';
 import 'package:go_router/go_router.dart';
 
 final appRouter = GoRouter(
@@ -42,6 +43,10 @@ final appRouter = GoRouter(
           code: extra['code']!,
         );
       },
+    ),
+    GoRoute(
+      path: '/profile',
+      builder: (context, state) => const ProfileScreen(),
     ),
     GoRoute(
       path: '/theme_changer',

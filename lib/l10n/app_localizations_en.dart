@@ -99,6 +99,22 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get menuDishesSubtitle => "Browse dishes";
   @override
+  String get menuWheel => "Wheel";
+  @override
+  String get menuWheelSubtitle => "Spin and choose";
+  @override
+  String get menuFavorites => "Favorites";
+  @override
+  String get menuFavoritesSubtitle => "Your favorite dishes";
+  @override
+  String get sectionNavigation => "Navigation";
+  @override
+  String get sectionSettings => "Settings";
+  @override
+  String get menuHistory => "History";
+  @override
+  String get menuHistorySubtitle => "Viewed dishes";
+  @override
   String get dishesEmpty => "No dishes available";
   @override
   String get filterAll => "All";

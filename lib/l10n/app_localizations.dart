@@ -68,6 +68,14 @@ abstract class AppLocalizations {
   String get valRequiredEmail;
   String get menuDishes;
   String get menuDishesSubtitle;
+  String get menuWheel;
+  String get menuWheelSubtitle;
+  String get menuFavorites;
+  String get menuFavoritesSubtitle;
+  String get sectionNavigation;
+  String get sectionSettings;
+  String get menuHistory;
+  String get menuHistorySubtitle;
   String get dishesEmpty;
   String get filterAll;
   String get filterCountry;

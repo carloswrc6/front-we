@@ -2,162 +2,175 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontwe/domain/entities/dish.dart';
 import 'package:frontwe/l10n/app_localizations.dart';
-import 'package:frontwe/presentation/dishes/providers/dish_providers.dart';
-import 'package:frontwe/presentation/dishes/screens/dish_list_screen.dart';
-import 'package:frontwe/presentation/dishes/widgets/dish_filter_bar.dart';
-import 'package:frontwe/presentation/dishes/widgets/dish_wheel.dart';
-import 'package:frontwe/presentation/dishes/widgets/skeleton/dishes_screen_skeleton.dart';
+import 'package:frontwe/presentation/wheel/providers/dish_providers.dart';
+import 'package:frontwe/presentation/wheel/widgets/detail_sheet.dart';
 import 'package:frontwe/presentation/shared/widgets/BottomNavBar.dart';
 import 'package:frontwe/presentation/shared/widgets/SideMenu.dart';
 
-class DishesScreen extends ConsumerStatefulWidget {
-  static const int maxWheelItems = 4;
-  const DishesScreen({super.key});
+class PlatosScreen extends ConsumerStatefulWidget {
+  const PlatosScreen({super.key});
 
   @override
-  ConsumerState<DishesScreen> createState() => _DishesScreenState();
+  ConsumerState<PlatosScreen> createState() => _PlatosScreenState();
 }
 
-class _DishesScreenState extends ConsumerState<DishesScreen> {
-  String? _selectedCountryId;
-  String? _selectedMealType;
-  Dish? _selectedDish;
-  bool _defaultsInitialized = false;
-  bool _fromSpin = false;
+class _PlatosScreenState extends ConsumerState<PlatosScreen> {
+  final _searchController = TextEditingController();
+  String _searchQuery = '';
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
+    final cs = Theme.of(context).colorScheme;
     final dishesAsync = ref.watch(localDishesProvider);
-    final countriesAsync = ref.watch(localCountriesProvider);
 
-    return Scaffold(
-      drawer: const SideMenu(),
-      appBar: AppBar(title: Text(t.menuDishes)),
-      bottomNavigationBar: const BottomNavBar(),
-      // body: const DishesScreenSkeleton(),
-      body: dishesAsync.when(
-        loading: () => const DishesScreenSkeleton(),
-        error: (err, _) => Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+    return dishesAsync.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (err, _) => Center(child: Text('$err')),
+      data: (dishes) {
+        final filtered = dishes.where((d) {
+          if (_searchQuery.isEmpty) return true;
+          return d.name.toLowerCase().contains(_searchQuery);
+        }).toList();
+
+        return Scaffold(
+          drawer: const SideMenu(),
+          appBar: AppBar(title: Text(t.platosTitle)),
+          bottomNavigationBar: const BottomNavBar(),
+          body: Column(
             children: [
-              Icon(
-                Icons.error_outline,
-                size: 64,
-                color: Theme.of(context).colorScheme.error,
-              ),
-              const SizedBox(height: 16),
-              Text('${t.errorLabel}: $err'),
-              const SizedBox(height: 16),
-              FilledButton.icon(
-                onPressed: () => ref.invalidate(localDishesProvider),
-                icon: const Icon(Icons.refresh),
-                label: Text(t.retryButton),
-              ),
-            ],
-          ),
-        ),
-        data: (dishes) {
-          if (dishes.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.restaurant,
-                    size: 64,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    t.dishesEmpty,
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                ],
-              ),
-            );
-          }
-          return countriesAsync.when(
-            loading: () => const LinearProgressIndicator(),
-            error: (err, _) => Center(child: Text('Error: $err')),
-            data: (countries) {
-              if (!_defaultsInitialized) {
-                _defaultsInitialized = true;
-                _selectedMealType = 'lunch';
-                final peru = countries.where((c) => c.code == 'PE').firstOrNull;
-                if (peru != null) _selectedCountryId = peru.id;
-              }
-              final filtered = _filter(dishes);
-              if (filtered.length == 1) {
-                _selectedDish ??= filtered.first;
-              }
-              return RefreshIndicator(
-                onRefresh: () async {
-                  ref.invalidate(localDishesProvider);
-                  await ref.read(localDishesProvider.future);
-                },
-                child: Column(
-                  children: [
-                    DishFilterBar(
-                      countries: countries,
-                      selectedCountryId: _selectedCountryId,
-                      selectedMealType: _selectedMealType,
-                      dishCount: filtered.length,
-                      onCountryChanged: (v) => setState(() {
-                        _selectedCountryId = v;
-                        _selectedDish = null;
-                      }),
-                      onMealTypeChanged: (v) => setState(() {
-                        _selectedMealType = v;
-                        _selectedDish = null;
-                      }),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    hintText: t.searchDishes,
+                    prefixIcon: const Icon(Icons.search, size: 20),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    Expanded(
-                      child: DishWheel(
-                        dishes: filtered,
-                        maxWheelItems: DishesScreen.maxWheelItems,
-                        selectedDish: _selectedDish,
-                        fromSpin: _fromSpin,
-                        onSpinResult: (dish) => setState(() {
-                          _fromSpin = true;
-                          _selectedDish = dish;
-                        }),
-                        onTapResult: (dish) => setState(() {
-                          _fromSpin = false;
-                          _selectedDish = dish;
-                        }),
-                        onViewList: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => DishListScreen(
-                                dishes: filtered,
-                                title: '${t.menuDishes} (${filtered.length})',
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                    isDense: true,
+                  ),
+                  onChanged: (v) => setState(() => _searchQuery = v.toLowerCase()),
+                ),
+              ),
+              Expanded(
+                child: filtered.isEmpty
+                    ? Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.search_off, size: 48, color: cs.onSurfaceVariant),
+                            const SizedBox(height: 8),
+                            Text(t.filterEmpty, style: Theme.of(context).textTheme.bodyLarge),
+                          ],
+                        ),
+                      )
+                    : ListView.builder(
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                        itemCount: filtered.length,
+                        itemBuilder: (context, index) {
+                          final dish = filtered[index];
+                          return Card(
+                            margin: const EdgeInsets.only(bottom: 12),
+                            clipBehavior: Clip.antiAlias,
+                            child: InkWell(
+                              onTap: () => DishDetailSheet.show(context, dish),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  AspectRatio(
+                                    aspectRatio: 16 / 9,
+                                    child: _dishImage(dish, cs),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                dish.name,
+                                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                dish.country.name,
+                                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                                  color: cs.onSurfaceVariant,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Icon(Icons.chevron_right, color: cs.onSurfaceVariant),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           );
                         },
                       ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          );
-        },
-      ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
-  List<Dish> _filter(List<Dish> dishes) {
-    return dishes.where((d) {
-      if (_selectedCountryId != null && d.country.id != _selectedCountryId) {
-        return false;
-      }
-      if (_selectedMealType != null && d.mealType != _selectedMealType) {
-        return false;
-      }
-      return true;
-    }).toList();
+  Widget _dishImage(Dish dish, ColorScheme cs) {
+    if (dish.image.isEmpty) {
+      return Container(
+        color: cs.surfaceContainerHigh,
+        child: Center(
+          child: Icon(Icons.restaurant, size: 48, color: cs.onSurfaceVariant),
+        ),
+      );
+    }
+
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Image.network(
+          dish.image,
+          fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) => Container(
+            color: cs.surfaceContainerHigh,
+            child: Center(
+              child: Icon(Icons.restaurant, size: 48, color: cs.onSurfaceVariant),
+            ),
+          ),
+          loadingBuilder: (context, child, loadingProgress) {
+            if (loadingProgress == null) return child;
+            return Container(
+              color: cs.surfaceContainerHigh,
+              child: Center(
+                child: CircularProgressIndicator(
+                  value: loadingProgress.expectedTotalBytes != null
+                      ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                      : null,
+                ),
+              ),
+            );
+          },
+        ),
+      ],
+    );
   }
 }

@@ -109,6 +109,22 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get menuDishesSubtitle => "Explorar platos";
   @override
+  String get menuWheel => "Ruleta";
+  @override
+  String get menuWheelSubtitle => "Gira y elige";
+  @override
+  String get menuFavorites => "Favoritos";
+  @override
+  String get menuFavoritesSubtitle => "Tus platos favoritos";
+  @override
+  String get sectionNavigation => "Navegación";
+  @override
+  String get sectionSettings => "Configuración";
+  @override
+  String get menuHistory => "Historial";
+  @override
+  String get menuHistorySubtitle => "Platos vistos";
+  @override
   String get dishesEmpty => "No hay platos disponibles";
   @override
   String get filterAll => "Todos";
