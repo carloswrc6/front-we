@@ -112,7 +112,7 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                           _selectedDish = null;
                         }),
                         rightAligned: true,
-                        menuAlignment: AlignmentDirectional.centerEnd,
+                        menuWidth: 200,
                       ),
                       bottomChild: DishFilterBar(
                         selectedMealType: _selectedMealType,

@@ -15,7 +15,6 @@ class CountrySelector extends StatelessWidget {
   final bool showAll;
   final bool compact;
   final double horizontalPadding;
-  final AlignmentGeometry menuAlignment;
   final double? menuWidth;
   final bool rightAligned;
 
@@ -27,7 +26,6 @@ class CountrySelector extends StatelessWidget {
     this.showAll = true,
     this.compact = false,
     this.horizontalPadding = 4,
-    this.menuAlignment = AlignmentDirectional.centerStart,
     this.menuWidth,
     this.rightAligned = false,
   });
@@ -36,32 +34,19 @@ class CountrySelector extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
     final cs = Theme.of(context).colorScheme;
+    const textStyle = TextStyle(fontSize: 14);
 
     final items = <DropdownMenuItem<String?>>[];
-    final selectedWidgets = <Widget>[];
-
-    const textStyle = TextStyle(fontSize: 14);
+    final displayTexts = <Widget>[];
 
     if (showAll) {
       items.add(DropdownMenuItem<String?>(value: null, child: Text(t.filterAll, style: textStyle)));
-      selectedWidgets.add(Align(
-        alignment: Alignment.centerLeft,
-        child: Padding(
-          padding: EdgeInsets.only(left: horizontalPadding),
-          child: Text(t.filterAll, style: textStyle),
-        ),
-      ));
+      displayTexts.add(Text(t.filterAll, style: textStyle));
     }
 
     for (final c in countries) {
       items.add(DropdownMenuItem<String?>(value: c.id, child: Text('${_codeToFlag(c.code)} ${c.name}', style: textStyle)));
-      selectedWidgets.add(Align(
-        alignment: Alignment.centerLeft,
-        child: Padding(
-          padding: EdgeInsets.only(left: horizontalPadding),
-          child: Text('${_codeToFlag(c.code)} ${compact ? c.code : c.name}', style: textStyle),
-        ),
-      ));
+      displayTexts.add(Text('${_codeToFlag(c.code)} ${compact ? c.code : c.name}', style: textStyle));
     }
 
     final double? effectiveMenuWidth;
@@ -71,36 +56,89 @@ class CountrySelector extends StatelessWidget {
       effectiveMenuWidth = MediaQuery.of(context).size.width - 32;
     }
 
-    final dropdown = DropdownButtonHideUnderline(
-      child: DropdownButton<String?>(
-        key: ValueKey('country_selector_${countries.length}'),
-        value: selectedCountryId,
-        isExpanded: !rightAligned,
-        menuWidth: effectiveMenuWidth,
-        hint: Padding(
-          padding: EdgeInsets.only(left: horizontalPadding),
-          child: Text(t.filterCountry, style: const TextStyle(fontSize: 14)),
+    final selectedIdx = selectedCountryId == null
+        ? (showAll ? 0 : -1)
+        : countries.indexWhere((c) => c.id == selectedCountryId) + (showAll ? 1 : 0);
+
+    final Widget currentDisplay = selectedIdx >= 0 && selectedIdx < displayTexts.length
+        ? displayTexts[selectedIdx]
+        : Text(t.filterCountry, style: textStyle);
+
+    if (rightAligned) {
+      return Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: cs.outline),
+          borderRadius: BorderRadius.circular(4),
         ),
-        icon: Padding(
-          padding: EdgeInsets.only(right: horizontalPadding),
-          child: const Icon(Icons.expand_more, size: 18),
+        width: double.infinity,
+        constraints: const BoxConstraints(minHeight: 48),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Row(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: horizontalPadding),
+                  child: currentDisplay,
+                ),
+                const Spacer(),
+                Padding(
+                  padding: EdgeInsets.only(right: horizontalPadding),
+                  child: const Icon(Icons.expand_more, size: 18),
+                ),
+              ],
+            ),
+            Positioned.fill(
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String?>(
+                  key: ValueKey('country_selector_${countries.length}'),
+                  value: selectedCountryId,
+                  isExpanded: true,
+                  menuWidth: effectiveMenuWidth,
+                  hint: const SizedBox.shrink(),
+                  icon: const SizedBox.shrink(),
+                  items: items,
+                  selectedItemBuilder: (_) =>
+                      List.filled(items.length, const SizedBox.shrink()),
+                  onChanged: onChanged,
+                ),
+              ),
+            ),
+          ],
         ),
-        items: items,
-        selectedItemBuilder: (context) => selectedWidgets,
-        alignment: menuAlignment,
-        onChanged: onChanged,
-      ),
-    );
+      );
+    }
 
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: cs.outline),
         borderRadius: BorderRadius.circular(4),
       ),
-      width: rightAligned ? double.infinity : null,
-      child: rightAligned
-          ? Align(alignment: Alignment.centerRight, child: dropdown)
-          : dropdown,
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String?>(
+          key: ValueKey('country_selector_${countries.length}'),
+          value: selectedCountryId,
+          isExpanded: true,
+          menuWidth: effectiveMenuWidth,
+          hint: Padding(
+            padding: EdgeInsets.only(left: horizontalPadding),
+            child: Text(t.filterCountry, style: const TextStyle(fontSize: 14)),
+          ),
+          icon: Padding(
+            padding: EdgeInsets.only(right: horizontalPadding),
+            child: const Icon(Icons.expand_more, size: 18),
+          ),
+          items: items,
+          selectedItemBuilder: (context) => displayTexts.map((t) => Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: EdgeInsets.only(left: horizontalPadding),
+              child: t,
+            ),
+          )).toList(),
+          onChanged: onChanged,
+        ),
+      ),
     );
   }
 }
