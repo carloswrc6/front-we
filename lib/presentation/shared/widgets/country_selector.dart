@@ -27,6 +27,7 @@ class CountrySelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
+    final cs = Theme.of(context).colorScheme;
 
     final items = <DropdownMenuItem<String?>>[];
     final selectedWidgets = <Widget>[];
@@ -35,31 +36,47 @@ class CountrySelector extends StatelessWidget {
 
     if (showAll) {
       items.add(DropdownMenuItem<String?>(value: null, child: Text(t.filterAll, style: textStyle)));
-      selectedWidgets.add(Text(t.filterAll, style: textStyle));
+      selectedWidgets.add(Align(
+        alignment: Alignment.centerLeft,
+        child: Padding(
+          padding: const EdgeInsets.only(left: 4),
+          child: Text(t.filterAll, style: textStyle),
+        ),
+      ));
     }
 
     for (final c in countries) {
       items.add(DropdownMenuItem<String?>(value: c.id, child: Text('${_codeToFlag(c.code)} ${c.name}', style: textStyle)));
-      selectedWidgets.add(Text('${_codeToFlag(c.code)} ${compact ? c.code : c.name}', style: textStyle));
+      selectedWidgets.add(Align(
+        alignment: Alignment.centerLeft,
+        child: Padding(
+          padding: const EdgeInsets.only(left: 4),
+          child: Text('${_codeToFlag(c.code)} ${compact ? c.code : c.name}', style: textStyle),
+        ),
+      ));
     }
 
     final screenWidth = MediaQuery.of(context).size.width;
 
-    return InputDecorator(
-      decoration: InputDecoration(
-        isDense: true,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: cs.outline),
+        borderRadius: BorderRadius.circular(4),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String?>(
           key: ValueKey('country_selector_${countries.length}'),
           value: selectedCountryId,
           isExpanded: true,
-          isDense: true,
           menuWidth: screenWidth - 32,
-          hint: Text(t.filterCountry, style: const TextStyle(fontSize: 14)),
-          icon: const Icon(Icons.expand_more, size: 18),
+          hint: Padding(
+            padding: const EdgeInsets.only(left: 4),
+            child: Text(t.filterCountry, style: const TextStyle(fontSize: 14)),
+          ),
+          icon: const Padding(
+            padding: EdgeInsets.only(right: 4),
+            child: Icon(Icons.expand_more, size: 18),
+          ),
           items: items,
           selectedItemBuilder: (context) => selectedWidgets,
           onChanged: onChanged,
