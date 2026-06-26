@@ -72,6 +72,8 @@ abstract class AppLocalizations {
   String get menuWheelSubtitle;
   String get menuFavorites;
   String get menuFavoritesSubtitle;
+  String get menuProhibidos;
+  String get menuProhibidosSubtitle;
   String get sectionNavigation;
   String get sectionSettings;
   String get menuHistory;
@@ -120,11 +122,14 @@ abstract class AppLocalizations {
   String get navPlatos;
   String get navFavoritos;
   String get navRuleta;
+  String get navProhibidos;
   String get navHistorial;
   String get platosTitle;
   String get favoritosTitle;
+  String get prohibidosTitle;
   String get historialTitle;
   String get favoritosEmpty;
+  String get prohibidosEmpty;
   String get historialEmpty;
   String get forgotPassword;
   String get sendCodeEmail;

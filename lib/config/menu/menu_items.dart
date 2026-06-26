@@ -34,6 +34,12 @@ const appMenuItems = <MenuItem>[
     icon: Icons.favorite_border,
   ),
   MenuItem(
+    titleKey: 'prohibidos',
+    subTitleKey: 'prohibidosSubtitle',
+    link: '/prohibidos',
+    icon: Icons.block,
+  ),
+  MenuItem(
     titleKey: 'history',
     subTitleKey: 'historySubtitle',
     link: '/historial',

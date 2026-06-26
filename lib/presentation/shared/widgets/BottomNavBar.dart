@@ -9,7 +9,8 @@ class BottomNavBar extends ConsumerWidget {
   int _indexFromRoute(String location) {
     if (location.startsWith('/platos')) return 0;
     if (location.startsWith('/favoritos')) return 1;
-    if (location.startsWith('/historial')) return 3;
+    if (location.startsWith('/historial')) return 4;
+    if (location.startsWith('/prohibidos')) return 3;
     return 2;
   }
 
@@ -22,7 +23,7 @@ class BottomNavBar extends ConsumerWidget {
     return NavigationBar(
       selectedIndex: currentIndex,
       onDestinationSelected: (index) {
-        final routes = ['/platos', '/favoritos', '/ruleta', '/historial'];
+        final routes = ['/platos', '/favoritos', '/ruleta', '/prohibidos', '/historial'];
         context.go(routes[index]);
       },
       destinations: [
@@ -40,6 +41,11 @@ class BottomNavBar extends ConsumerWidget {
           icon: const Icon(Icons.casino_outlined),
           selectedIcon: const Icon(Icons.casino),
           label: t.navRuleta,
+        ),
+        NavigationDestination(
+          icon: const Icon(Icons.block_outlined),
+          selectedIcon: const Icon(Icons.block),
+          label: t.navProhibidos,
         ),
         NavigationDestination(
           icon: const Icon(Icons.history_outlined),

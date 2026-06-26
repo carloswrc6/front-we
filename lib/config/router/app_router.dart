@@ -9,6 +9,7 @@ import 'package:frontwe/presentation/history/screens/history_screen.dart';
 import 'package:frontwe/presentation/home/ThemeChangerScreen.dart';
 import 'package:frontwe/presentation/dishes/screens/wheel_screen.dart';
 import 'package:frontwe/presentation/profile/screens/profile_screen.dart';
+import 'package:frontwe/presentation/prohibidos/screens/prohibidos_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -47,6 +48,15 @@ final appRouter = GoRouter(
       pageBuilder: (context, state) => CustomTransitionPage(
         key: state.pageKey,
         child: const HistoryScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+            FadeTransition(opacity: animation, child: child),
+      ),
+    ),
+    GoRoute(
+      path: '/prohibidos',
+      pageBuilder: (context, state) => CustomTransitionPage(
+        key: state.pageKey,
+        child: const ProhibidosScreen(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) =>
             FadeTransition(opacity: animation, child: child),
       ),

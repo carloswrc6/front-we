@@ -117,6 +117,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get menuFavoritesSubtitle => "Tus platos favoritos";
   @override
+  String get menuProhibidos => "Prohibidos";
+  @override
+  String get menuProhibidosSubtitle => "Platos que no puedes comer";
+  @override
   String get sectionNavigation => "Navegación";
   @override
   String get sectionSettings => "Configuración";
@@ -215,15 +219,21 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get navRuleta => "Ruleta";
   @override
+  String get navProhibidos => "Prohibidos";
+  @override
   String get navHistorial => "Historial";
   @override
   String get platosTitle => "Todos los platos";
   @override
   String get favoritosTitle => "Mis favoritos";
   @override
+  String get prohibidosTitle => "Platos prohibidos";
+  @override
   String get historialTitle => "Historial";
   @override
   String get favoritosEmpty => "Aún no tienes favoritos";
+  @override
+  String get prohibidosEmpty => "Aún no tienes platos prohibidos";
   @override
   String get historialEmpty => "Aún no tienes historial";
 
