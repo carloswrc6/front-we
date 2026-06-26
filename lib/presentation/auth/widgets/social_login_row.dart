@@ -38,7 +38,7 @@ class SocialLoginRow extends ConsumerWidget {
                   ref.read(authProvider);
 
               if (authState.isAuthenticated) {
-                context.go('/home');
+                context.go('/ruleta');
               }
             },
           ),

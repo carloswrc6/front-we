@@ -3,14 +3,20 @@ import 'package:frontwe/presentation/auth/screens/login_screen.dart';
 import 'package:frontwe/presentation/auth/screens/register_screen.dart';
 import 'package:frontwe/presentation/auth/screens/reset_password_screen.dart';
 import 'package:frontwe/presentation/auth/screens/verify_code_screen.dart';
-import 'package:frontwe/presentation/home/ThemeChangerScreen.dart';
 import 'package:frontwe/presentation/dishes/screens/dishes_screen.dart';
+import 'package:frontwe/presentation/favorites/screens/favorites_screen.dart';
+import 'package:frontwe/presentation/history/screens/history_screen.dart';
+import 'package:frontwe/presentation/home/ThemeChangerScreen.dart';
+import 'package:frontwe/presentation/platos/screens/platos_screen.dart';
 import 'package:go_router/go_router.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/login',
   routes: [
-    GoRoute(path: '/home', builder: (context, state) => const DishesScreen()),
+    GoRoute(path: '/platos', builder: (context, state) => const PlatosScreen()),
+    GoRoute(path: '/favoritos', builder: (context, state) => const FavoritesScreen()),
+    GoRoute(path: '/ruleta', builder: (context, state) => const DishesScreen()),
+    GoRoute(path: '/historial', builder: (context, state) => const HistoryScreen()),
     GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
     GoRoute(
       path: '/register',

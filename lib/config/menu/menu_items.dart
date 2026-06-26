@@ -18,7 +18,7 @@ const appMenuItems = <MenuItem>[
   MenuItem(
     titleKey: 'dishes',
     subTitleKey: 'dishesSubtitle',
-    link: '/home',
+    link: '/ruleta',
     icon: Icons.restaurant_menu,
   ),
   MenuItem(

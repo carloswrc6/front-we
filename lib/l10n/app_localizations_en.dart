@@ -183,6 +183,26 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get subsRecommended => "Recommended";
 
+  // Bottom nav
+  @override
+  String get navPlatos => "Dishes";
+  @override
+  String get navFavoritos => "Favorites";
+  @override
+  String get navRuleta => "Wheel";
+  @override
+  String get navHistorial => "History";
+  @override
+  String get platosTitle => "All dishes";
+  @override
+  String get favoritosTitle => "My favorites";
+  @override
+  String get historialTitle => "History";
+  @override
+  String get favoritosEmpty => "No favorites yet";
+  @override
+  String get historialEmpty => "No history yet";
+
   @override
   String get forgotPassword => "You have forgotten your password";
 

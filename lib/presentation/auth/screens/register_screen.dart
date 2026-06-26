@@ -108,7 +108,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     final state = ref.read(authProvider);
 
     if (state.registerUser != null) {
-      context.go('/home');
+      context.go('/ruleta');
     }
   }
 

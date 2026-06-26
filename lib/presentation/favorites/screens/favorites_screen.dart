@@ -1,0 +1,34 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontwe/l10n/app_localizations.dart';
+import 'package:frontwe/presentation/shared/widgets/BottomNavBar.dart';
+import 'package:frontwe/presentation/shared/widgets/SideMenu.dart';
+
+class FavoritesScreen extends ConsumerWidget {
+  const FavoritesScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = AppLocalizations.of(context)!;
+    final cs = Theme.of(context).colorScheme;
+
+    return Scaffold(
+      drawer: const SideMenu(),
+      appBar: AppBar(title: Text(t.favoritosTitle)),
+      bottomNavigationBar: const BottomNavBar(),
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.favorite_border, size: 64, color: cs.onSurfaceVariant),
+            const SizedBox(height: 16),
+            Text(
+              t.favoritosEmpty,
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

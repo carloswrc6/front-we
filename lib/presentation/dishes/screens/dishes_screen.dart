@@ -7,6 +7,7 @@ import 'package:frontwe/presentation/dishes/screens/dish_list_screen.dart';
 import 'package:frontwe/presentation/dishes/widgets/dish_filter_bar.dart';
 import 'package:frontwe/presentation/dishes/widgets/dish_wheel.dart';
 import 'package:frontwe/presentation/dishes/widgets/skeleton/dishes_screen_skeleton.dart';
+import 'package:frontwe/presentation/shared/widgets/BottomNavBar.dart';
 import 'package:frontwe/presentation/shared/widgets/SideMenu.dart';
 
 class DishesScreen extends ConsumerStatefulWidget {
@@ -33,6 +34,7 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
     return Scaffold(
       drawer: const SideMenu(),
       appBar: AppBar(title: Text(t.menuDishes)),
+      bottomNavigationBar: const BottomNavBar(),
       // body: const DishesScreenSkeleton(),
       body: dishesAsync.when(
         loading: () => const DishesScreenSkeleton(),

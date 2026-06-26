@@ -109,6 +109,15 @@ abstract class AppLocalizations {
   String get subsTitle;
   String get subsDescription;
   String get subsRecommended;
+  String get navPlatos;
+  String get navFavoritos;
+  String get navRuleta;
+  String get navHistorial;
+  String get platosTitle;
+  String get favoritosTitle;
+  String get historialTitle;
+  String get favoritosEmpty;
+  String get historialEmpty;
   String get forgotPassword;
   String get sendCodeEmail;
   String get returnLogin;

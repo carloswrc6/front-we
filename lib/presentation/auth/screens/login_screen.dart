@@ -94,7 +94,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     if (state.loginUser != null) {
       ref.read(dishRepositoryProvider).syncDishes();
-      context.go('/home');
+      context.go('/ruleta');
     }
   }
 

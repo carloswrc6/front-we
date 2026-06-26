@@ -43,7 +43,7 @@ class _SideMenuState extends ConsumerState<SideMenu> {
         ref.read(navDrawerIndexProvider.notifier).state = value;
         final menuItem = appMenuItems[value];
 
-        context.push(menuItem.link);
+        context.go(menuItem.link);
       },
       children: [
         Padding(

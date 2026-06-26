@@ -35,6 +35,32 @@ class _DishListScreenState extends State<DishListScreen> {
     ).toList();
   }
 
+  String _mealTypeLabel(AppLocalizations t, String mealType) {
+    switch (mealType) {
+      case 'breakfast':
+        return t.mealTypeBreakfast;
+      case 'lunch':
+        return t.mealTypeLunch;
+      case 'dinner':
+        return t.mealTypeDinner;
+      default:
+        return mealType;
+    }
+  }
+
+  IconData _mealTypeIcon(String mealType) {
+    switch (mealType) {
+      case 'breakfast':
+        return Icons.free_breakfast;
+      case 'lunch':
+        return Icons.restaurant;
+      case 'dinner':
+        return Icons.dinner_dining;
+      default:
+        return Icons.restaurant;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
@@ -54,10 +80,13 @@ class _DishListScreenState extends State<DishListScreen> {
               decoration: InputDecoration(
                 hintText: t.searchDishes,
                 prefixIcon: const Icon(Icons.search, size: 20),
+                filled: true,
+                fillColor: cs.surfaceContainerHighest.withValues(alpha: 0.5),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
                 ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 isDense: true,
               ),
               onChanged: (v) => setState(() {
@@ -78,35 +107,56 @@ class _DishListScreenState extends State<DishListScreen> {
                       ],
                     ),
                   )
-                : ListView.builder(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                : ListView.separated(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                     itemCount: filtered.length,
+                    separatorBuilder: (_, __) => const Divider(height: 1, indent: 60),
                     itemBuilder: (context, index) {
                       final dish = filtered[index];
                       final isSelected = _selectedDish == dish;
 
-                      return Card(
-                        margin: const EdgeInsets.only(bottom: 8),
+                      return Material(
+                        color: isSelected ? cs.primaryContainer.withValues(alpha: 0.3) : Colors.transparent,
+                        borderRadius: BorderRadius.circular(12),
                         child: InkWell(
+                          borderRadius: BorderRadius.circular(12),
                           onTap: () => setState(() {
                             _selectedDish = _selectedDish == dish ? null : dish;
                           }),
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                            padding: const EdgeInsets.symmetric(vertical: 8),
                             child: Row(
                               children: [
-                                CircleAvatar(
-                                  radius: 24,
-                                  backgroundImage: dish.image.isNotEmpty
-                                      ? NetworkImage(dish.image)
-                                      : null,
-                                  child: dish.image.isEmpty
-                                      ? Text(dish.name[0], style: const TextStyle(fontWeight: FontWeight.bold))
-                                      : null,
-                                  onBackgroundImageError: (_, __) =>
-                                      const Icon(Icons.restaurant, size: 20),
+                                Stack(
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 22,
+                                      backgroundImage: dish.image.isNotEmpty
+                                          ? NetworkImage(dish.image)
+                                          : null,
+                                      child: dish.image.isEmpty
+                                          ? Icon(Icons.restaurant, size: 20, color: cs.onSurfaceVariant)
+                                          : null,
+                                      onBackgroundImageError: (_, __) =>
+                                          const Icon(Icons.restaurant, size: 20),
+                                    ),
+                                    if (isSelected)
+                                      Positioned(
+                                        right: -2,
+                                        bottom: -2,
+                                        child: Container(
+                                          padding: const EdgeInsets.all(3),
+                                          decoration: BoxDecoration(
+                                            color: cs.primary,
+                                            shape: BoxShape.circle,
+                                            border: Border.all(color: cs.surface, width: 2),
+                                          ),
+                                          child: Icon(Icons.check, size: 12, color: cs.onPrimary),
+                                        ),
+                                      ),
+                                  ],
                                 ),
-                                const SizedBox(width: 12),
+                                const SizedBox(width: 14),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -120,19 +170,32 @@ class _DishListScreenState extends State<DishListScreen> {
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                       const SizedBox(height: 2),
-                                      Text(
-                                        dish.country.name,
-                                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                          color: cs.onSurfaceVariant,
-                                        ),
+                                      Row(
+                                        children: [
+                                          Icon(_mealTypeIcon(dish.mealType), size: 13, color: cs.onSurfaceVariant),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            '${_mealTypeLabel(t, dish.mealType)} · ${dish.country.name}',
+                                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                              color: cs.onSurfaceVariant,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
                                 ),
-                                Icon(
-                                  isSelected ? Icons.check_circle : Icons.chevron_right,
-                                  color: isSelected ? cs.primary : cs.onSurfaceVariant,
-                                  size: 22,
+                                Container(
+                                  padding: const EdgeInsets.all(6),
+                                  decoration: BoxDecoration(
+                                    color: isSelected ? cs.primary : Colors.transparent,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.chevron_right,
+                                    size: 18,
+                                    color: isSelected ? cs.onPrimary : cs.onSurfaceVariant,
+                                  ),
                                 ),
                               ],
                             ),
@@ -142,11 +205,21 @@ class _DishListScreenState extends State<DishListScreen> {
                     },
                   ),
           ),
-          if (_selectedDish != null)
-            DishResultCard(
-              dish: _selectedDish!,
-              fromSpin: false,
-            ),
+          AnimatedSize(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            child: _selectedDish != null
+                ? Column(
+                    children: [
+                      const Divider(height: 1),
+                      DishResultCard(
+                        dish: _selectedDish!,
+                        fromSpin: false,
+                      ),
+                    ],
+                  )
+                : const SizedBox.shrink(),
+          ),
         ],
       ),
     );
