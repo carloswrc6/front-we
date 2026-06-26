@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontwe/presentation/dishes/widgets/skeleton/dish_filter_bar_skeleton.dart';
+import 'package:frontwe/presentation/dishes/widgets/skeleton/dish_list_preview_skeleton.dart';
 import 'package:frontwe/presentation/dishes/widgets/skeleton/dish_result_card_skeleton.dart';
 import 'package:frontwe/presentation/shared/widgets/SkeletonWidget.dart';
 
@@ -47,6 +48,7 @@ class DishesScreenSkeleton extends StatelessWidget {
               ),
             ),
             const DishResultCardSkeleton(),
+            const DishListPreviewSkeleton(),
             const SizedBox(height: 24),
           ],
         ),

@@ -6,8 +6,8 @@ import 'package:frontwe/presentation/dishes/providers/dish_providers.dart';
 import 'package:frontwe/presentation/dishes/screens/dish_list_screen.dart';
 import 'package:frontwe/presentation/dishes/widgets/dish_filter_bar.dart';
 import 'package:frontwe/presentation/dishes/widgets/dish_wheel.dart';
+import 'package:frontwe/presentation/dishes/widgets/skeleton/dishes_screen_skeleton.dart';
 import 'package:frontwe/presentation/shared/widgets/SideMenu.dart';
-import 'package:frontwe/presentation/dishes/widgets/dishes_screen_skeleton.dart';
 
 class DishesScreen extends ConsumerStatefulWidget {
   static const int maxWheelItems = 4;
