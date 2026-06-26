@@ -43,6 +43,8 @@ class CountrySelector extends StatelessWidget {
       selectedWidgets.add(Text('${_codeToFlag(c.code)} ${compact ? c.code : c.name}', style: textStyle));
     }
 
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return InputDecorator(
       decoration: InputDecoration(
         isDense: true,
@@ -55,6 +57,7 @@ class CountrySelector extends StatelessWidget {
           value: selectedCountryId,
           isExpanded: true,
           isDense: true,
+          menuWidth: screenWidth - 32,
           hint: Text(t.filterCountry, style: const TextStyle(fontSize: 14)),
           icon: const Icon(Icons.expand_more, size: 18),
           items: items,

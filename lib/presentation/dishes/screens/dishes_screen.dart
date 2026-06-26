@@ -59,7 +59,7 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen> {
                     topChild: Row(
                       children: [
                         Expanded(
-                          flex: 3,
+                          flex: 4,
                           child: TextField(
                             controller: _searchController,
                             decoration: InputDecoration(
@@ -79,7 +79,7 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen> {
                         ),
                         const SizedBox(width: 8),
                         Expanded(
-                          flex: 2,
+                          flex: 1,
                           child: CountrySelector(
                             compact: true,
                             showAll: true,
