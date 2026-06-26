@@ -81,6 +81,7 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen> {
                         Expanded(
                           flex: 2,
                           child: CountrySelector(
+                            compact: true,
                             showAll: true,
                             countries: countries,
                             selectedCountryId: _selectedCountryId,
