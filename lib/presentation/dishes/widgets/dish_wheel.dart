@@ -195,30 +195,19 @@ class DishWheelState extends State<DishWheel> with SingleTickerProviderStateMixi
                   ),
                 ],
               ),
-              AnimatedSwitcher(
+              AnimatedSize(
                 duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
                 child: widget.selectedDish != null
-                    ? DishResultCard(
-                        dish: widget.selectedDish!,
-                        fromSpin: widget.fromSpin,
-                      )
-                    : Padding(
-                        key: const ValueKey('empty'),
-                        padding: const EdgeInsets.only(top: 24),
-                        child: Center(
-                          child: Text(
-                            t.tapHint,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge
-                                ?.copyWith(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSurfaceVariant,
-                                ),
+                    ? Column(
+                        children: [
+                          DishResultCard(
+                            dish: widget.selectedDish!,
+                            fromSpin: widget.fromSpin,
                           ),
-                        ),
-                      ),
+                        ],
+                      )
+                    : const SizedBox.shrink(),
               ),
               const SizedBox(height: 24),
             ],
@@ -285,30 +274,19 @@ class DishWheelState extends State<DishWheel> with SingleTickerProviderStateMixi
                   ),
                 ],
               ),
-              AnimatedSwitcher(
+              AnimatedSize(
                 duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
                 child: widget.selectedDish != null
-                    ? DishResultCard(
-                        dish: widget.selectedDish!,
-                        fromSpin: widget.fromSpin,
-                      )
-                    : Padding(
-                        key: const ValueKey('empty'),
-                        padding: const EdgeInsets.only(top: 24),
-                        child: Center(
-                          child: Text(
-                            t.tapHint,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge
-                                ?.copyWith(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSurfaceVariant,
-                                ),
+                    ? Column(
+                        children: [
+                          DishResultCard(
+                            dish: widget.selectedDish!,
+                            fromSpin: widget.fromSpin,
                           ),
-                        ),
-                      ),
+                        ],
+                      )
+                    : const SizedBox.shrink(),
               ),
               const SizedBox(height: 24),
             ],
