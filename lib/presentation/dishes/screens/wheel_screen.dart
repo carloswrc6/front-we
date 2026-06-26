@@ -9,6 +9,7 @@ import 'package:frontwe/presentation/dishes/widgets/dish_wheel.dart';
 import 'package:frontwe/presentation/dishes/widgets/skeleton/screen_skeleton.dart';
 import 'package:frontwe/presentation/shared/widgets/BottomNavBar.dart';
 import 'package:frontwe/presentation/shared/widgets/SideMenu.dart';
+import 'package:frontwe/presentation/shared/widgets/country_selector.dart';
 
 class DishesScreen extends ConsumerStatefulWidget {
   static const int maxWheelItems = 4;
@@ -99,19 +100,35 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                 },
                 child: Column(
                   children: [
-                    DishFilterBar(
-                      countries: countries,
-                      selectedCountryId: _selectedCountryId,
-                      selectedMealType: _selectedMealType,
-                      dishCount: filtered.length,
-                      onCountryChanged: (v) => setState(() {
-                        _selectedCountryId = v;
-                        _selectedDish = null;
-                      }),
-                      onMealTypeChanged: (v) => setState(() {
-                        _selectedMealType = v;
-                        _selectedDish = null;
-                      }),
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surfaceContainerLow,
+                        border: Border(bottom: BorderSide(color: Theme.of(context).colorScheme.outlineVariant, width: 0.5)),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CountrySelector(
+                            showAll: true,
+                            countries: countries,
+                            selectedCountryId: _selectedCountryId,
+                            onChanged: (v) => setState(() {
+                              _selectedCountryId = v;
+                              _selectedDish = null;
+                            }),
+                          ),
+                          const SizedBox(height: 8),
+                          DishFilterBar(
+                            selectedMealType: _selectedMealType,
+                            dishCount: filtered.length,
+                            onMealTypeChanged: (v) => setState(() {
+                              _selectedMealType = v;
+                              _selectedDish = null;
+                            }),
+                          ),
+                        ],
+                      ),
                     ),
                     Expanded(
                       child: DishWheel(

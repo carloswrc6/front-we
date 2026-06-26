@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:frontwe/domain/entities/country.dart';
 import 'package:frontwe/domain/entities/dish.dart';
 import 'package:frontwe/l10n/app_localizations.dart';
 import 'package:frontwe/presentation/dishes/providers/dish_providers.dart';
 import 'package:frontwe/presentation/dishes/widgets/detail_sheet.dart';
+import 'package:frontwe/presentation/dishes/widgets/filter_bar.dart';
 import 'package:frontwe/presentation/shared/widgets/BottomNavBar.dart';
 import 'package:frontwe/presentation/shared/widgets/SideMenu.dart';
+import 'package:frontwe/presentation/shared/widgets/country_selector.dart';
 
 class PlatosScreen extends ConsumerStatefulWidget {
   const PlatosScreen({super.key});
@@ -51,28 +52,58 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen> {
                 return d.name.toLowerCase().contains(_searchQuery);
               }).toList();
 
-              final mealTypes = ['breakfast', 'lunch', 'dinner'];
-              final mealTypeIcons = <String, IconData>{
-                'breakfast': Icons.free_breakfast,
-                'lunch': Icons.restaurant,
-                'dinner': Icons.dinner_dining,
-              };
-
               return Column(
                 children: [
-                  _FilterHeader(
-                    cs: cs,
-                    t: t,
-                    countries: countries,
-                    searchController: _searchController,
-                    selectedCountryId: _selectedCountryId,
-                    selectedMealType: _selectedMealType,
-                    mealTypes: mealTypes,
-                    mealTypeIcons: mealTypeIcons,
-                    dishCount: filtered.length,
-                    onSearchChanged: (v) => setState(() => _searchQuery = v.toLowerCase()),
-                    onCountryChanged: (v) => setState(() => _selectedCountryId = v),
-                    onMealTypeChanged: (v) => setState(() => _selectedMealType = v),
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                    decoration: BoxDecoration(
+                      color: cs.surfaceContainerLow,
+                      border: Border(bottom: BorderSide(color: cs.outlineVariant, width: 0.5)),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              flex: 3,
+                              child: TextField(
+                                controller: _searchController,
+                                decoration: InputDecoration(
+                                  hintText: t.searchDishes,
+                                  prefixIcon: const Icon(Icons.search, size: 20),
+                                  filled: true,
+                                  fillColor: cs.surface,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                  isDense: true,
+                                ),
+                                onChanged: (v) => setState(() => _searchQuery = v.toLowerCase()),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              flex: 2,
+                              child: CountrySelector(
+                                showAll: true,
+                                countries: countries,
+                                selectedCountryId: _selectedCountryId,
+                                onChanged: (v) => setState(() => _selectedCountryId = v),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        DishFilterBar(
+                          selectedMealType: _selectedMealType,
+                          dishCount: filtered.length,
+                          onMealTypeChanged: (v) => setState(() => _selectedMealType = v),
+                        ),
+                      ],
+                    ),
                   ),
                   Expanded(
                     child: filtered.isEmpty
@@ -199,154 +230,5 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen> {
         ),
       ],
     );
-  }
-}
-
-class _FilterHeader extends StatelessWidget {
-  final ColorScheme cs;
-  final AppLocalizations t;
-  final List<Country> countries;
-  final TextEditingController searchController;
-  final String? selectedCountryId;
-  final String? selectedMealType;
-  final List<String> mealTypes;
-  final Map<String, IconData> mealTypeIcons;
-  final int dishCount;
-  final ValueChanged<String> onSearchChanged;
-  final ValueChanged<String?> onCountryChanged;
-  final ValueChanged<String?> onMealTypeChanged;
-
-  const _FilterHeader({
-    required this.cs,
-    required this.t,
-    required this.countries,
-    required this.searchController,
-    required this.selectedCountryId,
-    required this.selectedMealType,
-    required this.mealTypes,
-    required this.mealTypeIcons,
-    required this.dishCount,
-    required this.onSearchChanged,
-    required this.onCountryChanged,
-    required this.onMealTypeChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainerLow,
-        border: Border(bottom: BorderSide(color: cs.outlineVariant, width: 0.5)),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                flex: 3,
-                child: TextField(
-                  controller: searchController,
-                  decoration: InputDecoration(
-                    hintText: t.searchDishes,
-                    prefixIcon: const Icon(Icons.search, size: 20),
-                    filled: true,
-                    fillColor: cs.surface,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    isDense: true,
-                  ),
-                  onChanged: onSearchChanged,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                flex: 2,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  decoration: BoxDecoration(
-                    color: cs.surface,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: DropdownButton<String>(
-                    value: selectedCountryId,
-                    isExpanded: true,
-                    underline: const SizedBox.shrink(),
-                    hint: Text(t.filterCountry, style: const TextStyle(fontSize: 13)),
-                    icon: const Icon(Icons.expand_more, size: 18),
-                    items: [
-                      DropdownMenuItem(value: null, child: Text(t.filterAll, style: const TextStyle(fontSize: 13))),
-                      ...countries.map((c) => DropdownMenuItem(
-                        value: c.id,
-                        child: Text(c.name, style: const TextStyle(fontSize: 13)),
-                      )),
-                    ],
-                    onChanged: onCountryChanged,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    spacing: 6,
-                    children: mealTypes.map((mt) {
-                      final selected = selectedMealType == mt;
-                      return FilterChip(
-                        label: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(mealTypeIcons[mt], size: 14),
-                            const SizedBox(width: 4),
-                            Text(_mealTypeLabel(mt), style: const TextStyle(fontSize: 12)),
-                          ],
-                        ),
-                        selected: selected,
-                        visualDensity: VisualDensity.compact,
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        onSelected: (_) => onMealTypeChanged(selected ? null : mt),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                decoration: BoxDecoration(
-                  color: cs.primaryContainer,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  '$dishCount',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: cs.onPrimaryContainer),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  String _mealTypeLabel(String mealType) {
-    switch (mealType) {
-      case 'breakfast':
-        return t.mealTypeBreakfast;
-      case 'lunch':
-        return t.mealTypeLunch;
-      case 'dinner':
-        return t.mealTypeDinner;
-      default:
-        return mealType;
-    }
   }
 }

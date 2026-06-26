@@ -1,23 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:frontwe/domain/entities/country.dart';
 import 'package:frontwe/l10n/app_localizations.dart';
-import 'package:frontwe/presentation/shared/widgets/country_selector.dart';
 
 class DishFilterBar extends StatelessWidget {
-  final List<Country> countries;
-  final String? selectedCountryId;
   final String? selectedMealType;
   final int dishCount;
-  final ValueChanged<String?> onCountryChanged;
   final ValueChanged<String?> onMealTypeChanged;
 
   const DishFilterBar({
     super.key,
-    required this.countries,
-    required this.selectedCountryId,
     required this.selectedMealType,
     this.dishCount = 0,
-    required this.onCountryChanged,
     required this.onMealTypeChanged,
   });
 
@@ -32,59 +24,46 @@ class DishFilterBar extends StatelessWidget {
       'dinner': Icons.dinner_dining,
     };
 
-    return Container(
-      padding: const EdgeInsets.fromLTRB(25, 15, 25, 15),
-      decoration: BoxDecoration(color: cs.surfaceContainerLow),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: CountrySelector(
-                  showAll: false,
-                  countries: countries,
-                  selectedCountryId: selectedCountryId,
-                  onChanged: onCountryChanged,
-                ),
-              ),
-              if (dishCount > 0)
-                Padding(
-                  padding: const EdgeInsets.only(left: 8),
-                  child: Chip(
-                    label: Text(
-                      '$dishCount',
-                      style: const TextStyle(fontSize: 12),
-                    ),
-                    visualDensity: VisualDensity.compact,
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  ),
-                ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Center(
-            child: Wrap(
-              spacing: 8,
+    return Row(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              spacing: 6,
               children: mealTypes.map((mt) {
                 final selected = selectedMealType == mt;
-                return ChoiceChip(
+                return FilterChip(
                   label: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(mealTypeIcons[mt], size: 16),
+                      Icon(mealTypeIcons[mt], size: 14),
                       const SizedBox(width: 4),
-                      Text(_mealTypeLabel(t, mt)),
+                      Text(_mealTypeLabel(t, mt), style: const TextStyle(fontSize: 12)),
                     ],
                   ),
                   selected: selected,
                   visualDensity: VisualDensity.compact,
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   onSelected: (_) => onMealTypeChanged(selected ? null : mt),
                 );
               }).toList(),
             ),
           ),
-        ],
-      ),
+        ),
+        const SizedBox(width: 8),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+          decoration: BoxDecoration(
+            color: cs.primaryContainer,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Text(
+            '$dishCount',
+            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: cs.onPrimaryContainer),
+          ),
+        ),
+      ],
     );
   }
 
