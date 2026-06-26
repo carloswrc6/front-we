@@ -5,9 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
 import 'package:frontwe/domain/entities/dish.dart';
 import 'package:frontwe/l10n/app_localizations.dart';
-import 'package:frontwe/presentation/dishes/widgets/dish_result_card.dart';
 import 'package:frontwe/presentation/dishes/widgets/dish_detail_sheet.dart';
-import 'package:frontwe/presentation/dishes/widgets/dish_list_preview.dart';
+import 'package:frontwe/presentation/dishes/widgets/dish_result_card.dart';
 
 class DishWheel extends StatefulWidget {
   final List<Dish> dishes;
@@ -210,11 +209,6 @@ class DishWheelState extends State<DishWheel> {
                         ),
                       ),
               ),
-              if (widget.selectedDish != null)
-                DishListPreview(
-                  dishes: dishes,
-                  onViewList: widget.onViewList,
-                ),
               const SizedBox(height: 24),
             ],
           ),
