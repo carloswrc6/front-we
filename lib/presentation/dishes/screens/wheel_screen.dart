@@ -111,6 +111,8 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                           _selectedCountryId = v;
                           _selectedDish = null;
                         }),
+                        rightAligned: true,
+                        menuAlignment: AlignmentDirectional.centerEnd,
                       ),
                       bottomChild: DishFilterBar(
                         selectedMealType: _selectedMealType,

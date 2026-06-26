@@ -15,6 +15,9 @@ class CountrySelector extends StatelessWidget {
   final bool showAll;
   final bool compact;
   final double horizontalPadding;
+  final AlignmentGeometry menuAlignment;
+  final double? menuWidth;
+  final bool rightAligned;
 
   const CountrySelector({
     super.key,
@@ -24,6 +27,9 @@ class CountrySelector extends StatelessWidget {
     this.showAll = true,
     this.compact = false,
     this.horizontalPadding = 4,
+    this.menuAlignment = AlignmentDirectional.centerStart,
+    this.menuWidth,
+    this.rightAligned = false,
   });
 
   @override
@@ -58,32 +64,43 @@ class CountrySelector extends StatelessWidget {
       ));
     }
 
-    final screenWidth = MediaQuery.of(context).size.width;
+    final double? effectiveMenuWidth;
+    if (menuWidth != null) {
+      effectiveMenuWidth = menuWidth;
+    } else {
+      effectiveMenuWidth = MediaQuery.of(context).size.width - 32;
+    }
+
+    final dropdown = DropdownButtonHideUnderline(
+      child: DropdownButton<String?>(
+        key: ValueKey('country_selector_${countries.length}'),
+        value: selectedCountryId,
+        isExpanded: !rightAligned,
+        menuWidth: effectiveMenuWidth,
+        hint: Padding(
+          padding: EdgeInsets.only(left: horizontalPadding),
+          child: Text(t.filterCountry, style: const TextStyle(fontSize: 14)),
+        ),
+        icon: Padding(
+          padding: EdgeInsets.only(right: horizontalPadding),
+          child: const Icon(Icons.expand_more, size: 18),
+        ),
+        items: items,
+        selectedItemBuilder: (context) => selectedWidgets,
+        alignment: menuAlignment,
+        onChanged: onChanged,
+      ),
+    );
 
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: cs.outline),
         borderRadius: BorderRadius.circular(4),
       ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String?>(
-          key: ValueKey('country_selector_${countries.length}'),
-          value: selectedCountryId,
-          isExpanded: true,
-          menuWidth: screenWidth - 32,
-          hint: Padding(
-            padding: EdgeInsets.only(left: horizontalPadding),
-            child: Text(t.filterCountry, style: const TextStyle(fontSize: 14)),
-          ),
-          icon: Padding(
-            padding: EdgeInsets.only(right: horizontalPadding),
-            child: const Icon(Icons.expand_more, size: 18),
-          ),
-          items: items,
-          selectedItemBuilder: (context) => selectedWidgets,
-          onChanged: onChanged,
-        ),
-      ),
+      width: rightAligned ? double.infinity : null,
+      child: rightAligned
+          ? Align(alignment: Alignment.centerRight, child: dropdown)
+          : dropdown,
     );
   }
 }
