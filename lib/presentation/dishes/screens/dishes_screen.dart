@@ -7,6 +7,7 @@ import 'package:frontwe/presentation/dishes/screens/dish_list_screen.dart';
 import 'package:frontwe/presentation/dishes/widgets/dish_filter_bar.dart';
 import 'package:frontwe/presentation/dishes/widgets/dish_wheel.dart';
 import 'package:frontwe/presentation/shared/widgets/SideMenu.dart';
+import 'package:frontwe/presentation/dishes/widgets/dishes_screen_skeleton.dart';
 
 class DishesScreen extends ConsumerStatefulWidget {
   static const int maxWheelItems = 4;
@@ -32,8 +33,9 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
     return Scaffold(
       drawer: const SideMenu(),
       appBar: AppBar(title: Text(t.menuDishes)),
+      // body: const DishesScreenSkeleton(),
       body: dishesAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const DishesScreenSkeleton(),
         error: (err, _) => Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -74,7 +76,6 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
               ),
             );
           }
-
           return countriesAsync.when(
             loading: () => const LinearProgressIndicator(),
             error: (err, _) => Center(child: Text('Error: $err')),
@@ -85,12 +86,10 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                 final peru = countries.where((c) => c.code == 'PE').firstOrNull;
                 if (peru != null) _selectedCountryId = peru.id;
               }
-
               final filtered = _filter(dishes);
               if (filtered.length == 1) {
                 _selectedDish ??= filtered.first;
               }
-
               return RefreshIndicator(
                 onRefresh: () async {
                   ref.invalidate(localDishesProvider);
