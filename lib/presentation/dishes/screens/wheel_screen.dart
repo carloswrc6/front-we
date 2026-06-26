@@ -103,6 +103,7 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                   children: [
                     FilterContainer(
                       topChild: CountrySelector(
+                        horizontalPadding: 12,
                         showAll: true,
                         countries: countries,
                         selectedCountryId: _selectedCountryId,

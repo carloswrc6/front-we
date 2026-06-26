@@ -14,6 +14,7 @@ class CountrySelector extends StatelessWidget {
   final ValueChanged<String?> onChanged;
   final bool showAll;
   final bool compact;
+  final double horizontalPadding;
 
   const CountrySelector({
     super.key,
@@ -22,6 +23,7 @@ class CountrySelector extends StatelessWidget {
     required this.onChanged,
     this.showAll = true,
     this.compact = false,
+    this.horizontalPadding = 4,
   });
 
   @override
@@ -39,7 +41,7 @@ class CountrySelector extends StatelessWidget {
       selectedWidgets.add(Align(
         alignment: Alignment.centerLeft,
         child: Padding(
-          padding: const EdgeInsets.only(left: 4),
+          padding: EdgeInsets.only(left: horizontalPadding),
           child: Text(t.filterAll, style: textStyle),
         ),
       ));
@@ -50,7 +52,7 @@ class CountrySelector extends StatelessWidget {
       selectedWidgets.add(Align(
         alignment: Alignment.centerLeft,
         child: Padding(
-          padding: const EdgeInsets.only(left: 4),
+          padding: EdgeInsets.only(left: horizontalPadding),
           child: Text('${_codeToFlag(c.code)} ${compact ? c.code : c.name}', style: textStyle),
         ),
       ));
@@ -70,12 +72,12 @@ class CountrySelector extends StatelessWidget {
           isExpanded: true,
           menuWidth: screenWidth - 32,
           hint: Padding(
-            padding: const EdgeInsets.only(left: 4),
+            padding: EdgeInsets.only(left: horizontalPadding),
             child: Text(t.filterCountry, style: const TextStyle(fontSize: 14)),
           ),
-          icon: const Padding(
-            padding: EdgeInsets.only(right: 4),
-            child: Icon(Icons.expand_more, size: 18),
+          icon: Padding(
+            padding: EdgeInsets.only(right: horizontalPadding),
+            child: const Icon(Icons.expand_more, size: 18),
           ),
           items: items,
           selectedItemBuilder: (context) => selectedWidgets,
