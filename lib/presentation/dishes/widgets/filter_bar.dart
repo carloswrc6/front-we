@@ -80,3 +80,34 @@ class DishFilterBar extends StatelessWidget {
     }
   }
 }
+
+class FilterContainer extends StatelessWidget {
+  final Widget topChild;
+  final Widget bottomChild;
+
+  const FilterContainer({
+    super.key,
+    required this.topChild,
+    required this.bottomChild,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+      decoration: BoxDecoration(
+        color: cs.surfaceContainerLow,
+        border: Border(bottom: BorderSide(color: cs.outlineVariant, width: 0.5)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          topChild,
+          const SizedBox(height: 8),
+          bottomChild,
+        ],
+      ),
+    );
+  }
+}

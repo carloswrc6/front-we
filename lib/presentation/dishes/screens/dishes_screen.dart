@@ -9,6 +9,7 @@ import 'package:frontwe/presentation/shared/widgets/BottomNavBar.dart';
 import 'package:frontwe/presentation/shared/widgets/SideMenu.dart';
 import 'package:frontwe/presentation/shared/widgets/country_selector.dart';
 
+
 class PlatosScreen extends ConsumerStatefulWidget {
   const PlatosScreen({super.key});
 
@@ -54,55 +55,44 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen> {
 
               return Column(
                 children: [
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-                    decoration: BoxDecoration(
-                      color: cs.surfaceContainerLow,
-                      border: Border(bottom: BorderSide(color: cs.outlineVariant, width: 0.5)),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
+                  FilterContainer(
+                    topChild: Row(
                       children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              flex: 3,
-                              child: TextField(
-                                controller: _searchController,
-                                decoration: InputDecoration(
-                                  hintText: t.searchDishes,
-                                  prefixIcon: const Icon(Icons.search, size: 20),
-                                  filled: true,
-                                  fillColor: cs.surface,
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                  isDense: true,
-                                ),
-                                onChanged: (v) => setState(() => _searchQuery = v.toLowerCase()),
+                        Expanded(
+                          flex: 3,
+                          child: TextField(
+                            controller: _searchController,
+                            decoration: InputDecoration(
+                              hintText: t.searchDishes,
+                              prefixIcon: const Icon(Icons.search, size: 20),
+                              filled: true,
+                              fillColor: cs.surface,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide.none,
                               ),
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              isDense: true,
                             ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              flex: 2,
-                              child: CountrySelector(
-                                showAll: true,
-                                countries: countries,
-                                selectedCountryId: _selectedCountryId,
-                                onChanged: (v) => setState(() => _selectedCountryId = v),
-                              ),
-                            ),
-                          ],
+                            onChanged: (v) => setState(() => _searchQuery = v.toLowerCase()),
+                          ),
                         ),
-                        const SizedBox(height: 8),
-                        DishFilterBar(
-                          selectedMealType: _selectedMealType,
-                          dishCount: filtered.length,
-                          onMealTypeChanged: (v) => setState(() => _selectedMealType = v),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          flex: 2,
+                          child: CountrySelector(
+                            showAll: true,
+                            countries: countries,
+                            selectedCountryId: _selectedCountryId,
+                            onChanged: (v) => setState(() => _selectedCountryId = v),
+                          ),
                         ),
                       ],
+                    ),
+                    bottomChild: DishFilterBar(
+                      selectedMealType: _selectedMealType,
+                      dishCount: filtered.length,
+                      onMealTypeChanged: (v) => setState(() => _selectedMealType = v),
                     ),
                   ),
                   Expanded(
