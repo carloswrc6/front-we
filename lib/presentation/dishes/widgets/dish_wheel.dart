@@ -14,7 +14,8 @@ class DishWheel extends StatefulWidget {
   final Dish? selectedDish;
   final bool fromSpin;
   final ValueChanged<Dish> onSpinResult;
-  final ValueChanged<Dish> onTapResult;
+  final ValueChanged<Dish?> onTapResult;
+  final VoidCallback? onSpinStart;
   final VoidCallback? onViewList;
 
   const DishWheel({
@@ -25,6 +26,7 @@ class DishWheel extends StatefulWidget {
     required this.fromSpin,
     required this.onSpinResult,
     required this.onTapResult,
+    this.onSpinStart,
     this.onViewList,
   });
 
@@ -61,6 +63,7 @@ class DishWheelState extends State<DishWheel> with SingleTickerProviderStateMixi
 
   void spin() {
     if (widget.dishes.isEmpty) return;
+    widget.onSpinStart?.call();
     _targetIndex = _random.nextInt(widget.dishes.length);
     _visualIndex = _targetIndex < widget.maxWheelItems
         ? _targetIndex
@@ -79,11 +82,16 @@ class DishWheelState extends State<DishWheel> with SingleTickerProviderStateMixi
     if (angle < 0) angle += 2 * pi;
 
     final segmentAngle = 2 * pi / segmentCount;
-    final rawIndex = (angle / segmentAngle).floor() % segmentCount;
+    final rawIndex = ((angle + segmentAngle / 2) / segmentAngle).floor() % segmentCount;
     final adjustedIndex = (rawIndex + _visualIndex) % segmentCount;
 
     if (adjustedIndex < displayDishes.length) {
-      widget.onTapResult(displayDishes[adjustedIndex]);
+      final tapped = displayDishes[adjustedIndex];
+      if (widget.selectedDish == tapped) {
+        widget.onTapResult(null);
+      } else {
+        widget.onTapResult(tapped);
+      }
     }
   }
 
@@ -231,7 +239,14 @@ class DishWheelState extends State<DishWheel> with SingleTickerProviderStateMixi
             children: [
               const SizedBox(height: 8),
               GestureDetector(
-                onTap: () => DishDetailSheet.show(context, dish),
+                onTap: () {
+                  if (widget.selectedDish == dish) {
+                    widget.onTapResult(null);
+                  } else {
+                    widget.onTapResult(dish);
+                    DishDetailSheet.show(context, dish);
+                  }
+                },
                 child: Container(
                   width: wheelSize,
                   height: wheelSize,

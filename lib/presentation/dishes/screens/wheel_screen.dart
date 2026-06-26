@@ -127,6 +127,9 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                           _fromSpin = false;
                           _selectedDish = dish;
                         }),
+                        onSpinStart: () => setState(() {
+                          _selectedDish = null;
+                        }),
                         onViewList: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
