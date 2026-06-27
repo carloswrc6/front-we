@@ -36,25 +36,20 @@ class CountrySelector extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     const textStyle = TextStyle(fontSize: 14);
 
-    final items = <DropdownMenuItem<String?>>[];
+    final items = <PopupMenuItem<String?>>[];
     final displayTexts = <Widget>[];
 
     if (showAll) {
-      items.add(DropdownMenuItem<String?>(value: null, child: Text(t.filterAll, style: textStyle)));
+      items.add(PopupMenuItem<String?>(value: null, child: Text(t.filterAll, style: textStyle)));
       displayTexts.add(Text(t.filterAll, style: textStyle));
     }
 
     for (final c in countries) {
-      items.add(DropdownMenuItem<String?>(value: c.id, child: Text('${_codeToFlag(c.code)} ${c.name}', style: textStyle)));
+      items.add(PopupMenuItem<String?>(value: c.id, child: Text('${_codeToFlag(c.code)} ${c.name}', style: textStyle)));
       displayTexts.add(Text('${_codeToFlag(c.code)} ${compact ? c.code : c.name}', style: textStyle));
     }
 
-    final double? effectiveMenuWidth;
-    if (menuWidth != null) {
-      effectiveMenuWidth = menuWidth;
-    } else {
-      effectiveMenuWidth = MediaQuery.of(context).size.width - 32;
-    }
+    final double effectiveMenuWidth = menuWidth ?? MediaQuery.of(context).size.width - 32;
 
     final selectedIdx = selectedCountryId == null
         ? (showAll ? 0 : -1)
@@ -64,79 +59,55 @@ class CountrySelector extends StatelessWidget {
         ? displayTexts[selectedIdx]
         : Text(t.filterCountry, style: textStyle);
 
-    if (rightAligned) {
-      return Container(
+    return GestureDetector(
+      onTap: () {
+        final RenderBox box = context.findRenderObject()! as RenderBox;
+        final Offset bottomRight = box.localToGlobal(
+          Offset(box.size.width, box.size.height),
+        );
+        final Offset bottomLeft = box.localToGlobal(
+          Offset(0, box.size.height),
+        );
+        showMenu<String?>(
+          context: context,
+          position: rightAligned
+              ? RelativeRect.fromLTRB(
+                  bottomRight.dx - effectiveMenuWidth,
+                  bottomRight.dy,
+                  bottomRight.dx,
+                  bottomRight.dy,
+                )
+              : RelativeRect.fromLTRB(
+                  bottomLeft.dx,
+                  bottomLeft.dy,
+                  bottomLeft.dx + effectiveMenuWidth,
+                  bottomLeft.dy,
+                ),
+          items: items,
+          initialValue: selectedCountryId,
+        ).then((v) {
+          if (v != null) onChanged(v);
+        });
+      },
+      child: Container(
         decoration: BoxDecoration(
           border: Border.all(color: cs.outline),
           borderRadius: BorderRadius.circular(4),
         ),
-        width: double.infinity,
+        width: rightAligned ? double.infinity : null,
         constraints: const BoxConstraints(minHeight: 48),
-        child: Stack(
-          alignment: Alignment.center,
+        child: Row(
           children: [
-            Row(
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(left: horizontalPadding),
-                  child: currentDisplay,
-                ),
-                const Spacer(),
-                Padding(
-                  padding: EdgeInsets.only(right: horizontalPadding),
-                  child: const Icon(Icons.expand_more, size: 18),
-                ),
-              ],
+            Padding(
+              padding: EdgeInsets.only(left: horizontalPadding),
+              child: currentDisplay,
             ),
-            Positioned.fill(
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String?>(
-                  key: ValueKey('country_selector_${countries.length}'),
-                  value: selectedCountryId,
-                  isExpanded: true,
-                  menuWidth: effectiveMenuWidth,
-                  hint: const SizedBox.shrink(),
-                  icon: const SizedBox.shrink(),
-                  items: items,
-                  selectedItemBuilder: (_) =>
-                      List.filled(items.length, const SizedBox.shrink()),
-                  onChanged: onChanged,
-                ),
-              ),
+            const Spacer(),
+            Padding(
+              padding: EdgeInsets.only(right: horizontalPadding),
+              child: const Icon(Icons.expand_more, size: 18),
             ),
           ],
-        ),
-      );
-    }
-
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: cs.outline),
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String?>(
-          key: ValueKey('country_selector_${countries.length}'),
-          value: selectedCountryId,
-          isExpanded: true,
-          menuWidth: effectiveMenuWidth,
-          hint: Padding(
-            padding: EdgeInsets.only(left: horizontalPadding),
-            child: Text(t.filterCountry, style: const TextStyle(fontSize: 14)),
-          ),
-          icon: Padding(
-            padding: EdgeInsets.only(right: horizontalPadding),
-            child: const Icon(Icons.expand_more, size: 18),
-          ),
-          items: items,
-          selectedItemBuilder: (context) => displayTexts.map((t) => Align(
-            alignment: Alignment.centerLeft,
-            child: Padding(
-              padding: EdgeInsets.only(left: horizontalPadding),
-              child: t,
-            ),
-          )).toList(),
-          onChanged: onChanged,
         ),
       ),
     );
