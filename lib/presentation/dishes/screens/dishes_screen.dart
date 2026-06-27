@@ -17,15 +17,31 @@ class PlatosScreen extends ConsumerStatefulWidget {
   ConsumerState<PlatosScreen> createState() => _PlatosScreenState();
 }
 
-class _PlatosScreenState extends ConsumerState<PlatosScreen> {
+class _PlatosScreenState extends ConsumerState<PlatosScreen>
+    with SingleTickerProviderStateMixin {
   final _searchController = TextEditingController();
   String _searchQuery = '';
   String? _selectedCountryId;
   String? _selectedMealType;
+  late AnimationController _pulseController;
+  late Animation<double> _pulseAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    )..repeat(reverse: true);
+    _pulseAnimation = Tween<double>(begin: 0.95, end: 1.05).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+    );
+  }
 
   @override
   void dispose() {
     _searchController.dispose();
+    _pulseController.dispose();
     super.dispose();
   }
 
@@ -43,6 +59,33 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen> {
         return Scaffold(
           drawer: const SideMenu(),
           appBar: AppBar(title: Text(t.platosTitle)),
+          floatingActionButton: AnimatedBuilder(
+            animation: _pulseAnimation,
+            builder: (context, child) {
+              return Transform.scale(
+                scale: _pulseAnimation.value,
+                child: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: cs.primary,
+                    boxShadow: [
+                      BoxShadow(
+                        color: cs.primary.withValues(alpha: 0.4),
+                        blurRadius: 12,
+                        spreadRadius: 2,
+                      ),
+                    ],
+                  ),
+                  child: IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.add),
+                    color: cs.onPrimary,
+                    tooltip: 'Add dish',
+                  ),
+                ),
+              );
+            },
+          ),
           bottomNavigationBar: const BottomNavBar(),
           body: countriesAsync.when(
             loading: () => const LinearProgressIndicator(),

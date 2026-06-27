@@ -35,7 +35,7 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
 
     return Scaffold(
       drawer: const SideMenu(),
-      appBar: AppBar(title: Text(t.menuDishes)),
+      appBar: AppBar(title: Text(t.menuWheel)),
       bottomNavigationBar: const BottomNavBar(),
       // body: const DishesScreenSkeleton(),
       body: dishesAsync.when(
