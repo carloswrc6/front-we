@@ -7,7 +7,7 @@ import 'package:frontwe/presentation/dishes/widgets/detail_sheet.dart';
 import 'package:frontwe/presentation/dishes/widgets/filter_bar.dart';
 import 'package:frontwe/presentation/shared/widgets/BottomNavBar.dart';
 import 'package:frontwe/presentation/shared/widgets/SideMenu.dart';
-import 'package:frontwe/presentation/shared/widgets/country_selector.dart';
+import 'package:frontwe/presentation/shared/widgets/CountrySelector.dart';
 
 
 class PlatosScreen extends ConsumerStatefulWidget {

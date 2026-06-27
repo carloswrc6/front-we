@@ -9,7 +9,7 @@ import 'package:frontwe/presentation/dishes/widgets/dish_wheel.dart';
 import 'package:frontwe/presentation/dishes/widgets/skeleton/screen_skeleton.dart';
 import 'package:frontwe/presentation/shared/widgets/BottomNavBar.dart';
 import 'package:frontwe/presentation/shared/widgets/SideMenu.dart';
-import 'package:frontwe/presentation/shared/widgets/country_selector.dart';
+import 'package:frontwe/presentation/shared/widgets/CountrySelector.dart';
 
 
 class DishesScreen extends ConsumerStatefulWidget {
