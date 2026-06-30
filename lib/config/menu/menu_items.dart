@@ -37,7 +37,7 @@ const appMenuItems = <MenuItem>[
     titleKey: 'prohibidos',
     subTitleKey: 'prohibidosSubtitle',
     link: '/prohibidos',
-    icon: Icons.block,
+    icon: Icons.thumb_down,
   ),
   MenuItem(
     titleKey: 'history',

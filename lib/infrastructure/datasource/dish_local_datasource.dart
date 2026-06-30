@@ -5,7 +5,11 @@ import 'package:frontwe/domain/entities/country.dart';
 class DishLocalDatasource {
   final LocalDbService _db = LocalDbService.instance;
 
-  Map<String, dynamic> _dishToRow(Dish d, String now, {required bool isUserCreated, required bool isFavorite}) => {
+  Map<String, dynamic> _dishToRow(Dish d, String now,
+      {required bool isUserCreated,
+      required bool isFavorite,
+      required bool isAvoided,
+      String? avoidReason}) => {
     'id': d.id,
     'name': d.name,
     'image': d.image,
@@ -17,28 +21,36 @@ class DishLocalDatasource {
     'synced_at': now,
     'is_user_created': isUserCreated ? 1 : 0,
     'is_favorite': isFavorite ? 1 : 0,
+    'is_avoided': isAvoided ? 1 : 0,
+    'avoid_reason': avoidReason,
   };
 
   Future<void> saveDishes(List<Dish> dishes) async {
     print('[saveDishes] saving ${dishes.length} dishes to SQLite...');
 
     final existing = await getDishes();
-    final existingFavorites = {for (final d in existing) d.id: d.isFavorite};
-    final userCreated = existing.where((d) => d.isUserCreated).toList();
+    final existingMap = {
+      for (final d in existing) d.id: d,
+    };
 
     final now = DateTime.now().toIso8601String();
     final dishRows = dishes.map((d) {
+      final existing = existingMap[d.id];
       return _dishToRow(d, now,
         isUserCreated: false,
-        isFavorite: existingFavorites[d.id] ?? false,
+        isFavorite: existing?.isFavorite ?? false,
+        isAvoided: existing?.isAvoided ?? false,
+        avoidReason: existing?.avoidReason,
       );
     }).toList();
 
-    for (final d in userCreated) {
-      if (!dishes.any((api) => api.id == d.id)) {
+    for (final d in existing) {
+      if (d.isUserCreated && !dishes.any((api) => api.id == d.id)) {
         dishRows.add(_dishToRow(d, now,
           isUserCreated: true,
           isFavorite: d.isFavorite,
+          isAvoided: d.isAvoided,
+          avoidReason: d.avoidReason,
         ));
       }
     }
@@ -51,7 +63,12 @@ class DishLocalDatasource {
   Future<void> saveUserCreatedDish(Dish dish) async {
     print('[saveUserCreatedDish] saving dish ${dish.id} to SQLite...');
     final now = DateTime.now().toIso8601String();
-    final row = _dishToRow(dish, now, isUserCreated: true, isFavorite: dish.isFavorite);
+    final row = _dishToRow(dish, now,
+      isUserCreated: true,
+      isFavorite: dish.isFavorite,
+      isAvoided: dish.isAvoided,
+      avoidReason: dish.avoidReason,
+    );
     await _db.insertDish(row);
     print('[saveUserCreatedDish] saved');
   }
@@ -61,6 +78,17 @@ class DishLocalDatasource {
     final row = rows.firstWhere((r) => r['id'] == dishId);
     final current = (row['is_favorite'] as int?) == 1;
     await _db.updateDish(dishId, {'is_favorite': current ? 0 : 1});
+  }
+
+  Future<void> toggleAvoided(String dishId) async {
+    final rows = await _db.getAllDishes();
+    final row = rows.firstWhere((r) => r['id'] == dishId);
+    final current = (row['is_avoided'] as int?) == 1;
+    await _db.updateDish(dishId, {'is_avoided': current ? 0 : 1});
+  }
+
+  Future<void> setAvoidReason(String dishId, String? reason) async {
+    await _db.updateDish(dishId, {'avoid_reason': reason});
   }
 
   Future<List<Dish>> getDishes() async {
@@ -79,6 +107,8 @@ class DishLocalDatasource {
         ),
         isUserCreated: (r['is_user_created'] as int?) == 1,
         isFavorite: (r['is_favorite'] as int?) == 1,
+        isAvoided: (r['is_avoided'] as int?) == 1,
+        avoidReason: r['avoid_reason'] as String?,
       );
     }).toList();
   }

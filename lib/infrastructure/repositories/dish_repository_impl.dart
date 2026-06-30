@@ -93,4 +93,14 @@ class DishRepositoryImpl extends DishRepository {
   Future<void> toggleFavorite(String dishId) {
     return localDatasource.toggleFavorite(dishId);
   }
+
+  @override
+  Future<void> toggleAvoided(String dishId) {
+    return localDatasource.toggleAvoided(dishId);
+  }
+
+  @override
+  Future<void> setAvoidReason(String dishId, String? reason) {
+    return localDatasource.setAvoidReason(dishId, reason);
+  }
 }

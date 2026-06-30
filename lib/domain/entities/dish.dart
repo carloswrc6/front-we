@@ -9,6 +9,8 @@ class Dish {
   final Country country;
   final bool isUserCreated;
   final bool isFavorite;
+  final bool isAvoided;
+  final String? avoidReason;
 
   Dish({
     required this.id,
@@ -19,18 +21,7 @@ class Dish {
     required this.country,
     this.isUserCreated = false,
     this.isFavorite = false,
+    this.isAvoided = false,
+    this.avoidReason,
   });
-
-  Dish copyWith({bool? isFavorite}) {
-    return Dish(
-      id: id,
-      name: name,
-      image: image,
-      ingredients: ingredients,
-      mealType: mealType,
-      country: country,
-      isUserCreated: isUserCreated,
-      isFavorite: isFavorite ?? this.isFavorite,
-    );
-  }
 }

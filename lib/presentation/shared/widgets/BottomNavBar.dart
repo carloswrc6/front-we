@@ -43,9 +43,9 @@ class BottomNavBar extends ConsumerWidget {
           label: t.navRuleta,
         ),
         NavigationDestination(
-          icon: const Icon(Icons.block_outlined),
-          selectedIcon: const Icon(Icons.block),
-          label: t.navProhibidos,
+          icon: const Icon(Icons.thumb_down_outlined),
+          selectedIcon: const Icon(Icons.thumb_down),
+          label: t.navAvoid,
         ),
         NavigationDestination(
           icon: const Icon(Icons.history_outlined),

@@ -69,7 +69,7 @@ class _SideMenuState extends ConsumerState<SideMenu> {
         _menuItem(0, Icons.casino, t.menuWheel, t.menuWheelSubtitle, navDrawerIndex),
         _menuItem(1, Icons.dining, t.menuDishes, t.menuDishesSubtitle, navDrawerIndex),
         _menuItem(2, Icons.favorite_border, t.menuFavorites, t.menuFavoritesSubtitle, navDrawerIndex),
-        _menuItem(3, Icons.block, t.menuProhibidos, t.menuProhibidosSubtitle, navDrawerIndex),
+        _menuItem(3, Icons.thumb_down, t.menuAvoid, t.menuAvoidSubtitle, navDrawerIndex),
         _menuItem(4, Icons.history, t.menuHistory, t.menuHistorySubtitle, navDrawerIndex),
 
         const Divider(),

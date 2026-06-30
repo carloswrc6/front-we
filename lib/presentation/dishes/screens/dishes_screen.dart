@@ -160,13 +160,15 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen>
                                 margin: const EdgeInsets.only(bottom: 12),
                                 clipBehavior: Clip.antiAlias,
                                 child: InkWell(
-                                  onDoubleTap: () => _toggleFavorite(dish),
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       AspectRatio(
                                         aspectRatio: 16 / 9,
-                                        child: _dishImage(dish, cs),
+                                        child: GestureDetector(
+                                          onDoubleTap: () => _toggleFavorite(dish),
+                                          child: _dishImage(dish, cs),
+                                        ),
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
@@ -176,13 +178,70 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen>
                                               child: Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
-                                                  Text(
-                                                    dish.name,
-                                                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                                      fontWeight: FontWeight.w600,
-                                                    ),
-                                                    maxLines: 1,
-                                                    overflow: TextOverflow.ellipsis,
+                                                  Row(
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    children: [
+                                                      Container(
+                                                        padding: const EdgeInsets.all(4),
+                                                        decoration: BoxDecoration(
+                                                          color: Colors.grey.withValues(alpha: 0.3),
+                                                          borderRadius: BorderRadius.circular(12),
+                                                        ),
+                                                        child: Icon(
+                                                          dish.isFavorite ? Icons.favorite : Icons.favorite_border,
+                                                          size: 16,
+                                                          color: dish.isFavorite ? Colors.red : Colors.grey,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(width: 4),
+                                                      if (dish.isUserCreated)
+                                                        Container(
+                                                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                                          decoration: BoxDecoration(
+                                                            color: cs.primary.withValues(alpha: 0.85),
+                                                            borderRadius: BorderRadius.circular(12),
+                                                          ),
+                                                          child: Row(
+                                                            mainAxisSize: MainAxisSize.min,
+                                                            children: [
+                                                              Icon(Icons.person, size: 12, color: cs.onPrimary),
+                                                              const SizedBox(width: 3),
+                                                              Text(
+                                                                'Tú',
+                                                                style: TextStyle(fontSize: 10, color: cs.onPrimary, fontWeight: FontWeight.w600),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      if (dish.isUserCreated) const SizedBox(width: 4),
+                                                      GestureDetector(
+                                                        onTap: () => _toggleAvoided(dish),
+                                                        onLongPressStart: (_) => _showAvoidReasonDialog(dish),
+                                                        child: Container(
+                                                          padding: const EdgeInsets.all(4),
+                                                          decoration: BoxDecoration(
+                                                            color: dish.isAvoided ? Colors.blue.withValues(alpha: 0.8) : Colors.grey.withValues(alpha: 0.3),
+                                                            borderRadius: BorderRadius.circular(12),
+                                                          ),
+                                                          child: Icon(
+                                                            dish.isAvoided ? Icons.thumb_down : Icons.thumb_down_outlined,
+                                                            size: 14,
+                                                            color: dish.isAvoided ? Colors.white : Colors.grey,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      const SizedBox(width: 8),
+                                                      Expanded(
+                                                        child: Text(
+                                                          dish.name,
+                                                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                                            fontWeight: FontWeight.w600,
+                                                          ),
+                                                          maxLines: 1,
+                                                          overflow: TextOverflow.ellipsis,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
                                                   const SizedBox(height: 4),
                                                   Text(
@@ -231,6 +290,49 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen>
     ref.invalidate(localDishesProvider);
   }
 
+  Future<void> _toggleAvoided(Dish dish) async {
+    await ref.read(dishRepositoryProvider).toggleAvoided(dish.id);
+    ref.invalidate(localDishesProvider);
+  }
+
+  Future<void> _showAvoidReasonDialog(Dish dish) async {
+    final controller = TextEditingController(text: dish.avoidReason ?? '');
+    final reason = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Motivo'),
+        content: TextField(
+          controller: controller,
+          decoration: const InputDecoration(
+            hintText: '¿Por qué lo evitas?',
+            border: OutlineInputBorder(),
+          ),
+          maxLines: 3,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, '__clear__'),
+            child: const Text('Limpiar'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, controller.text),
+            child: const Text('Guardar'),
+          ),
+        ],
+      ),
+    );
+    if (reason != null) {
+      if (!dish.isAvoided) {
+        await ref.read(dishRepositoryProvider).toggleAvoided(dish.id);
+      }
+      await ref.read(dishRepositoryProvider).setAvoidReason(
+        dish.id,
+        reason == '__clear__' ? null : reason,
+      );
+      ref.invalidate(localDishesProvider);
+    }
+  }
+
   Widget _dishImage(Dish dish, ColorScheme cs) {
     return Stack(
       fit: StackFit.expand,
@@ -256,45 +358,7 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen>
               );
             },
           ),
-        Positioned(
-          top: 8,
-          left: 8,
-          child: Container(
-            padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(
-              color: Colors.black26,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              dish.isFavorite ? Icons.favorite : Icons.favorite_border,
-              color: dish.isFavorite ? Colors.red : Colors.white,
-              size: 20,
-            ),
-          ),
-        ),
-        if (dish.isUserCreated)
-          Positioned(
-            top: 8,
-            right: 8,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-              decoration: BoxDecoration(
-                color: cs.primary.withValues(alpha: 0.85),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.person, size: 12, color: cs.onPrimary),
-                  const SizedBox(width: 3),
-                  Text(
-                    'Tú',
-                    style: TextStyle(fontSize: 10, color: cs.onPrimary, fontWeight: FontWeight.w600),
-                  ),
-                ],
-              ),
-            ),
-          ),
+
       ],
     );
   }

@@ -17,4 +17,6 @@ abstract class DishRepository {
     required String countryId,
   });
   Future<void> toggleFavorite(String dishId);
+  Future<void> toggleAvoided(String dishId);
+  Future<void> setAvoidReason(String dishId, String? reason);
 }
