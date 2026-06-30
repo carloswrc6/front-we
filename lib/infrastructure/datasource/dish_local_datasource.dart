@@ -5,7 +5,7 @@ import 'package:frontwe/domain/entities/country.dart';
 class DishLocalDatasource {
   final LocalDbService _db = LocalDbService.instance;
 
-  Map<String, dynamic> _dishToRow(Dish d, String now, {required bool isUserCreated}) => {
+  Map<String, dynamic> _dishToRow(Dish d, String now, {required bool isUserCreated, required bool isFavorite}) => {
     'id': d.id,
     'name': d.name,
     'image': d.image,
@@ -16,34 +16,51 @@ class DishLocalDatasource {
     'ingredients': d.ingredients.join('||'),
     'synced_at': now,
     'is_user_created': isUserCreated ? 1 : 0,
+    'is_favorite': isFavorite ? 1 : 0,
   };
 
   Future<void> saveDishes(List<Dish> dishes) async {
     print('[saveDishes] saving ${dishes.length} dishes to SQLite...');
 
     final existing = await getDishes();
+    final existingFavorites = {for (final d in existing) d.id: d.isFavorite};
     final userCreated = existing.where((d) => d.isUserCreated).toList();
 
     final now = DateTime.now().toIso8601String();
-    final dishRows = dishes.map(
-      (d) => _dishToRow(d, now, isUserCreated: false),
-    ).toList();
+    final dishRows = dishes.map((d) {
+      return _dishToRow(d, now,
+        isUserCreated: false,
+        isFavorite: existingFavorites[d.id] ?? false,
+      );
+    }).toList();
 
     for (final d in userCreated) {
-      dishRows.add(_dishToRow(d, now, isUserCreated: true));
+      if (!dishes.any((api) => api.id == d.id)) {
+        dishRows.add(_dishToRow(d, now,
+          isUserCreated: true,
+          isFavorite: d.isFavorite,
+        ));
+      }
     }
 
     await _db.clearDishes();
     await _db.insertDishes(dishRows);
-    print('[saveDishes] inserted ${dishRows.length} dishes (${userCreated.length} user-created preserved)');
+    print('[saveDishes] inserted ${dishRows.length} dishes');
   }
 
   Future<void> saveUserCreatedDish(Dish dish) async {
     print('[saveUserCreatedDish] saving dish ${dish.id} to SQLite...');
     final now = DateTime.now().toIso8601String();
-    final row = _dishToRow(dish, now, isUserCreated: true);
+    final row = _dishToRow(dish, now, isUserCreated: true, isFavorite: dish.isFavorite);
     await _db.insertDish(row);
     print('[saveUserCreatedDish] saved');
+  }
+
+  Future<void> toggleFavorite(String dishId) async {
+    final rows = await _db.getAllDishes();
+    final row = rows.firstWhere((r) => r['id'] == dishId);
+    final current = (row['is_favorite'] as int?) == 1;
+    await _db.updateDish(dishId, {'is_favorite': current ? 0 : 1});
   }
 
   Future<List<Dish>> getDishes() async {
@@ -61,6 +78,7 @@ class DishLocalDatasource {
           name: r['country_name'] as String,
         ),
         isUserCreated: (r['is_user_created'] as int?) == 1,
+        isFavorite: (r['is_favorite'] as int?) == 1,
       );
     }).toList();
   }

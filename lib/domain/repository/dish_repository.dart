@@ -16,4 +16,5 @@ abstract class DishRepository {
     required String mealType,
     required String countryId,
   });
+  Future<void> toggleFavorite(String dishId);
 }

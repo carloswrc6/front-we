@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontwe/domain/entities/dish.dart';
 import 'package:frontwe/l10n/app_localizations.dart';
 import 'package:frontwe/presentation/dishes/providers/dish_providers.dart';
-import 'package:frontwe/presentation/dishes/widgets/detail_sheet.dart';
 import 'package:frontwe/presentation/dishes/widgets/filter_bar.dart';
 import 'package:frontwe/presentation/shared/widgets/BottomNavBar.dart';
 import 'package:frontwe/presentation/shared/widgets/SideMenu.dart';
@@ -161,7 +160,7 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen>
                                 margin: const EdgeInsets.only(bottom: 12),
                                 clipBehavior: Clip.antiAlias,
                                 child: InkWell(
-                                  onTap: () => DishDetailSheet.show(context, dish),
+                                  onDoubleTap: () => _toggleFavorite(dish),
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
@@ -227,6 +226,11 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen>
     }).toList();
   }
 
+  Future<void> _toggleFavorite(Dish dish) async {
+    await ref.read(dishRepositoryProvider).toggleFavorite(dish.id);
+    ref.invalidate(localDishesProvider);
+  }
+
   Widget _dishImage(Dish dish, ColorScheme cs) {
     return Stack(
       fit: StackFit.expand,
@@ -252,6 +256,22 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen>
               );
             },
           ),
+        Positioned(
+          top: 8,
+          left: 8,
+          child: Container(
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: Colors.black26,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              dish.isFavorite ? Icons.favorite : Icons.favorite_border,
+              color: dish.isFavorite ? Colors.red : Colors.white,
+              size: 20,
+            ),
+          ),
+        ),
         if (dish.isUserCreated)
           Positioned(
             top: 8,

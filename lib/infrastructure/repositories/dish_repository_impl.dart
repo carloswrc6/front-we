@@ -88,4 +88,9 @@ class DishRepositoryImpl extends DishRepository {
     await localDatasource.saveUserCreatedDish(userDish);
     return userDish;
   }
+
+  @override
+  Future<void> toggleFavorite(String dishId) {
+    return localDatasource.toggleFavorite(dishId);
+  }
 }
