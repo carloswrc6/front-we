@@ -8,6 +8,8 @@ String _codeToFlag(String code) {
   }).join('');
 }
 
+const _allValue = '__all__';
+
 class CountrySelector extends StatelessWidget {
   final List<Country> countries;
   final String? selectedCountryId;
@@ -36,16 +38,16 @@ class CountrySelector extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     const textStyle = TextStyle(fontSize: 14);
 
-    final items = <PopupMenuItem<String?>>[];
+    final items = <PopupMenuItem<String>>[];
     final displayTexts = <Widget>[];
 
     if (showAll) {
-      items.add(PopupMenuItem<String?>(value: null, child: Text(t.filterAll, style: textStyle)));
+      items.add(PopupMenuItem<String>(value: _allValue, child: Text(t.filterAll, style: textStyle)));
       displayTexts.add(Text(t.filterAll, style: textStyle));
     }
 
     for (final c in countries) {
-      items.add(PopupMenuItem<String?>(value: c.id, child: Text('${_codeToFlag(c.code)} ${c.name}', style: textStyle)));
+      items.add(PopupMenuItem<String>(value: c.id, child: Text('${_codeToFlag(c.code)} ${c.name}', style: textStyle)));
       displayTexts.add(Text('${_codeToFlag(c.code)} ${compact ? c.code : c.name}', style: textStyle));
     }
 
@@ -68,7 +70,7 @@ class CountrySelector extends StatelessWidget {
         final Offset bottomLeft = box.localToGlobal(
           Offset(0, box.size.height),
         );
-        showMenu<String?>(
+        showMenu<String>(
           context: context,
           position: rightAligned
               ? RelativeRect.fromLTRB(
@@ -84,9 +86,9 @@ class CountrySelector extends StatelessWidget {
                   bottomLeft.dy,
                 ),
           items: items,
-          initialValue: selectedCountryId,
+          initialValue: selectedCountryId ?? _allValue,
         ).then((v) {
-          if (v != null) onChanged(v);
+          if (v != null) onChanged(v == _allValue ? null : v);
         });
       },
       child: Container(
