@@ -5,36 +5,45 @@ import 'package:frontwe/domain/entities/country.dart';
 class DishLocalDatasource {
   final LocalDbService _db = LocalDbService.instance;
 
+  Map<String, dynamic> _dishToRow(Dish d, String now, {required bool isUserCreated}) => {
+    'id': d.id,
+    'name': d.name,
+    'image': d.image,
+    'meal_type': d.mealType,
+    'country_id': d.country.id,
+    'country_code': d.country.code,
+    'country_name': d.country.name,
+    'ingredients': d.ingredients.join('||'),
+    'synced_at': now,
+    'is_user_created': isUserCreated ? 1 : 0,
+  };
+
   Future<void> saveDishes(List<Dish> dishes) async {
     print('[saveDishes] saving ${dishes.length} dishes to SQLite...');
+
+    final existing = await getDishes();
+    final userCreated = existing.where((d) => d.isUserCreated).toList();
+
     final now = DateTime.now().toIso8601String();
     final dishRows = dishes.map(
-      (d) => {
-        'id': d.id,
-        'name': d.name,
-        'image': d.image,
-        'meal_type': d.mealType,
-        'country_id': d.country.id,
-        'country_code': d.country.code,
-        'country_name': d.country.name,
-        'ingredients': d.ingredients.join('||'),
-        'synced_at': now,
-      },
-    );
+      (d) => _dishToRow(d, now, isUserCreated: false),
+    ).toList();
+
+    for (final d in userCreated) {
+      dishRows.add(_dishToRow(d, now, isUserCreated: true));
+    }
 
     await _db.clearDishes();
-    await _db.insertDishes(dishRows.toList());
-    print('[saveDishes] inserted ${dishes.length} dishes');
+    await _db.insertDishes(dishRows);
+    print('[saveDishes] inserted ${dishRows.length} dishes (${userCreated.length} user-created preserved)');
   }
 
-  Future<void> saveCountries(List<Country> countries) async {
-    print('[saveCountries] saving ${countries.length} countries to SQLite...');
-    final rows = countries
-        .map((c) => {'id': c.id, 'code': c.code, 'name': c.name})
-        .toList();
-    await _db.clearCountries();
-    await _db.insertCountries(rows);
-    print('[saveCountries] inserted ${countries.length} countries');
+  Future<void> saveUserCreatedDish(Dish dish) async {
+    print('[saveUserCreatedDish] saving dish ${dish.id} to SQLite...');
+    final now = DateTime.now().toIso8601String();
+    final row = _dishToRow(dish, now, isUserCreated: true);
+    await _db.insertDish(row);
+    print('[saveUserCreatedDish] saved');
   }
 
   Future<List<Dish>> getDishes() async {
@@ -51,8 +60,19 @@ class DishLocalDatasource {
           code: r['country_code'] as String,
           name: r['country_name'] as String,
         ),
+        isUserCreated: (r['is_user_created'] as int?) == 1,
       );
     }).toList();
+  }
+
+  Future<void> saveCountries(List<Country> countries) async {
+    print('[saveCountries] saving ${countries.length} countries to SQLite...');
+    final rows = countries
+        .map((c) => {'id': c.id, 'code': c.code, 'name': c.name})
+        .toList();
+    await _db.clearCountries();
+    await _db.insertCountries(rows);
+    print('[saveCountries] inserted ${countries.length} countries');
   }
 
   Future<List<Country>> getCountries() async {

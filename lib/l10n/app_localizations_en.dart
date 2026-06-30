@@ -248,4 +248,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get enterCodeDescription => "Enter the code below to continue";
+
+  @override
+  String get createDishTitle => "Add dish";
+  @override
+  String get dishName => "Name";
+  @override
+  String get dishIngredients => "Ingredients (comma-separated)";
+  @override
+  String get dishImage => "Image URL";
+  @override
+  String get dishMealType => "Meal type";
+  @override
+  String get createDish => "Save";
+  @override
+  String get dishCreated => "Dish created successfully";
 }

@@ -3,6 +3,7 @@ import 'package:frontwe/presentation/auth/screens/login_screen.dart';
 import 'package:frontwe/presentation/auth/screens/register_screen.dart';
 import 'package:frontwe/presentation/auth/screens/reset_password_screen.dart';
 import 'package:frontwe/presentation/auth/screens/verify_code_screen.dart';
+import 'package:frontwe/presentation/dishes/screens/create_dish_screen.dart';
 import 'package:frontwe/presentation/dishes/screens/dishes_screen.dart';
 import 'package:frontwe/presentation/favorites/screens/favorites_screen.dart';
 import 'package:frontwe/presentation/history/screens/history_screen.dart';
@@ -86,6 +87,10 @@ final appRouter = GoRouter(
           code: extra['code']!,
         );
       },
+    ),
+    GoRoute(
+      path: '/crear-plato',
+      builder: (context, state) => const CreateDishScreen(),
     ),
     GoRoute(
       path: '/profile',

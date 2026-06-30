@@ -9,4 +9,11 @@ abstract class DishRepository {
   Future<List<Country>> getLocalCountries();
   Future<int> getLocalDishCount();
   Future<bool> hasLocalData();
+  Future<Dish> createDish({
+    required String name,
+    required String image,
+    required List<String> ingredients,
+    required String mealType,
+    required String countryId,
+  });
 }

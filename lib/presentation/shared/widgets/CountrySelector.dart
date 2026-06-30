@@ -86,7 +86,7 @@ class CountrySelector extends StatelessWidget {
                   bottomLeft.dy,
                 ),
           items: items,
-          initialValue: selectedCountryId ?? _allValue,
+          initialValue: showAll ? (selectedCountryId ?? _allValue) : selectedCountryId,
         ).then((v) {
           if (v != null) onChanged(v == _allValue ? null : v);
         });

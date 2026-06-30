@@ -8,6 +8,7 @@ import 'package:frontwe/presentation/dishes/widgets/filter_bar.dart';
 import 'package:frontwe/presentation/shared/widgets/BottomNavBar.dart';
 import 'package:frontwe/presentation/shared/widgets/SideMenu.dart';
 import 'package:frontwe/presentation/shared/widgets/CountrySelector.dart';
+import 'package:go_router/go_router.dart';
 
 
 class PlatosScreen extends ConsumerStatefulWidget {
@@ -77,7 +78,7 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen>
                     ],
                   ),
                   child: IconButton(
-                    onPressed: () {},
+                    onPressed: () => context.push('/crear-plato'),
                     icon: const Icon(Icons.add),
                     color: cs.onPrimary,
                     tooltip: 'Add dish',
@@ -227,42 +228,63 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen>
   }
 
   Widget _dishImage(Dish dish, ColorScheme cs) {
-    if (dish.image.isEmpty) {
-      return Container(
-        color: cs.surfaceContainerHigh,
-        child: Center(
-          child: Icon(Icons.restaurant, size: 48, color: cs.onSurfaceVariant),
-        ),
-      );
-    }
-
     return Stack(
       fit: StackFit.expand,
       children: [
-        Image.network(
-          dish.image,
-          fit: BoxFit.cover,
-          errorBuilder: (_, __, ___) => Container(
-            color: cs.surfaceContainerHigh,
-            child: Center(
-              child: Icon(Icons.restaurant, size: 48, color: cs.onSurfaceVariant),
+        if (dish.image.isEmpty)
+          _imagePlaceholder(cs)
+        else
+          Image.network(
+            dish.image,
+            fit: BoxFit.cover,
+            errorBuilder: (_, __, ___) => _imagePlaceholder(cs),
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) return child;
+              return Container(
+                color: cs.surfaceContainerHigh,
+                child: Center(
+                  child: CircularProgressIndicator(
+                    value: loadingProgress.expectedTotalBytes != null
+                        ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                        : null,
+                  ),
+                ),
+              );
+            },
+          ),
+        if (dish.isUserCreated)
+          Positioned(
+            top: 8,
+            right: 8,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+              decoration: BoxDecoration(
+                color: cs.primary.withValues(alpha: 0.85),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.person, size: 12, color: cs.onPrimary),
+                  const SizedBox(width: 3),
+                  Text(
+                    'Tú',
+                    style: TextStyle(fontSize: 10, color: cs.onPrimary, fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ),
             ),
           ),
-          loadingBuilder: (context, child, loadingProgress) {
-            if (loadingProgress == null) return child;
-            return Container(
-              color: cs.surfaceContainerHigh,
-              child: Center(
-                child: CircularProgressIndicator(
-                  value: loadingProgress.expectedTotalBytes != null
-                      ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
-                      : null,
-                ),
-              ),
-            );
-          },
-        ),
       ],
+    );
+  }
+
+  Widget _imagePlaceholder(ColorScheme cs) {
+    return Container(
+      color: cs.surfaceContainerHigh,
+      child: Center(
+        child: Icon(Icons.restaurant, size: 48, color: cs.onSurfaceVariant),
+      ),
     );
   }
 }

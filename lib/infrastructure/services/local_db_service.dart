@@ -22,7 +22,7 @@ class LocalDbService {
 
     return openDatabase(
       path,
-      version: 2,
+      version: 3,
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE dishes (
@@ -34,7 +34,8 @@ class LocalDbService {
             country_code TEXT NOT NULL,
             country_name TEXT NOT NULL,
             ingredients TEXT NOT NULL,
-            synced_at TEXT NOT NULL
+            synced_at TEXT NOT NULL,
+            is_user_created INTEGER NOT NULL DEFAULT 0
           )
         ''');
         await db.execute('''
@@ -55,6 +56,11 @@ class LocalDbService {
             )
           ''');
         }
+        if (oldVersion < 3) {
+          await db.execute('''
+            ALTER TABLE dishes ADD COLUMN is_user_created INTEGER NOT NULL DEFAULT 0
+          ''');
+        }
       },
     );
   }
@@ -62,6 +68,11 @@ class LocalDbService {
   Future<void> clearDishes() async {
     final db = await database;
     await db.delete('dishes');
+  }
+
+  Future<void> insertDish(Map<String, dynamic> row) async {
+    final db = await database;
+    await db.insert('dishes', row, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<void> insertDishes(List<Map<String, dynamic>> rows) async {

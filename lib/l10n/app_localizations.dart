@@ -138,6 +138,13 @@ abstract class AppLocalizations {
   String get resendCode;
   String get codeSentToEmail;
   String get enterCodeDescription;
+  String get createDishTitle;
+  String get dishName;
+  String get dishIngredients;
+  String get dishImage;
+  String get dishMealType;
+  String get createDish;
+  String get dishCreated;
 }
 
 class _AppLocalizationsDelegate

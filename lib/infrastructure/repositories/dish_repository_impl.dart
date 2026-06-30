@@ -60,4 +60,32 @@ class DishRepositoryImpl extends DishRepository {
   Future<bool> hasLocalData() {
     return localDatasource.hasData();
   }
+
+  @override
+  Future<Dish> createDish({
+    required String name,
+    required String image,
+    required List<String> ingredients,
+    required String mealType,
+    required String countryId,
+  }) async {
+    final dish = await remoteDatasource.createDish(
+      name: name,
+      image: image,
+      ingredients: ingredients,
+      mealType: mealType,
+      countryId: countryId,
+    );
+    final userDish = Dish(
+      id: dish.id,
+      name: dish.name,
+      image: dish.image,
+      ingredients: dish.ingredients,
+      mealType: dish.mealType,
+      country: dish.country,
+      isUserCreated: true,
+    );
+    await localDatasource.saveUserCreatedDish(userDish);
+    return userDish;
+  }
 }

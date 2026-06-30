@@ -26,6 +26,28 @@ class DishDbDatasource extends DishDatasource {
   }
 
   @override
+  Future<Dish> createDish({
+    required String name,
+    required String image,
+    required List<String> ingredients,
+    required String mealType,
+    required String countryId,
+  }) async {
+    final response = await dio.post(
+      '/dishes',
+      data: {
+        'name': name,
+        if (image.isNotEmpty) 'image': image,
+        'ingredients': ingredients,
+        'mealType': mealType,
+        'countryId': countryId,
+      },
+    );
+    final data = response.data['data'] as Map<String, dynamic>;
+    return DishMapper.modelToEntity(DishModel.fromJson(data));
+  }
+
+  @override
   Future<List<Country>> getCountries() async {
     final response = await dio.get('/countries');
     final data = response.data as List;
