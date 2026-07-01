@@ -181,16 +181,19 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen>
                                                   Row(
                                                     crossAxisAlignment: CrossAxisAlignment.center,
                                                     children: [
-                                                      Container(
-                                                        padding: const EdgeInsets.all(4),
-                                                        decoration: BoxDecoration(
-                                                          color: Colors.grey.withValues(alpha: 0.3),
-                                                          borderRadius: BorderRadius.circular(12),
-                                                        ),
-                                                        child: Icon(
-                                                          dish.isFavorite ? Icons.favorite : Icons.favorite_border,
-                                                          size: 16,
-                                                          color: dish.isFavorite ? Colors.red : Colors.grey,
+                                                      GestureDetector(
+                                                        onTap: () => _toggleFavorite(dish),
+                                                        child: Container(
+                                                          padding: const EdgeInsets.all(4),
+                                                          decoration: BoxDecoration(
+                                                            color: Colors.grey.withValues(alpha: 0.3),
+                                                            borderRadius: BorderRadius.circular(12),
+                                                          ),
+                                                          child: Icon(
+                                                            dish.isFavorite ? Icons.favorite : Icons.favorite_border,
+                                                            size: 16,
+                                                            color: dish.isFavorite ? Colors.red : Colors.grey,
+                                                          ),
                                                         ),
                                                       ),
                                                       const SizedBox(width: 4),
