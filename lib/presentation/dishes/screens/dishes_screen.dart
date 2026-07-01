@@ -181,34 +181,40 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen>
                                                   Row(
                                                     crossAxisAlignment: CrossAxisAlignment.center,
                                                     children: [
-                                                      GestureDetector(
+                                                      InkWell(
                                                         onTap: () => _toggleFavorite(dish),
+                                                        borderRadius: BorderRadius.circular(12),
                                                         child: Container(
-                                                          padding: const EdgeInsets.all(4),
+                                                          padding: const EdgeInsets.all(8),
                                                           decoration: BoxDecoration(
-                                                            color: Colors.grey.withValues(alpha: 0.3),
+                                                            color: dish.isFavorite
+                                                                ? Colors.red.withValues(alpha: 0.85)
+                                                                : Colors.grey.withValues(alpha: 0.2),
                                                             borderRadius: BorderRadius.circular(12),
                                                           ),
                                                           child: Icon(
                                                             dish.isFavorite ? Icons.favorite : Icons.favorite_border,
-                                                            size: 16,
-                                                            color: dish.isFavorite ? Colors.red : Colors.grey,
+                                                            size: 20,
+                                                            color: dish.isFavorite ? Colors.white : Colors.grey,
                                                           ),
                                                         ),
                                                       ),
                                                       const SizedBox(width: 4),
-                                                      GestureDetector(
+                                                      InkWell(
                                                         onTap: () => _toggleAvoided(dish),
-                                                        onLongPressStart: (_) => _showAvoidReasonDialog(dish),
+                                                        onLongPress: () => _showAvoidReasonDialog(dish),
+                                                        borderRadius: BorderRadius.circular(12),
                                                         child: Container(
-                                                          padding: const EdgeInsets.all(4),
+                                                          padding: const EdgeInsets.all(8),
                                                           decoration: BoxDecoration(
-                                                            color: dish.isAvoided ? Colors.blue.withValues(alpha: 0.8) : Colors.grey.withValues(alpha: 0.3),
+                                                            color: dish.isAvoided
+                                                                ? Colors.blueGrey.withValues(alpha: 0.85)
+                                                                : Colors.grey.withValues(alpha: 0.2),
                                                             borderRadius: BorderRadius.circular(12),
                                                           ),
                                                           child: Icon(
                                                             dish.isAvoided ? Icons.thumb_down : Icons.thumb_down_outlined,
-                                                            size: 14,
+                                                            size: 20,
                                                             color: dish.isAvoided ? Colors.white : Colors.grey,
                                                           ),
                                                         ),

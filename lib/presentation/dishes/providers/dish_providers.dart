@@ -30,6 +30,11 @@ final localDishesProvider = FutureProvider.autoDispose<List<Dish>>((ref) async {
   return dishes;
 });
 
+final favoriteDishesProvider = FutureProvider.autoDispose<List<Dish>>((ref) async {
+  final dishes = await ref.watch(localDishesProvider.future);
+  return dishes.where((d) => d.isFavorite).toList();
+});
+
 final hasLocalDishesProvider = FutureProvider.autoDispose<bool>((ref) async {
   final repository = ref.watch(dishRepositoryProvider);
   return repository.hasLocalData();
