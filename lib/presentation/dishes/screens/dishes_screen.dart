@@ -197,26 +197,6 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen>
                                                         ),
                                                       ),
                                                       const SizedBox(width: 4),
-                                                      if (dish.isUserCreated)
-                                                        Container(
-                                                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                                          decoration: BoxDecoration(
-                                                            color: cs.primary.withValues(alpha: 0.85),
-                                                            borderRadius: BorderRadius.circular(12),
-                                                          ),
-                                                          child: Row(
-                                                            mainAxisSize: MainAxisSize.min,
-                                                            children: [
-                                                              Icon(Icons.person, size: 12, color: cs.onPrimary),
-                                                              const SizedBox(width: 3),
-                                                              Text(
-                                                                'Tú',
-                                                                style: TextStyle(fontSize: 10, color: cs.onPrimary, fontWeight: FontWeight.w600),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      if (dish.isUserCreated) const SizedBox(width: 4),
                                                       GestureDetector(
                                                         onTap: () => _toggleAvoided(dish),
                                                         onLongPressStart: (_) => _showAvoidReasonDialog(dish),
@@ -361,7 +341,29 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen>
               );
             },
           ),
-
+        if (dish.isUserCreated)
+          Positioned(
+            left: 8,
+            bottom: 8,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+              decoration: BoxDecoration(
+                color: Colors.black54,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.person, size: 11, color: Colors.white70),
+                  const SizedBox(width: 3),
+                  Text(
+                    'Tú',
+                    style: TextStyle(fontSize: 10, color: Colors.white, fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ),
+            ),
+          ),
       ],
     );
   }
