@@ -15,10 +15,10 @@ class FavoritesScreen extends ConsumerStatefulWidget {
 }
 
 class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
-  List<Dish> _dishes = [];
-  final Set<String> _removingIds = {};
   final _searchController = TextEditingController();
   String _searchQuery = '';
+  List<Dish> _dishes = [];
+  final Set<String> _removingIds = {};
 
   @override
   void dispose() {
@@ -43,26 +43,30 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
           _dishes = dishes;
           _removingIds.removeWhere((id) => !_dishes.any((d) => d.id == id));
 
-          if (_dishes.isEmpty) {
+          final filtered = _dishes.where((d) {
+            if (_searchQuery.isEmpty) return true;
+            return d.name.toLowerCase().contains(_searchQuery);
+          }).toList();
+
+          if (filtered.isEmpty) {
             return Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.favorite_border, size: 64, color: cs.onSurfaceVariant),
+                  Icon(
+                    _searchQuery.isNotEmpty ? Icons.search_off : Icons.favorite_border,
+                    size: 64,
+                    color: cs.onSurfaceVariant,
+                  ),
                   const SizedBox(height: 16),
                   Text(
-                    t.favoritosEmpty,
+                    _searchQuery.isNotEmpty ? t.filterEmpty : t.favoritosEmpty,
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                 ],
               ),
             );
           }
-
-          final filtered = _dishes.where((d) {
-            if (_searchQuery.isEmpty) return true;
-            return d.name.toLowerCase().contains(_searchQuery);
-          }).toList();
 
           return Column(
             children: [
@@ -86,41 +90,20 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
                 bottomChild: const SizedBox.shrink(),
               ),
               Expanded(
-                child: filtered.isEmpty
-                    ? Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(_searchQuery.isNotEmpty ? Icons.search_off : Icons.favorite_border,
-                                size: 48, color: cs.onSurfaceVariant),
-                            const SizedBox(height: 8),
-                            Text(
-                              _searchQuery.isNotEmpty ? t.filterEmpty : t.favoritosEmpty,
-                              style: Theme.of(context).textTheme.bodyLarge,
-                            ),
-                          ],
-                        ),
-                      )
-                    : ListView.builder(
-                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-                        itemCount: filtered.length,
-                        itemBuilder: (context, index) {
-                          final dish = filtered[index];
-                          final isRemoving = _removingIds.contains(dish.id);
+                child: ListView.builder(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                  itemCount: filtered.length,
+                  itemBuilder: (context, index) {
+                    final dish = filtered[index];
+                    final isRemoving = _removingIds.contains(dish.id);
 
-                          return AnimatedSize(
-                            duration: const Duration(milliseconds: 500),
-                            curve: Curves.easeInOut,
-                            child: AnimatedOpacity(
-                              duration: const Duration(milliseconds: 400),
-                              opacity: isRemoving ? 0.0 : 1.0,
-                              child: isRemoving
-                                  ? const SizedBox.shrink()
-                                  : _buildCard(dish, cs, t),
-                            ),
-                          );
-                        },
-                      ),
+                    return AnimatedOpacity(
+                      duration: const Duration(milliseconds: 400),
+                      opacity: isRemoving ? 0.0 : 1.0,
+                      child: _buildCard(dish, cs, t),
+                    );
+                  },
+                ),
               ),
             ],
           );
