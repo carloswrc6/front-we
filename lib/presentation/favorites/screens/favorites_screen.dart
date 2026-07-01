@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontwe/domain/entities/dish.dart';
 import 'package:frontwe/l10n/app_localizations.dart';
 import 'package:frontwe/presentation/dishes/providers/dish_providers.dart';
+import 'package:frontwe/presentation/dishes/widgets/filter_bar.dart';
 import 'package:frontwe/presentation/shared/widgets/BottomNavBar.dart';
 import 'package:frontwe/presentation/shared/widgets/SideMenu.dart';
 
@@ -16,6 +17,14 @@ class FavoritesScreen extends ConsumerStatefulWidget {
 class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
   List<Dish> _dishes = [];
   final Set<String> _removingIds = {};
+  final _searchController = TextEditingController();
+  String _searchQuery = '';
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,25 +59,70 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
             );
           }
 
-          return ListView.builder(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-            itemCount: _dishes.length,
-            itemBuilder: (context, index) {
-              final dish = _dishes[index];
-              final isRemoving = _removingIds.contains(dish.id);
+          final filtered = _dishes.where((d) {
+            if (_searchQuery.isEmpty) return true;
+            return d.name.toLowerCase().contains(_searchQuery);
+          }).toList();
 
-              return AnimatedSize(
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.easeInOut,
-                child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 400),
-                  opacity: isRemoving ? 0.0 : 1.0,
-                  child: isRemoving
-                      ? const SizedBox.shrink()
-                      : _buildCard(dish, cs, t),
+          return Column(
+            children: [
+              FilterContainer(
+                topChild: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    hintText: t.searchDishes,
+                    prefixIcon: const Icon(Icons.search, size: 20),
+                    filled: true,
+                    fillColor: cs.surface,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    isDense: true,
+                  ),
+                  onChanged: (v) => setState(() => _searchQuery = v.toLowerCase()),
                 ),
-              );
-            },
+                bottomChild: const SizedBox.shrink(),
+              ),
+              Expanded(
+                child: filtered.isEmpty
+                    ? Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(_searchQuery.isNotEmpty ? Icons.search_off : Icons.favorite_border,
+                                size: 48, color: cs.onSurfaceVariant),
+                            const SizedBox(height: 8),
+                            Text(
+                              _searchQuery.isNotEmpty ? t.filterEmpty : t.favoritosEmpty,
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                          ],
+                        ),
+                      )
+                    : ListView.builder(
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                        itemCount: filtered.length,
+                        itemBuilder: (context, index) {
+                          final dish = filtered[index];
+                          final isRemoving = _removingIds.contains(dish.id);
+
+                          return AnimatedSize(
+                            duration: const Duration(milliseconds: 500),
+                            curve: Curves.easeInOut,
+                            child: AnimatedOpacity(
+                              duration: const Duration(milliseconds: 400),
+                              opacity: isRemoving ? 0.0 : 1.0,
+                              child: isRemoving
+                                  ? const SizedBox.shrink()
+                                  : _buildCard(dish, cs, t),
+                            ),
+                          );
+                        },
+                      ),
+              ),
+            ],
           );
         },
       ),
