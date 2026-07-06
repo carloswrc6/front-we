@@ -7,6 +7,8 @@ import 'package:frontwe/presentation/dishes/screens/dish_list_screen.dart';
 import 'package:frontwe/presentation/dishes/widgets/filter_bar.dart';
 import 'package:frontwe/presentation/dishes/widgets/dish_wheel.dart';
 import 'package:frontwe/presentation/dishes/widgets/skeleton/screen_skeleton.dart';
+import 'package:frontwe/infrastructure/services/local_db_service.dart';
+import 'package:frontwe/presentation/history/providers/history_provider.dart';
 import 'package:frontwe/presentation/shared/widgets/BottomNavBar.dart';
 import 'package:frontwe/presentation/shared/widgets/SideMenu.dart';
 import 'package:frontwe/presentation/shared/widgets/CountrySelector.dart';
@@ -129,14 +131,20 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                         maxWheelItems: DishesScreen.maxWheelItems,
                         selectedDish: _selectedDish,
                         fromSpin: _fromSpin,
-                        onSpinResult: (dish) => setState(() {
-                          _fromSpin = true;
-                          _selectedDish = dish;
-                        }),
-                        onTapResult: (dish) => setState(() {
-                          _fromSpin = false;
-                          _selectedDish = dish;
-                        }),
+                        onSpinResult: (dish) {
+                          setState(() {
+                            _fromSpin = true;
+                            _selectedDish = dish;
+                          });
+                          _saveToHistory(dish, true);
+                        },
+                        onTapResult: (dish) {
+                          setState(() {
+                            _fromSpin = false;
+                            _selectedDish = dish;
+                          });
+                          if (dish != null) _saveToHistory(dish, false);
+                        },
                         onSpinStart: () => setState(() {
                           _selectedDish = null;
                         }),
@@ -160,6 +168,22 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
         },
       ),
     );
+  }
+
+  void _saveToHistory(Dish dish, bool fromSpin) async {
+    await LocalDbService.instance.insertHistory({
+      'dish_id': dish.id,
+      'dish_name': dish.name,
+      'dish_image': dish.image,
+      'meal_type': dish.mealType,
+      'country_id': dish.country.id,
+      'country_code': dish.country.code,
+      'country_name': dish.country.name,
+      'ingredients': dish.ingredients.join('||'),
+      'from_spin': fromSpin ? 1 : 0,
+      'selected_at': DateTime.now().toIso8601String(),
+    });
+    ref.invalidate(historyProvider);
   }
 
   List<Dish> _filter(List<Dish> dishes) {

@@ -22,7 +22,7 @@ class LocalDbService {
 
     return openDatabase(
       path,
-      version: 6,
+      version: 7,
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE dishes (
@@ -46,6 +46,21 @@ class LocalDbService {
             id TEXT PRIMARY KEY,
             code TEXT NOT NULL,
             name TEXT NOT NULL
+          )
+        ''');
+        await db.execute('''
+          CREATE TABLE dish_history (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            dish_id TEXT NOT NULL,
+            dish_name TEXT NOT NULL,
+            dish_image TEXT NOT NULL,
+            meal_type TEXT NOT NULL,
+            country_id TEXT NOT NULL,
+            country_code TEXT NOT NULL,
+            country_name TEXT NOT NULL,
+            ingredients TEXT NOT NULL,
+            from_spin INTEGER NOT NULL DEFAULT 0,
+            selected_at TEXT NOT NULL
           )
         ''');
       },
@@ -75,6 +90,23 @@ class LocalDbService {
           ''');
           await db.execute('''
             ALTER TABLE dishes ADD COLUMN avoid_reason TEXT
+          ''');
+        }
+        if (oldVersion < 7) {
+          await db.execute('''
+            CREATE TABLE IF NOT EXISTS dish_history (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              dish_id TEXT NOT NULL,
+              dish_name TEXT NOT NULL,
+              dish_image TEXT NOT NULL,
+              meal_type TEXT NOT NULL,
+              country_id TEXT NOT NULL,
+              country_code TEXT NOT NULL,
+              country_name TEXT NOT NULL,
+              ingredients TEXT NOT NULL,
+              from_spin INTEGER NOT NULL DEFAULT 0,
+              selected_at TEXT NOT NULL
+            )
           ''');
         }
       },
@@ -143,5 +175,42 @@ class LocalDbService {
     final db = await database;
     final result = await db.rawQuery('SELECT COUNT(*) as count FROM countries');
     return Sqflite.firstIntValue(result) ?? 0;
+  }
+
+  Future<void> _ensureHistoryTable() async {
+    final db = await database;
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS dish_history (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        dish_id TEXT NOT NULL,
+        dish_name TEXT NOT NULL,
+        dish_image TEXT NOT NULL,
+        meal_type TEXT NOT NULL,
+        country_id TEXT NOT NULL,
+        country_code TEXT NOT NULL,
+        country_name TEXT NOT NULL,
+        ingredients TEXT NOT NULL,
+        from_spin INTEGER NOT NULL DEFAULT 0,
+        selected_at TEXT NOT NULL
+      )
+    ''');
+  }
+
+  Future<void> insertHistory(Map<String, dynamic> row) async {
+    final db = await database;
+    await _ensureHistoryTable();
+    await db.insert('dish_history', row);
+  }
+
+  Future<List<Map<String, dynamic>>> getAllHistory() async {
+    final db = await database;
+    await _ensureHistoryTable();
+    return db.query('dish_history', orderBy: 'selected_at DESC');
+  }
+
+  Future<void> clearHistory() async {
+    final db = await database;
+    await _ensureHistoryTable();
+    await db.delete('dish_history');
   }
 }
