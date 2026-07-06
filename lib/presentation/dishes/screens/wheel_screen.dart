@@ -24,17 +24,16 @@ class DishesScreen extends ConsumerStatefulWidget {
 }
 
 class _DishesScreenState extends ConsumerState<DishesScreen> {
-  String? _selectedCountryId;
-  String? _selectedMealType;
   Dish? _selectedDish;
-  bool _defaultsInitialized = false;
   bool _fromSpin = false;
+  bool _defaultsInitialized = false;
 
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
     final dishesAsync = ref.watch(localDishesProvider);
     final countriesAsync = ref.watch(localCountriesProvider);
+    final wheelState = ref.watch(wheelStateProvider);
 
     return Scaffold(
       drawer: const SideMenu(),
@@ -87,13 +86,21 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
             loading: () => const LinearProgressIndicator(),
             error: (err, _) => Center(child: Text('Error: $err')),
             data: (countries) {
-              if (!_defaultsInitialized) {
+              if (!_defaultsInitialized && wheelState.selectedCountryId == null) {
                 _defaultsInitialized = true;
-                _selectedMealType = 'lunch';
                 final peru = countries.where((c) => c.code == 'PE').firstOrNull;
-                if (peru != null) _selectedCountryId = peru.id;
+                if (peru != null) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (mounted) {
+                      ref.read(wheelStateProvider.notifier).state = WheelState(
+                        selectedMealType: wheelState.selectedMealType,
+                        selectedCountryId: peru.id,
+                      );
+                    }
+                  });
+                }
               }
-              final filtered = _filter(dishes);
+              final filtered = _filter(dishes, wheelState);
               if (filtered.length == 1) {
                 _selectedDish ??= filtered.first;
               }
@@ -109,21 +116,27 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                         horizontalPadding: 12,
                         showAll: true,
                         countries: countries,
-                        selectedCountryId: _selectedCountryId,
-                        onChanged: (v) => setState(() {
-                          _selectedCountryId = v;
-                          _selectedDish = null;
-                        }),
+                        selectedCountryId: wheelState.selectedCountryId,
+                        onChanged: (v) {
+                          setState(() => _selectedDish = null);
+                          ref.read(wheelStateProvider.notifier).state = WheelState(
+                            selectedMealType: wheelState.selectedMealType,
+                            selectedCountryId: v,
+                          );
+                        },
                         rightAligned: true,
                         menuWidth: 200,
                       ),
                       bottomChild: DishFilterBar(
-                        selectedMealType: _selectedMealType,
+                        selectedMealType: wheelState.selectedMealType,
                         dishCount: filtered.length,
-                        onMealTypeChanged: (v) => setState(() {
-                          _selectedMealType = v;
-                          _selectedDish = null;
-                        }),
+                        onMealTypeChanged: (v) {
+                          setState(() => _selectedDish = null);
+                          ref.read(wheelStateProvider.notifier).state = WheelState(
+                            selectedMealType: v,
+                            selectedCountryId: wheelState.selectedCountryId,
+                          );
+                        },
                       ),
                     ),
                     Expanded(
@@ -190,12 +203,12 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
     ref.invalidate(historyProvider);
   }
 
-  List<Dish> _filter(List<Dish> dishes) {
+  List<Dish> _filter(List<Dish> dishes, WheelState state) {
     return dishes.where((d) {
-      if (_selectedCountryId != null && d.country.id != _selectedCountryId) {
+      if (state.selectedCountryId != null && d.country.id != state.selectedCountryId) {
         return false;
       }
-      if (_selectedMealType != null && d.mealType != _selectedMealType) {
+      if (state.selectedMealType != null && d.mealType != state.selectedMealType) {
         return false;
       }
       return true;

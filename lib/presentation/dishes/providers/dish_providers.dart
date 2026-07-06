@@ -56,3 +56,11 @@ final localCountriesProvider = FutureProvider.autoDispose<List<Country>>((
   }
   return countries;
 });
+
+class WheelState {
+  final String? selectedCountryId;
+  final String? selectedMealType;
+  const WheelState({this.selectedCountryId, this.selectedMealType});
+}
+
+final wheelStateProvider = StateProvider<WheelState>((ref) => const WheelState(selectedMealType: 'lunch'));
