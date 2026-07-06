@@ -99,11 +99,20 @@ class HistoryScreen extends ConsumerWidget {
                                 overflow: TextOverflow.ellipsis,
                               ),
                               const SizedBox(height: 2),
-                              Text(
-                                '${_mealTypeLabel(t, dish.mealType)} · ${dish.country.name}',
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: cs.onSurfaceVariant,
-                                ),
+                              Row(
+                                children: [
+                                  Text(
+                                    _codeToFlag(dish.country.code),
+                                    style: const TextStyle(fontSize: 20),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    '${_mealTypeLabel(t, dish.mealType)} · ${dish.country.name}',
+                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: cs.onSurfaceVariant,
+                                    ),
+                                  ),
+                                ],
                               ),
                               const SizedBox(height: 2),
                               Text(
@@ -143,6 +152,12 @@ class HistoryScreen extends ConsumerWidget {
       default:
         return mealType;
     }
+  }
+
+  String _codeToFlag(String code) {
+    return code.toUpperCase().split('').map((c) {
+      return String.fromCharCode(c.codeUnitAt(0) - 0x41 + 0x1F1E6);
+    }).join('');
   }
 
   String _formatDate(DateTime dt) {

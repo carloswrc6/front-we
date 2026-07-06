@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontwe/domain/entities/country.dart';
 import 'package:frontwe/domain/entities/dish.dart';
 import 'package:frontwe/l10n/app_localizations.dart';
 import 'package:frontwe/presentation/dishes/providers/dish_providers.dart';
@@ -136,14 +137,14 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                             _fromSpin = true;
                             _selectedDish = dish;
                           });
-                          _saveToHistory(dish, true);
+                          _saveToHistory(dish, true, countries);
                         },
                         onTapResult: (dish) {
                           setState(() {
                             _fromSpin = false;
                             _selectedDish = dish;
                           });
-                          if (dish != null) _saveToHistory(dish, false);
+                          if (dish != null) _saveToHistory(dish, false, countries);
                         },
                         onSpinStart: () => setState(() {
                           _selectedDish = null;
@@ -170,15 +171,18 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
     );
   }
 
-  void _saveToHistory(Dish dish, bool fromSpin) async {
+  void _saveToHistory(Dish dish, bool fromSpin, List<Country> countries) async {
+    final country = countries.where((c) => c.id == dish.country.id).firstOrNull;
+    final code = country?.code ?? dish.country.code;
+    final name = country?.name ?? dish.country.name;
     await LocalDbService.instance.insertHistory({
       'dish_id': dish.id,
       'dish_name': dish.name,
       'dish_image': dish.image,
       'meal_type': dish.mealType,
       'country_id': dish.country.id,
-      'country_code': dish.country.code,
-      'country_name': dish.country.name,
+      'country_code': code,
+      'country_name': name,
       'ingredients': dish.ingredients.join('||'),
       'from_spin': fromSpin ? 1 : 0,
       'selected_at': DateTime.now().toIso8601String(),
