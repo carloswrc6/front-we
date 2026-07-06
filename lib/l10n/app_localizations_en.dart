@@ -263,4 +263,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get createDish => "Save";
   @override
   String get dishCreated => "Dish created successfully";
+  @override
+  String get historialToday => "Today";
+  @override
+  String get historialYesterday => "Yesterday";
+  @override
+  String get historialThisWeek => "This week";
+  @override
+  String get historialPrevious => "Earlier";
+  @override
+  String get historialClearAll => "Clear history";
+  @override
+  String get historialClearConfirm => "Delete all history?";
+  @override
+  String get historialDelete => "Delete";
+  @override
+  String get historialDeleteConfirm => "Delete from history";
+  @override
+  String get historialCancel => "Cancel";
+  @override
+  String get historialSelectedCount => "selected";
 }

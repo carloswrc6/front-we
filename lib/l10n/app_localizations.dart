@@ -145,6 +145,16 @@ abstract class AppLocalizations {
   String get dishMealType;
   String get createDish;
   String get dishCreated;
+  String get historialToday;
+  String get historialYesterday;
+  String get historialThisWeek;
+  String get historialPrevious;
+  String get historialClearAll;
+  String get historialClearConfirm;
+  String get historialDelete;
+  String get historialDeleteConfirm;
+  String get historialCancel;
+  String get historialSelectedCount;
 }
 
 class _AppLocalizationsDelegate
