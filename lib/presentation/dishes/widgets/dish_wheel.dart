@@ -3,12 +3,14 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontwe/domain/entities/dish.dart';
 import 'package:frontwe/l10n/app_localizations.dart';
 import 'package:frontwe/presentation/dishes/widgets/detail_sheet.dart';
 import 'package:frontwe/presentation/dishes/widgets/result_card.dart';
+import 'package:frontwe/presentation/dishes/providers/dish_providers.dart';
 
-class DishWheel extends StatefulWidget {
+class DishWheel extends ConsumerStatefulWidget {
   final List<Dish> dishes;
   final int maxWheelItems;
   final Dish? selectedDish;
@@ -33,16 +35,32 @@ class DishWheel extends StatefulWidget {
   });
 
   @override
-  State<DishWheel> createState() => DishWheelState();
+  ConsumerState<DishWheel> createState() => DishWheelState();
 }
 
-class DishWheelState extends State<DishWheel> with SingleTickerProviderStateMixin {
+class DishWheelState extends ConsumerState<DishWheel> with SingleTickerProviderStateMixin {
   final _controller = StreamController<int>.broadcast();
   final _random = Random();
   int _targetIndex = 0;
   int _visualIndex = 0;
   late AnimationController _pulseController;
   late Animation<double> _pulseAnimation;
+
+  Duration _spinDuration(String speed) {
+    switch (speed) {
+      case 'fast': return const Duration(seconds: 2);
+      case 'slow': return const Duration(seconds: 8);
+      default: return const Duration(seconds: 5);
+    }
+  }
+
+  int _spinRotations(String speed) {
+    switch (speed) {
+      case 'fast': return 30;
+      case 'slow': return 150;
+      default: return 100;
+    }
+  }
 
   @override
   void initState() {
@@ -65,6 +83,8 @@ class DishWheelState extends State<DishWheel> with SingleTickerProviderStateMixi
 
   void spin() {
     if (widget.dishes.isEmpty) return;
+    final speed = ref.read(wheelStateProvider).speed;
+    debugPrint('[DishWheel] spin() speed=$speed duration=${_spinDuration(speed)}');
     widget.onSpinStart?.call();
     _targetIndex = _random.nextInt(widget.dishes.length);
     _visualIndex = _targetIndex < widget.maxWheelItems
@@ -101,6 +121,8 @@ class DishWheelState extends State<DishWheel> with SingleTickerProviderStateMixi
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
     final dishes = widget.dishes;
+    final speed = ref.watch(wheelStateProvider).speed;
+    debugPrint('[DishWheel] build speed=$speed');
 
     if (dishes.isEmpty) {
       return Center(
@@ -183,6 +205,8 @@ class DishWheelState extends State<DishWheel> with SingleTickerProviderStateMixi
                     animateFirst: false,
                     selected: _controller.stream,
                     items: items,
+                    duration: _spinDuration(speed),
+                    rotationCount: _spinRotations(speed),
                     onAnimationEnd: () {
                       if (_targetIndex >= 0 &&
                           _targetIndex < dishes.length) {

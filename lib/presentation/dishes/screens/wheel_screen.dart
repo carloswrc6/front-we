@@ -96,6 +96,7 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                       ref.read(wheelStateProvider.notifier).state = WheelState(
                         selectedMealType: wheelState.selectedMealType,
                         selectedCountryId: peru.id,
+                        speed: wheelState.speed,
                       );
                     }
                   });
@@ -123,6 +124,7 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                           ref.read(wheelStateProvider.notifier).state = WheelState(
                             selectedMealType: wheelState.selectedMealType,
                             selectedCountryId: v,
+                            speed: wheelState.speed,
                           );
                         },
                         rightAligned: true,
@@ -136,6 +138,7 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                           ref.read(wheelStateProvider.notifier).state = WheelState(
                             selectedMealType: v,
                             selectedCountryId: wheelState.selectedCountryId,
+                            speed: wheelState.speed,
                           );
                         },
                       ),
@@ -173,7 +176,18 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                             ),
                           );
                         },
-                        onCustomize: () => WheelSettingsSheet.show(context),
+                        onCustomize: () => WheelSettingsSheet.show(
+                          context,
+                          initialSpeed: wheelState.speed,
+                          onApply: (speed) {
+                            debugPrint('[WheelScreen] onApply speed=$speed, prev=${wheelState.speed}');
+                            ref.read(wheelStateProvider.notifier).state = WheelState(
+                              selectedCountryId: wheelState.selectedCountryId,
+                              selectedMealType: wheelState.selectedMealType,
+                              speed: speed,
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ],
