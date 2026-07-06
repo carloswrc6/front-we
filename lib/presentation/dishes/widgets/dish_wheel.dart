@@ -17,6 +17,7 @@ class DishWheel extends StatefulWidget {
   final ValueChanged<Dish?> onTapResult;
   final VoidCallback? onSpinStart;
   final VoidCallback? onViewList;
+  final VoidCallback? onCustomize;
 
   const DishWheel({
     super.key,
@@ -28,6 +29,7 @@ class DishWheel extends StatefulWidget {
     required this.onTapResult,
     this.onSpinStart,
     this.onViewList,
+    this.onCustomize,
   });
 
   @override
@@ -195,7 +197,9 @@ class DishWheelState extends State<DishWheel> with SingleTickerProviderStateMixi
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _ListButton(onPressed: widget.onViewList, label: t.viewList),
-                  const SizedBox(width: 32),
+                  const SizedBox(width: 16),
+                  _SettingsButton(onPressed: widget.onCustomize),
+                  const SizedBox(width: 16),
                   _SpinButton(
                     onPressed: widget.dishes.isEmpty ? null : () => spin(),
                     pulseAnimation: _pulseAnimation,
@@ -281,7 +285,9 @@ class DishWheelState extends State<DishWheel> with SingleTickerProviderStateMixi
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _ListButton(onPressed: widget.onViewList, label: t.viewList),
-                  const SizedBox(width: 32),
+                  const SizedBox(width: 16),
+                  _SettingsButton(onPressed: widget.onCustomize),
+                  const SizedBox(width: 16),
                   _SpinButton(
                     onPressed: () => spin(),
                     pulseAnimation: _pulseAnimation,
@@ -308,6 +314,41 @@ class DishWheelState extends State<DishWheel> with SingleTickerProviderStateMixi
           ),
         );
       },
+    );
+  }
+}
+
+class _SettingsButton extends StatelessWidget {
+  final VoidCallback? onPressed;
+
+  const _SettingsButton({required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: cs.surfaceContainerHighest.withValues(alpha: 0.7),
+            shape: BoxShape.circle,
+          ),
+          child: IconButton(
+            onPressed: onPressed,
+            icon: Icon(Icons.settings, size: 20),
+            tooltip: AppLocalizations.of(context)!.wheelSettingsTitle,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          AppLocalizations.of(context)!.wheelSettingsTitle,
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+            color: cs.onSurfaceVariant,
+          ),
+        ),
+      ],
     );
   }
 }

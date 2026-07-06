@@ -155,6 +155,25 @@ abstract class AppLocalizations {
   String get historialDeleteConfirm;
   String get historialCancel;
   String get historialSelectedCount;
+  String get wheelSettingsTitle;
+  String get wheelSettingsAvoidRepeat;
+  String get wheelSettingsAvoidThreeDays;
+  String get wheelSettingsSpeed;
+  String get wheelSettingsFast;
+  String get wheelSettingsNormal;
+  String get wheelSettingsSlow;
+  String get wheelSettingsDifficulty;
+  String get wheelSettingsEasy;
+  String get wheelSettingsMedium;
+  String get wheelSettingsHard;
+  String get wheelSettingsPreferences;
+  String get wheelSettingsPrioritizeFavorites;
+  String get wheelSettingsSurpriseMode;
+  String get wheelSettingsHealthyMode;
+  String get wheelSettingsMaxTime;
+  String get wheelSettingsMin;
+  String get wheelSettingsCancel;
+  String get wheelSettingsApply;
 }
 
 class _AppLocalizationsDelegate

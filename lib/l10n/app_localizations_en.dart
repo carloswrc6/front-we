@@ -283,4 +283,42 @@ class AppLocalizationsEn extends AppLocalizations {
   String get historialCancel => "Cancel";
   @override
   String get historialSelectedCount => "selected";
+  @override
+  String get wheelSettingsTitle => "Customize spin";
+  @override
+  String get wheelSettingsAvoidRepeat => "Avoid repeating last result";
+  @override
+  String get wheelSettingsAvoidThreeDays => "Avoid eating the same 3 days in a row";
+  @override
+  String get wheelSettingsSpeed => "Speed";
+  @override
+  String get wheelSettingsFast => "Fast";
+  @override
+  String get wheelSettingsNormal => "Normal";
+  @override
+  String get wheelSettingsSlow => "Slow";
+  @override
+  String get wheelSettingsDifficulty => "Difficulty";
+  @override
+  String get wheelSettingsEasy => "Easy";
+  @override
+  String get wheelSettingsMedium => "Medium";
+  @override
+  String get wheelSettingsHard => "Hard";
+  @override
+  String get wheelSettingsPreferences => "Preferences";
+  @override
+  String get wheelSettingsPrioritizeFavorites => "Prioritize favorites";
+  @override
+  String get wheelSettingsSurpriseMode => "Surprise mode";
+  @override
+  String get wheelSettingsHealthyMode => "Healthy mode";
+  @override
+  String get wheelSettingsMaxTime => "Max time";
+  @override
+  String get wheelSettingsMin => "min";
+  @override
+  String get wheelSettingsCancel => "Cancel";
+  @override
+  String get wheelSettingsApply => "Apply";
 }

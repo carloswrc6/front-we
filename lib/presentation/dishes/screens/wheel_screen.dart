@@ -13,6 +13,7 @@ import 'package:frontwe/presentation/history/providers/history_provider.dart';
 import 'package:frontwe/presentation/shared/widgets/BottomNavBar.dart';
 import 'package:frontwe/presentation/shared/widgets/SideMenu.dart';
 import 'package:frontwe/presentation/shared/widgets/CountrySelector.dart';
+import 'package:frontwe/presentation/dishes/widgets/wheel_settings_sheet.dart';
 
 
 class DishesScreen extends ConsumerStatefulWidget {
@@ -172,6 +173,7 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                             ),
                           );
                         },
+                        onCustomize: () => WheelSettingsSheet.show(context),
                       ),
                     ),
                   ],
