@@ -125,20 +125,7 @@ class DishWheelState extends ConsumerState<DishWheel> with SingleTickerProviderS
     debugPrint('[DishWheel] build speed=$speed');
 
     if (dishes.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.search_off,
-              size: 64,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-            const SizedBox(height: 16),
-            Text(t.filterEmpty, style: Theme.of(context).textTheme.bodyLarge),
-          ],
-        ),
-      );
+      return _buildEmptyBlocked(t);
     }
 
     if (dishes.length == 1) {
@@ -244,6 +231,81 @@ class DishWheelState extends ConsumerState<DishWheel> with SingleTickerProviderS
                         ],
                       )
                     : const SizedBox.shrink(),
+              ),
+              const SizedBox(height: 24),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildEmptyBlocked(AppLocalizations t) {
+    final cs = Theme.of(context).colorScheme;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final wheelSize =
+            min(constraints.maxWidth - 96, constraints.maxHeight * 0.6) * 0.85;
+
+        return SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 18),
+              IgnorePointer(
+                child: Container(
+                  width: wheelSize,
+                  height: wheelSize,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: cs.surfaceContainerHighest.withValues(alpha: 0.3),
+                    border: Border.all(
+                      color: cs.outlineVariant.withValues(alpha: 0.5),
+                      width: 2,
+                    ),
+                  ),
+                  alignment: Alignment.center,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.search_off,
+                        size: 48,
+                        color: cs.onSurfaceVariant.withValues(alpha: 0.5),
+                      ),
+                      const SizedBox(height: 8),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: Text(
+                          t.filterEmpty,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(
+                                color: cs.onSurfaceVariant
+                                    .withValues(alpha: 0.7),
+                              ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _ListButton(onPressed: null, label: t.viewList),
+                  const SizedBox(width: 16),
+                  _SettingsButton(onPressed: widget.onCustomize),
+                  const SizedBox(width: 16),
+                  _SpinButton(
+                    onPressed: null,
+                    pulseAnimation: _pulseAnimation,
+                    label: t.spinButton,
+                  ),
+                ],
               ),
               const SizedBox(height: 24),
             ],
