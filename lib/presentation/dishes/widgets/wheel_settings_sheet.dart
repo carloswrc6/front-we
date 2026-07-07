@@ -2,7 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:frontwe/l10n/app_localizations.dart';
 
 class WheelSettingsSheet {
-  static void show(BuildContext context, {String initialSpeed = 'normal', required ValueChanged<String> onApply}) {
+  static void show(
+    BuildContext context, {
+    String initialSpeed = 'normal',
+    bool initialDifficultyEasy = true,
+    bool initialDifficultyMedium = true,
+    bool initialDifficultyHard = false,
+    required void Function({
+      required String speed,
+      required bool difficultyEasy,
+      required bool difficultyMedium,
+      required bool difficultyHard,
+    }) onApply,
+  }) {
     showModalBottomSheet(
       context: context,
       useSafeArea: true,
@@ -10,15 +22,35 @@ class WheelSettingsSheet {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (_) => _WheelSettingsContent(initialSpeed: initialSpeed, onApply: onApply),
+      builder: (_) => _WheelSettingsContent(
+        initialSpeed: initialSpeed,
+        initialDifficultyEasy: initialDifficultyEasy,
+        initialDifficultyMedium: initialDifficultyMedium,
+        initialDifficultyHard: initialDifficultyHard,
+        onApply: onApply,
+      ),
     );
   }
 }
 
 class _WheelSettingsContent extends StatefulWidget {
   final String initialSpeed;
-  final ValueChanged<String> onApply;
-  const _WheelSettingsContent({required this.initialSpeed, required this.onApply});
+  final bool initialDifficultyEasy;
+  final bool initialDifficultyMedium;
+  final bool initialDifficultyHard;
+  final void Function({
+    required String speed,
+    required bool difficultyEasy,
+    required bool difficultyMedium,
+    required bool difficultyHard,
+  }) onApply;
+  const _WheelSettingsContent({
+    required this.initialSpeed,
+    required this.initialDifficultyEasy,
+    required this.initialDifficultyMedium,
+    required this.initialDifficultyHard,
+    required this.onApply,
+  });
 
   @override
   State<_WheelSettingsContent> createState() => _WheelSettingsContentState();
@@ -40,6 +72,9 @@ class _WheelSettingsContentState extends State<_WheelSettingsContent> {
   void initState() {
     super.initState();
     _speed = widget.initialSpeed;
+    _easy = widget.initialDifficultyEasy;
+    _medium = widget.initialDifficultyMedium;
+    _hard = widget.initialDifficultyHard;
     debugPrint('[WheelSettingsSheet] opened with initialSpeed=${widget.initialSpeed}');
   }
 
@@ -160,8 +195,13 @@ class _WheelSettingsContentState extends State<_WheelSettingsContent> {
                 Expanded(
                   child: FilledButton(
                     onPressed: () {
-                      debugPrint('[WheelSettingsSheet] Aplicar pressed, speed=$_speed');
-                      widget.onApply(_speed);
+                      debugPrint('[WheelSettingsSheet] Aplicar pressed, speed=$_speed easy=$_easy medium=$_medium hard=$_hard');
+                      widget.onApply(
+                        speed: _speed,
+                        difficultyEasy: _easy,
+                        difficultyMedium: _medium,
+                        difficultyHard: _hard,
+                      );
                       Navigator.of(context).pop();
                     },
                     child: Text(t.wheelSettingsApply),

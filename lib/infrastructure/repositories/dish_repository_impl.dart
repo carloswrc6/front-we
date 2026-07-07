@@ -68,6 +68,7 @@ class DishRepositoryImpl extends DishRepository {
     required List<String> ingredients,
     required String mealType,
     required String countryId,
+    String? difficulty,
   }) async {
     final dish = await remoteDatasource.createDish(
       name: name,
@@ -75,6 +76,7 @@ class DishRepositoryImpl extends DishRepository {
       ingredients: ingredients,
       mealType: mealType,
       countryId: countryId,
+      difficulty: difficulty,
     );
     final userDish = Dish(
       id: dish.id,
@@ -83,6 +85,7 @@ class DishRepositoryImpl extends DishRepository {
       ingredients: dish.ingredients,
       mealType: dish.mealType,
       country: dish.country,
+      difficulty: dish.difficulty,
       isUserCreated: true,
     );
     await localDatasource.saveUserCreatedDish(userDish);

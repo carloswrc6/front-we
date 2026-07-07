@@ -32,6 +32,7 @@ class DishDbDatasource extends DishDatasource {
     required List<String> ingredients,
     required String mealType,
     required String countryId,
+    String? difficulty,
   }) async {
     final response = await dio.post(
       '/dishes',
@@ -41,6 +42,7 @@ class DishDbDatasource extends DishDatasource {
         'ingredients': ingredients,
         'mealType': mealType,
         'countryId': countryId,
+        if (difficulty != null) 'difficulty': difficulty,
       },
     );
     final data = response.data['data'] as Map<String, dynamic>;

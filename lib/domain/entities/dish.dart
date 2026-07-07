@@ -7,6 +7,7 @@ class Dish {
   final List<String> ingredients;
   final String mealType;
   final Country country;
+  final String? difficulty;
   final bool isUserCreated;
   final bool isFavorite;
   final bool isAvoided;
@@ -19,6 +20,7 @@ class Dish {
     required this.ingredients,
     required this.mealType,
     required this.country,
+    this.difficulty,
     this.isUserCreated = false,
     this.isFavorite = false,
     this.isAvoided = false,

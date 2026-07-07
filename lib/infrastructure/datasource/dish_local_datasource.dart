@@ -23,6 +23,7 @@ class DishLocalDatasource {
     'is_favorite': isFavorite ? 1 : 0,
     'is_avoided': isAvoided ? 1 : 0,
     'avoid_reason': avoidReason,
+    'difficulty': d.difficulty,
   };
 
   Future<void> saveDishes(List<Dish> dishes) async {
@@ -105,6 +106,7 @@ class DishLocalDatasource {
           code: r['country_code'] as String,
           name: r['country_name'] as String,
         ),
+        difficulty: r['difficulty'] as String?,
         isUserCreated: (r['is_user_created'] as int?) == 1,
         isFavorite: (r['is_favorite'] as int?) == 1,
         isAvoided: (r['is_avoided'] as int?) == 1,

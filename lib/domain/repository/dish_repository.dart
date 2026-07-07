@@ -15,6 +15,7 @@ abstract class DishRepository {
     required List<String> ingredients,
     required String mealType,
     required String countryId,
+    String? difficulty,
   });
   Future<void> toggleFavorite(String dishId);
   Future<void> toggleAvoided(String dishId);

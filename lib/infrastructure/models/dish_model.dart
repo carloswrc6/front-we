@@ -8,6 +8,7 @@ class DishModel {
   final String mealType;
   final String countryId;
   final Map<String, dynamic>? country;
+  final String? difficulty;
 
   DishModel({
     required this.id,
@@ -17,6 +18,7 @@ class DishModel {
     required this.mealType,
     required this.countryId,
     this.country,
+    this.difficulty,
   });
 
   factory DishModel.fromJson(Map<String, dynamic> json) => DishModel(
@@ -27,6 +29,7 @@ class DishModel {
     mealType: json['mealType'],
     countryId: json['countryId'],
     country: json['country'],
+    difficulty: json['difficulty'] as String?,
   );
 
   Map<String, dynamic> toJson() => {
@@ -37,6 +40,7 @@ class DishModel {
     'mealType': mealType,
     'countryId': countryId,
     'country': country,
+    'difficulty': difficulty,
   };
 
   String get ingredientsJson => jsonEncode(ingredients);

@@ -61,10 +61,16 @@ class WheelState {
   final String? selectedCountryId;
   final String? selectedMealType;
   final String speed;
+  final bool difficultyEasy;
+  final bool difficultyMedium;
+  final bool difficultyHard;
   const WheelState({
     this.selectedCountryId,
     this.selectedMealType,
     this.speed = 'normal',
+    this.difficultyEasy = true,
+    this.difficultyMedium = true,
+    this.difficultyHard = false,
   });
 }
 

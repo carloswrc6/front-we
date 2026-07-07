@@ -11,6 +11,7 @@ class DishMapper {
       image: model.image,
       ingredients: model.ingredients,
       mealType: model.mealType,
+      difficulty: model.difficulty,
       country: Country(
         id: countryData?['id'] ?? model.countryId,
         code: countryData?['code'] ?? '',

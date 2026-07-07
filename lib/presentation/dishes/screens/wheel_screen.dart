@@ -97,6 +97,9 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                         selectedMealType: wheelState.selectedMealType,
                         selectedCountryId: peru.id,
                         speed: wheelState.speed,
+                        difficultyEasy: wheelState.difficultyEasy,
+                        difficultyMedium: wheelState.difficultyMedium,
+                        difficultyHard: wheelState.difficultyHard,
                       );
                     }
                   });
@@ -125,6 +128,9 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                             selectedMealType: wheelState.selectedMealType,
                             selectedCountryId: v,
                             speed: wheelState.speed,
+                            difficultyEasy: wheelState.difficultyEasy,
+                            difficultyMedium: wheelState.difficultyMedium,
+                            difficultyHard: wheelState.difficultyHard,
                           );
                         },
                         rightAligned: true,
@@ -139,6 +145,9 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                             selectedMealType: v,
                             selectedCountryId: wheelState.selectedCountryId,
                             speed: wheelState.speed,
+                            difficultyEasy: wheelState.difficultyEasy,
+                            difficultyMedium: wheelState.difficultyMedium,
+                            difficultyHard: wheelState.difficultyHard,
                           );
                         },
                       ),
@@ -179,12 +188,22 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                         onCustomize: () => WheelSettingsSheet.show(
                           context,
                           initialSpeed: wheelState.speed,
-                          onApply: (speed) {
-                            debugPrint('[WheelScreen] onApply speed=$speed, prev=${wheelState.speed}');
+                          initialDifficultyEasy: wheelState.difficultyEasy,
+                          initialDifficultyMedium: wheelState.difficultyMedium,
+                          initialDifficultyHard: wheelState.difficultyHard,
+                          onApply: ({
+                            required speed,
+                            required difficultyEasy,
+                            required difficultyMedium,
+                            required difficultyHard,
+                          }) {
                             ref.read(wheelStateProvider.notifier).state = WheelState(
                               selectedCountryId: wheelState.selectedCountryId,
                               selectedMealType: wheelState.selectedMealType,
                               speed: speed,
+                              difficultyEasy: difficultyEasy,
+                              difficultyMedium: difficultyMedium,
+                              difficultyHard: difficultyHard,
                             );
                           },
                         ),
@@ -226,6 +245,11 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
       }
       if (state.selectedMealType != null && d.mealType != state.selectedMealType) {
         return false;
+      }
+      if (d.difficulty != null) {
+        if (!state.difficultyEasy && d.difficulty == 'easy') return false;
+        if (!state.difficultyMedium && d.difficulty == 'medium') return false;
+        if (!state.difficultyHard && d.difficulty == 'hard') return false;
       }
       return true;
     }).toList();

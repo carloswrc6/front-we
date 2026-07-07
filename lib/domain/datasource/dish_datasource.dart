@@ -10,5 +10,6 @@ abstract class DishDatasource {
     required List<String> ingredients,
     required String mealType,
     required String countryId,
+    String? difficulty,
   });
 }
