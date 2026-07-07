@@ -35,6 +35,7 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
     final dishesAsync = ref.watch(localDishesProvider);
     final countriesAsync = ref.watch(localCountriesProvider);
     final wheelState = ref.watch(wheelStateProvider);
+    final historyAsync = ref.watch(historyProvider);
 
     return Scaffold(
       drawer: const SideMenu(),
@@ -106,8 +107,14 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                 }
               }
               final filtered = _filter(dishes, wheelState);
-              if (filtered.length == 1) {
-                _selectedDish ??= filtered.first;
+              final history = historyAsync.valueOrNull ?? [];
+              final lastDishId = history.isNotEmpty ? history.first.dishId : null;
+              final wheelDishes = lastDishId != null
+                  ? filtered.where((d) => d.id != lastDishId).toList()
+                  : filtered;
+              final effectiveWheel = wheelDishes.isNotEmpty ? wheelDishes : filtered;
+              if (effectiveWheel.length == 1) {
+                _selectedDish ??= effectiveWheel.first;
               }
               return RefreshIndicator(
                 onRefresh: () async {
@@ -154,7 +161,7 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                     ),
                     Expanded(
                       child: DishWheel(
-                        dishes: filtered,
+                        dishes: effectiveWheel,
                         maxWheelItems: DishesScreen.maxWheelItems,
                         selectedDish: _selectedDish,
                         fromSpin: _fromSpin,
