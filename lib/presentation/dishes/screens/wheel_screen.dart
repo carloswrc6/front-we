@@ -128,8 +128,10 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
               if (wheelDishes.isEmpty) {
                 debugPrint('[ThreeDaysFilter] ATENCION: no quedan platos, se usa la lista completa (fallback)');
               }
-              if (effectiveWheel.length == 1) {
-                _selectedDish ??= effectiveWheel.first;
+              final sortedWheel = _prioritizeFavoritesList(effectiveWheel);
+              debugPrint('[PrioritizeFavorites] total=${sortedWheel.length} favorites=${sortedWheel.where((d) => d.isFavorite).length}');
+              if (sortedWheel.length == 1) {
+                _selectedDish ??= sortedWheel.first;
               }
               return RefreshIndicator(
                 onRefresh: () async {
@@ -176,7 +178,7 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                     ),
                     Expanded(
                       child: DishWheel(
-                        dishes: effectiveWheel,
+                        dishes: sortedWheel,
                         maxWheelItems: DishesScreen.maxWheelItems,
                         selectedDish: _selectedDish,
                         fromSpin: _fromSpin,
@@ -275,5 +277,11 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
       }
       return true;
     }).toList();
+  }
+
+  List<Dish> _prioritizeFavoritesList(List<Dish> dishes) {
+    final favorites = dishes.where((d) => d.isFavorite).toList();
+    final others = dishes.where((d) => !d.isFavorite).toList();
+    return [...favorites, ...others];
   }
 }
