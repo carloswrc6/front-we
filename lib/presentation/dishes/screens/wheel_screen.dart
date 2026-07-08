@@ -108,11 +108,26 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
               }
               final filtered = _filter(dishes, wheelState);
               final history = historyAsync.valueOrNull ?? [];
-              final lastDishId = history.isNotEmpty ? history.first.dishId : null;
-              final wheelDishes = lastDishId != null
-                  ? filtered.where((d) => d.id != lastDishId).toList()
+              final threeDaysAgo = DateTime.now().subtract(const Duration(days: 3));
+              debugPrint('[ThreeDaysFilter] total history entries: ${history.length}');
+              debugPrint('[ThreeDaysFilter] threeDaysAgo: ${threeDaysAgo.toIso8601String()}');
+              final recentEntries = history.where((h) => h.fromSpin && h.selectedAt.isAfter(threeDaysAgo)).toList();
+              debugPrint('[ThreeDaysFilter] recent spin entries (last 3 days): ${recentEntries.length}');
+              for (final e in recentEntries) {
+                debugPrint('[ThreeDaysFilter]   -> dishId=${e.dishId} dishName=${e.dishName} selectedAt=${e.selectedAt.toIso8601String()}');
+              }
+              final recentIds = recentEntries.map((h) => h.dishId).toSet();
+              debugPrint('[ThreeDaysFilter] unique dishIds to exclude: $recentIds');
+              final wheelDishes = recentIds.isNotEmpty
+                  ? filtered.where((d) => !recentIds.contains(d.id)).toList()
                   : filtered;
+              debugPrint('[ThreeDaysFilter] filtered count (antes de exclusion): ${filtered.length}');
+              debugPrint('[ThreeDaysFilter] filtered count (despues de exclusion): ${wheelDishes.length}');
+              debugPrint('[ThreeDaysFilter] IDs excluidos: ${filtered.where((d) => recentIds.contains(d.id)).map((d) => "${d.id} - ${d.name}").toList()}');
               final effectiveWheel = wheelDishes.isNotEmpty ? wheelDishes : filtered;
+              if (wheelDishes.isEmpty) {
+                debugPrint('[ThreeDaysFilter] ATENCION: no quedan platos, se usa la lista completa (fallback)');
+              }
               if (effectiveWheel.length == 1) {
                 _selectedDish ??= effectiveWheel.first;
               }
