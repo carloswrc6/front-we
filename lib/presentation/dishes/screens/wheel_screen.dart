@@ -101,17 +101,27 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                         difficultyEasy: wheelState.difficultyEasy,
                         difficultyMedium: wheelState.difficultyMedium,
                         difficultyHard: wheelState.difficultyHard,
+                        surpriseMode: wheelState.surpriseMode,
+                        avoidRepeat: wheelState.avoidRepeat,
+                        avoidThreeDays: wheelState.avoidThreeDays,
+                        healthyMode: wheelState.healthyMode,
+                        prioritizeFavorites: wheelState.prioritizeFavorites,
                       );
                     }
                   });
                 }
               }
               final filtered = _filter(dishes, wheelState);
+              if (wheelState.surpriseMode) {
+                debugPrint('[SurpriseMode] ACTIVO - ignorando filtros de pais y mealType, total=${filtered.length}');
+              }
               final history = historyAsync.valueOrNull ?? [];
               final threeDaysAgo = DateTime.now().subtract(const Duration(days: 3));
               debugPrint('[ThreeDaysFilter] total history entries: ${history.length}');
               debugPrint('[ThreeDaysFilter] threeDaysAgo: ${threeDaysAgo.toIso8601String()}');
-              final recentEntries = history.where((h) => h.fromSpin && h.selectedAt.isAfter(threeDaysAgo)).toList();
+              final recentEntries = wheelState.avoidThreeDays
+                  ? history.where((h) => h.fromSpin && h.selectedAt.isAfter(threeDaysAgo)).toList()
+                  : [];
               debugPrint('[ThreeDaysFilter] recent spin entries (last 3 days): ${recentEntries.length}');
               for (final e in recentEntries) {
                 debugPrint('[ThreeDaysFilter]   -> dishId=${e.dishId} dishName=${e.dishName} selectedAt=${e.selectedAt.toIso8601String()}');
@@ -125,11 +135,22 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
               debugPrint('[ThreeDaysFilter] filtered count (despues de exclusion): ${wheelDishes.length}');
               debugPrint('[ThreeDaysFilter] IDs excluidos: ${filtered.where((d) => recentIds.contains(d.id)).map((d) => "${d.id} - ${d.name}").toList()}');
               final effectiveWheel = wheelDishes.isNotEmpty ? wheelDishes : filtered;
-              if (wheelDishes.isEmpty) {
+              if (wheelDishes.isEmpty && wheelState.avoidThreeDays) {
                 debugPrint('[ThreeDaysFilter] ATENCION: no quedan platos, se usa la lista completa (fallback)');
               }
-              final sortedWheel = _prioritizeFavoritesList(effectiveWheel);
-              debugPrint('[PrioritizeFavorites] total=${sortedWheel.length} favorites=${sortedWheel.where((d) => d.isFavorite).length}');
+              final lastSpinEntry = history.where((h) => h.fromSpin).toList();
+              final lastDishId = lastSpinEntry.isNotEmpty ? lastSpinEntry.first.dishId : null;
+              final afterAvoidRepeat = wheelState.avoidRepeat && lastDishId != null
+                  ? effectiveWheel.where((d) => d.id != lastDishId).toList()
+                  : effectiveWheel;
+              if (wheelState.avoidRepeat && lastDishId != null) {
+                debugPrint('[AvoidRepeat] activo, excluyendo dishId=$lastDishId, antes=${effectiveWheel.length} despues=${afterAvoidRepeat.length}');
+              }
+              final finalWheel = afterAvoidRepeat.isNotEmpty ? afterAvoidRepeat : effectiveWheel;
+              final sortedWheel = wheelState.prioritizeFavorites
+                  ? _prioritizeFavoritesList(finalWheel)
+                  : finalWheel;
+              debugPrint('[PrioritizeFavorites] enabled=${wheelState.prioritizeFavorites} total=${sortedWheel.length} favorites=${sortedWheel.where((d) => d.isFavorite).length}');
               if (sortedWheel.length == 1) {
                 _selectedDish ??= sortedWheel.first;
               }
@@ -155,6 +176,11 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                             difficultyEasy: wheelState.difficultyEasy,
                             difficultyMedium: wheelState.difficultyMedium,
                             difficultyHard: wheelState.difficultyHard,
+                            surpriseMode: wheelState.surpriseMode,
+                            avoidRepeat: wheelState.avoidRepeat,
+                            avoidThreeDays: wheelState.avoidThreeDays,
+                            healthyMode: wheelState.healthyMode,
+                            prioritizeFavorites: wheelState.prioritizeFavorites,
                           );
                         },
                         rightAligned: true,
@@ -172,6 +198,11 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                             difficultyEasy: wheelState.difficultyEasy,
                             difficultyMedium: wheelState.difficultyMedium,
                             difficultyHard: wheelState.difficultyHard,
+                            surpriseMode: wheelState.surpriseMode,
+                            avoidRepeat: wheelState.avoidRepeat,
+                            avoidThreeDays: wheelState.avoidThreeDays,
+                            healthyMode: wheelState.healthyMode,
+                            prioritizeFavorites: wheelState.prioritizeFavorites,
                           );
                         },
                       ),
@@ -215,11 +246,21 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                           initialDifficultyEasy: wheelState.difficultyEasy,
                           initialDifficultyMedium: wheelState.difficultyMedium,
                           initialDifficultyHard: wheelState.difficultyHard,
+                          initialAvoidRepeat: wheelState.avoidRepeat,
+                          initialAvoidThreeDays: wheelState.avoidThreeDays,
+                          initialPrioritizeFavorites: wheelState.prioritizeFavorites,
+                          initialSurpriseMode: wheelState.surpriseMode,
+                          initialHealthyMode: wheelState.healthyMode,
                           onApply: ({
                             required speed,
                             required difficultyEasy,
                             required difficultyMedium,
                             required difficultyHard,
+                            required surpriseMode,
+                            required avoidRepeat,
+                            required avoidThreeDays,
+                            required healthyMode,
+                            required prioritizeFavorites,
                           }) {
                             ref.read(wheelStateProvider.notifier).state = WheelState(
                               selectedCountryId: wheelState.selectedCountryId,
@@ -228,6 +269,11 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                               difficultyEasy: difficultyEasy,
                               difficultyMedium: difficultyMedium,
                               difficultyHard: difficultyHard,
+                              surpriseMode: surpriseMode,
+                              avoidRepeat: avoidRepeat,
+                              avoidThreeDays: avoidThreeDays,
+                              healthyMode: healthyMode,
+                              prioritizeFavorites: prioritizeFavorites,
                             );
                           },
                         ),
@@ -264,12 +310,15 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
 
   List<Dish> _filter(List<Dish> dishes, WheelState state) {
     return dishes.where((d) {
-      if (state.selectedCountryId != null && d.country.id != state.selectedCountryId) {
-        return false;
+      if (!state.surpriseMode) {
+        if (state.selectedCountryId != null && d.country.id != state.selectedCountryId) {
+          return false;
+        }
+        if (state.selectedMealType != null && d.mealType != state.selectedMealType) {
+          return false;
+        }
       }
-      if (state.selectedMealType != null && d.mealType != state.selectedMealType) {
-        return false;
-      }
+      if (state.healthyMode && !d.isHealthy) return false;
       if (d.difficulty != null) {
         if (!state.difficultyEasy && d.difficulty == 'easy') return false;
         if (!state.difficultyMedium && d.difficulty == 'medium') return false;

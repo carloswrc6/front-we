@@ -12,6 +12,7 @@ class Dish {
   final bool isFavorite;
   final bool isAvoided;
   final String? avoidReason;
+  final bool isHealthy;
 
   Dish({
     required this.id,
@@ -25,5 +26,6 @@ class Dish {
     this.isFavorite = false,
     this.isAvoided = false,
     this.avoidReason,
+    this.isHealthy = false,
   });
 }

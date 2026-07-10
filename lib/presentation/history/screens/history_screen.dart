@@ -426,8 +426,9 @@ class _HistoryItem extends StatelessWidget {
                     child: dish.image.isEmpty
                         ? Icon(Icons.restaurant, size: 20, color: cs.onSurfaceVariant)
                         : null,
-                    onBackgroundImageError: (_, __) =>
-                        const Icon(Icons.restaurant, size: 20),
+                    onBackgroundImageError: dish.image.isNotEmpty
+                        ? (_, __) => const Icon(Icons.restaurant, size: 20)
+                        : null,
                   ),
                   Positioned(
                     right: -2,

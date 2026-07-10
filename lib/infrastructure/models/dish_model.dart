@@ -9,6 +9,7 @@ class DishModel {
   final String countryId;
   final Map<String, dynamic>? country;
   final String? difficulty;
+  final bool isHealthy;
 
   DishModel({
     required this.id,
@@ -19,6 +20,7 @@ class DishModel {
     required this.countryId,
     this.country,
     this.difficulty,
+    this.isHealthy = false,
   });
 
   factory DishModel.fromJson(Map<String, dynamic> json) => DishModel(
@@ -30,6 +32,7 @@ class DishModel {
     countryId: json['countryId'],
     country: json['country'],
     difficulty: json['difficulty'] as String?,
+    isHealthy: json['isHealthy'] as bool? ?? false,
   );
 
   Map<String, dynamic> toJson() => {
@@ -41,6 +44,7 @@ class DishModel {
     'countryId': countryId,
     'country': country,
     'difficulty': difficulty,
+    'isHealthy': isHealthy,
   };
 
   String get ingredientsJson => jsonEncode(ingredients);

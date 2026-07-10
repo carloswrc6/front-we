@@ -17,6 +17,7 @@ class DishMapper {
         code: countryData?['code'] ?? '',
         name: countryData?['name'] ?? '',
       ),
+      isHealthy: model.isHealthy,
     );
   }
 }

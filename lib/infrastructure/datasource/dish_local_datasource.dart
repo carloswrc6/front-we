@@ -24,6 +24,7 @@ class DishLocalDatasource {
     'is_avoided': isAvoided ? 1 : 0,
     'avoid_reason': avoidReason,
     'difficulty': d.difficulty,
+    'is_healthy': d.isHealthy ? 1 : 0,
   };
 
   Future<void> saveDishes(List<Dish> dishes) async {
@@ -111,6 +112,7 @@ class DishLocalDatasource {
         isFavorite: (r['is_favorite'] as int?) == 1,
         isAvoided: (r['is_avoided'] as int?) == 1,
         avoidReason: r['avoid_reason'] as String?,
+        isHealthy: (r['is_healthy'] as int?) == 1,
       );
     }).toList();
   }

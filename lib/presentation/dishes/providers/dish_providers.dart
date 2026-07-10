@@ -64,6 +64,11 @@ class WheelState {
   final bool difficultyEasy;
   final bool difficultyMedium;
   final bool difficultyHard;
+  final bool surpriseMode;
+  final bool avoidRepeat;
+  final bool avoidThreeDays;
+  final bool healthyMode;
+  final bool prioritizeFavorites;
   const WheelState({
     this.selectedCountryId,
     this.selectedMealType,
@@ -71,6 +76,11 @@ class WheelState {
     this.difficultyEasy = true,
     this.difficultyMedium = true,
     this.difficultyHard = false,
+    this.surpriseMode = false,
+    this.avoidRepeat = true,
+    this.avoidThreeDays = true,
+    this.healthyMode = false,
+    this.prioritizeFavorites = true,
   });
 }
 

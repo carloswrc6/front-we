@@ -22,7 +22,7 @@ class LocalDbService {
 
     return openDatabase(
       path,
-      version: 8,
+      version: 9,
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE dishes (
@@ -39,7 +39,8 @@ class LocalDbService {
             is_favorite INTEGER NOT NULL DEFAULT 0,
             is_avoided INTEGER NOT NULL DEFAULT 0,
             avoid_reason TEXT,
-            difficulty TEXT
+            difficulty TEXT,
+            is_healthy INTEGER NOT NULL DEFAULT 0
           )
         ''');
         await db.execute('''
@@ -113,6 +114,11 @@ class LocalDbService {
         if (oldVersion < 8) {
           await db.execute('''
             ALTER TABLE dishes ADD COLUMN difficulty TEXT
+          ''');
+        }
+        if (oldVersion < 9) {
+          await db.execute('''
+            ALTER TABLE dishes ADD COLUMN is_healthy INTEGER NOT NULL DEFAULT 0
           ''');
         }
       },

@@ -8,11 +8,21 @@ class WheelSettingsSheet {
     bool initialDifficultyEasy = true,
     bool initialDifficultyMedium = true,
     bool initialDifficultyHard = false,
+    bool initialAvoidRepeat = true,
+    bool initialAvoidThreeDays = true,
+    bool initialPrioritizeFavorites = true,
+    bool initialSurpriseMode = false,
+    bool initialHealthyMode = false,
     required void Function({
       required String speed,
       required bool difficultyEasy,
       required bool difficultyMedium,
       required bool difficultyHard,
+      required bool surpriseMode,
+      required bool avoidRepeat,
+      required bool avoidThreeDays,
+      required bool healthyMode,
+      required bool prioritizeFavorites,
     }) onApply,
   }) {
     showModalBottomSheet(
@@ -27,6 +37,11 @@ class WheelSettingsSheet {
         initialDifficultyEasy: initialDifficultyEasy,
         initialDifficultyMedium: initialDifficultyMedium,
         initialDifficultyHard: initialDifficultyHard,
+        initialAvoidRepeat: initialAvoidRepeat,
+        initialAvoidThreeDays: initialAvoidThreeDays,
+        initialPrioritizeFavorites: initialPrioritizeFavorites,
+        initialSurpriseMode: initialSurpriseMode,
+        initialHealthyMode: initialHealthyMode,
         onApply: onApply,
       ),
     );
@@ -38,17 +53,32 @@ class _WheelSettingsContent extends StatefulWidget {
   final bool initialDifficultyEasy;
   final bool initialDifficultyMedium;
   final bool initialDifficultyHard;
+  final bool initialAvoidRepeat;
+  final bool initialAvoidThreeDays;
+  final bool initialPrioritizeFavorites;
+  final bool initialSurpriseMode;
+  final bool initialHealthyMode;
   final void Function({
     required String speed,
     required bool difficultyEasy,
     required bool difficultyMedium,
     required bool difficultyHard,
+    required bool surpriseMode,
+    required bool avoidRepeat,
+    required bool avoidThreeDays,
+    required bool healthyMode,
+    required bool prioritizeFavorites,
   }) onApply;
   const _WheelSettingsContent({
     required this.initialSpeed,
     required this.initialDifficultyEasy,
     required this.initialDifficultyMedium,
     required this.initialDifficultyHard,
+    required this.initialAvoidRepeat,
+    required this.initialAvoidThreeDays,
+    required this.initialPrioritizeFavorites,
+    required this.initialSurpriseMode,
+    required this.initialHealthyMode,
     required this.onApply,
   });
 
@@ -58,23 +88,27 @@ class _WheelSettingsContent extends StatefulWidget {
 
 class _WheelSettingsContentState extends State<_WheelSettingsContent> {
   late String _speed;
-  bool _avoidRepeat = true;
-  bool _avoidThreeDays = true;
-  bool _easy = true;
-  bool _medium = true;
-  bool _hard = false;
-  bool _prioritizeFavorites = true;
-  bool _surpriseMode = false;
-  bool _healthyMode = true;
-  double _maxTime = 30;
+  late bool _avoidRepeat;
+  late bool _avoidThreeDays;
+  late bool _easy;
+  late bool _medium;
+  late bool _hard;
+  late bool _prioritizeFavorites;
+  late bool _surpriseMode;
+  late bool _healthyMode;
 
   @override
   void initState() {
     super.initState();
     _speed = widget.initialSpeed;
+    _avoidRepeat = widget.initialAvoidRepeat;
+    _avoidThreeDays = widget.initialAvoidThreeDays;
     _easy = widget.initialDifficultyEasy;
     _medium = widget.initialDifficultyMedium;
     _hard = widget.initialDifficultyHard;
+    _prioritizeFavorites = widget.initialPrioritizeFavorites;
+    _surpriseMode = widget.initialSurpriseMode;
+    _healthyMode = widget.initialHealthyMode;
     debugPrint('[WheelSettingsSheet] opened with initialSpeed=${widget.initialSpeed}');
   }
 
@@ -166,13 +200,6 @@ class _WheelSettingsContentState extends State<_WheelSettingsContent> {
                   label: t.wheelSettingsHealthyMode,
                   onChanged: (v) => setState(() => _healthyMode = v),
                 ),
-                const _SectionDivider(),
-                _sectionLabel(context, t.wheelSettingsMaxTime),
-                _MaxTimeSlider(
-                  value: _maxTime,
-                  onChanged: (v) => setState(() => _maxTime = v),
-                  label: '${_maxTime.toInt()} ${t.wheelSettingsMin}',
-                ),
                 const SizedBox(height: 16),
               ],
             ),
@@ -195,12 +222,17 @@ class _WheelSettingsContentState extends State<_WheelSettingsContent> {
                 Expanded(
                   child: FilledButton(
                     onPressed: () {
-                      debugPrint('[WheelSettingsSheet] Aplicar pressed, speed=$_speed easy=$_easy medium=$_medium hard=$_hard');
+                      debugPrint('[WheelSettingsSheet] Aplicar pressed, speed=$_speed easy=$_easy medium=$_medium hard=$_hard surpriseMode=$_surpriseMode avoidRepeat=$_avoidRepeat avoidThreeDays=$_avoidThreeDays healthyMode=$_healthyMode prioritizeFavorites=$_prioritizeFavorites');
                       widget.onApply(
                         speed: _speed,
                         difficultyEasy: _easy,
                         difficultyMedium: _medium,
                         difficultyHard: _hard,
+                        surpriseMode: _surpriseMode,
+                        avoidRepeat: _avoidRepeat,
+                        avoidThreeDays: _avoidThreeDays,
+                        healthyMode: _healthyMode,
+                        prioritizeFavorites: _prioritizeFavorites,
                       );
                       Navigator.of(context).pop();
                     },
@@ -330,55 +362,6 @@ class _CheckboxTile extends StatelessWidget {
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       controlAffinity: ListTileControlAffinity.leading,
       activeColor: Theme.of(context).colorScheme.primary,
-    );
-  }
-}
-
-class _MaxTimeSlider extends StatelessWidget {
-  final double value;
-  final ValueChanged<double> onChanged;
-  final String label;
-
-  const _MaxTimeSlider({
-    required this.value,
-    required this.onChanged,
-    required this.label,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-
-    return Container(
-      padding: const EdgeInsets.fromLTRB(4, 4, 16, 4),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Slider(
-              value: value,
-              min: 5,
-              max: 120,
-              divisions: 23,
-              label: label,
-              onChanged: onChanged,
-            ),
-          ),
-          SizedBox(
-            width: 52,
-            child: Text(
-              label,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: cs.onSurfaceVariant,
-              ),
-              textAlign: TextAlign.end,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
