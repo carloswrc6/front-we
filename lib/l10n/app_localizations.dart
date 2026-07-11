@@ -155,6 +155,8 @@ abstract class AppLocalizations {
   String get historialDeleteConfirm;
   String get historialCancel;
   String get historialSelectedCount;
+  String get historialSpin;
+  String get historialView;
   String get wheelSettingsTitle;
   String get wheelSettingsAvoidRepeat;
   String get wheelSettingsAvoidThreeDays;

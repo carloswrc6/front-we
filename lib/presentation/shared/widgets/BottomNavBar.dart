@@ -20,39 +20,42 @@ class BottomNavBar extends ConsumerWidget {
     final currentIndex = _indexFromRoute(location);
     final t = AppLocalizations.of(context)!;
 
-    return NavigationBar(
-      selectedIndex: currentIndex,
-      onDestinationSelected: (index) {
-        final routes = ['/platos', '/favoritos', '/ruleta', '/prohibidos', '/historial'];
-        context.go(routes[index]);
-      },
-      destinations: [
-        NavigationDestination(
-          icon: const Icon(Icons.dining_outlined),
-          selectedIcon: const Icon(Icons.dining),
-          label: t.navPlatos,
-        ),
-        NavigationDestination(
-          icon: const Icon(Icons.favorite_border),
-          selectedIcon: const Icon(Icons.favorite),
-          label: t.navFavoritos,
-        ),
-        NavigationDestination(
-          icon: const Icon(Icons.casino_outlined),
-          selectedIcon: const Icon(Icons.casino),
-          label: t.navRuleta,
-        ),
-        NavigationDestination(
-          icon: const Icon(Icons.thumb_down_outlined),
-          selectedIcon: const Icon(Icons.thumb_down),
-          label: t.navAvoid,
-        ),
-        NavigationDestination(
-          icon: const Icon(Icons.history_outlined),
-          selectedIcon: const Icon(Icons.history),
-          label: t.navHistorial,
-        ),
-      ],
+    return SafeArea(
+      top: false,
+      child: NavigationBar(
+        selectedIndex: currentIndex,
+        onDestinationSelected: (index) {
+          final routes = ['/platos', '/favoritos', '/ruleta', '/prohibidos', '/historial'];
+          context.go(routes[index]);
+        },
+        destinations: [
+          NavigationDestination(
+            icon: const Icon(Icons.dining_outlined),
+            selectedIcon: const Icon(Icons.dining),
+            label: t.navPlatos,
+          ),
+          NavigationDestination(
+            icon: const Icon(Icons.favorite_border),
+            selectedIcon: const Icon(Icons.favorite),
+            label: t.navFavoritos,
+          ),
+          NavigationDestination(
+            icon: const Icon(Icons.casino_outlined),
+            selectedIcon: const Icon(Icons.casino),
+            label: t.navRuleta,
+          ),
+          NavigationDestination(
+            icon: const Icon(Icons.thumb_down_outlined),
+            selectedIcon: const Icon(Icons.thumb_down),
+            label: t.navAvoid,
+          ),
+          NavigationDestination(
+            icon: const Icon(Icons.history_outlined),
+            selectedIcon: const Icon(Icons.history),
+            label: t.navHistorial,
+          ),
+        ],
+      ),
     );
   }
 }

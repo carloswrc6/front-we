@@ -20,6 +20,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
   final _searchController = TextEditingController();
   String _searchQuery = '';
   String? _dateFilter;
+  String? _sourceFilter;
   final Set<DishHistory> _selectedEntries = {};
 
   @override
@@ -47,6 +48,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                 onPressed: () => setState(() {
                   _selectedEntries.clear();
                   _dateFilter = null;
+                  _sourceFilter = null;
                 }),
               )
             : null,
@@ -144,6 +146,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                   onChanged: (v) => setState(() {
                     _searchQuery = v.toLowerCase();
                     _dateFilter = null;
+                    _sourceFilter = null;
                     _selectedEntries.clear();
                   }),
                 ),
@@ -165,6 +168,35 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       onSelected: (_) => setState(() {
                         _dateFilter = f.id;
+                        _selectedEntries.clear();
+                      }),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 4),
+              SizedBox(
+                height: 40,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: 3,
+                  separatorBuilder: (_, __) => const SizedBox(width: 8),
+                  itemBuilder: (_, i) {
+                    final sourceFilters = [
+                      _DateFilter(id: null, label: t.filterAll),
+                      _DateFilter(id: 'spin', label: t.historialSpin),
+                      _DateFilter(id: 'view', label: t.historialView),
+                    ];
+                    final f = sourceFilters[i];
+                    final selected = _sourceFilter == f.id;
+                    return FilterChip(
+                      label: Text(f.label, style: const TextStyle(fontSize: 13)),
+                      selected: selected,
+                      visualDensity: VisualDensity.compact,
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      onSelected: (_) => setState(() {
+                        _sourceFilter = f.id;
                         _selectedEntries.clear();
                       }),
                     );
@@ -217,10 +249,18 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
   }
 
   List<DishHistory> _filtered(List<DishHistory> history) {
-    if (_searchQuery.isEmpty) return history;
-    return history.where((e) =>
-      e.dishName.toLowerCase().contains(_searchQuery)
-    ).toList();
+    var result = history;
+    if (_sourceFilter != null) {
+      result = result.where((e) =>
+        _sourceFilter == 'spin' ? e.fromSpin : !e.fromSpin
+      ).toList();
+    }
+    if (_searchQuery.isNotEmpty) {
+      result = result.where((e) =>
+        e.dishName.toLowerCase().contains(_searchQuery)
+      ).toList();
+    }
+    return result;
   }
 
   List<DishHistory> _filterByDate(List<DishHistory> entries, String filter) {
@@ -423,11 +463,11 @@ class _HistoryItem extends StatelessWidget {
                     backgroundImage: dish.image.isNotEmpty
                         ? NetworkImage(dish.image)
                         : null,
-                    child: dish.image.isEmpty
-                        ? Icon(Icons.restaurant, size: 20, color: cs.onSurfaceVariant)
-                        : null,
                     onBackgroundImageError: dish.image.isNotEmpty
                         ? (_, __) => const Icon(Icons.restaurant, size: 20)
+                        : null,
+                    child: dish.image.isEmpty
+                        ? Icon(Icons.restaurant, size: 20, color: cs.onSurfaceVariant)
                         : null,
                   ),
                   Positioned(
