@@ -176,6 +176,9 @@ abstract class AppLocalizations {
   String get wheelSettingsMin;
   String get wheelSettingsCancel;
   String get wheelSettingsApply;
+  String get or;
+  String get emailLabel;
+  String get emailHint;
 }
 
 class _AppLocalizationsDelegate

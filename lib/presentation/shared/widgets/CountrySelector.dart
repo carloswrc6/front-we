@@ -94,7 +94,7 @@ class CountrySelector extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(color: cs.outline),
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(12),
         ),
         width: rightAligned ? double.infinity : null,
         constraints: const BoxConstraints(minHeight: 48),

@@ -24,6 +24,10 @@ class BottomNavBar extends ConsumerWidget {
       top: false,
       child: NavigationBar(
         selectedIndex: currentIndex,
+        height: 80,
+        labelTextStyle: WidgetStateProperty.all(
+          const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+        ),
         onDestinationSelected: (index) {
           final routes = ['/platos', '/favoritos', '/ruleta', '/prohibidos', '/historial'];
           context.go(routes[index]);
@@ -50,8 +54,8 @@ class BottomNavBar extends ConsumerWidget {
             label: t.navAvoid,
           ),
           NavigationDestination(
-            icon: const Icon(Icons.history_outlined),
-            selectedIcon: const Icon(Icons.history),
+            icon: const Icon(Icons.list_alt),
+            selectedIcon: const Icon(Icons.list),
             label: t.navHistorial,
           ),
         ],

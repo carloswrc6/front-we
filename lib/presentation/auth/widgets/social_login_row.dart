@@ -14,7 +14,7 @@ class SocialLoginRow extends ConsumerWidget {
   ) {
     final platform = Theme.of(context).platform;
     final showGoogle = platform == TargetPlatform.android || platform == TargetPlatform.iOS;
-    final showApple = platform == TargetPlatform.iOS || platform == TargetPlatform.macOS;
+    final showApple = platform == TargetPlatform.iOS;
 
     final buttons = <Widget>[];
 
@@ -23,10 +23,7 @@ class SocialLoginRow extends ConsumerWidget {
         Expanded(
           child: CustomButton(
             label: 'Google',
-            icon: Image.asset(
-              'assets/login/google.png',
-              height: 20,
-            ),
+            icon: const Icon(Icons.g_mobiledata, size: 22),
             onPressed: () async {
               await ref
                   .read(authProvider.notifier)
@@ -54,10 +51,7 @@ class SocialLoginRow extends ConsumerWidget {
         Expanded(
           child: CustomButton(
             label: 'Apple',
-            icon: Image.asset(
-              'assets/login/apple.png',
-              height: 20,
-            ),
+            icon: const Icon(Icons.apple, size: 20),
             onPressed: () {},
           ),
         ),

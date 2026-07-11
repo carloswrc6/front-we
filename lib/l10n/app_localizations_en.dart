@@ -230,7 +230,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get historialEmpty => "No history yet";
 
   @override
-  String get forgotPassword => "You have forgotten your password";
+  String get forgotPassword => "You have forgotten your password?";
 
   @override
   String get sendCodeEmail => "Send code";
@@ -325,4 +325,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get wheelSettingsCancel => "Cancel";
   @override
   String get wheelSettingsApply => "Apply";
+  @override
+  String get or => "OR";
+  @override
+  String get emailLabel => "Email address";
+  @override
+  String get emailHint => "Enter your email";
 }

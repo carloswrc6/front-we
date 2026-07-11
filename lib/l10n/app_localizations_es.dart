@@ -334,4 +334,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get wheelSettingsCancel => "Cancelar";
   @override
   String get wheelSettingsApply => "Aplicar";
+  @override
+  String get or => "o";
+  @override
+  String get emailLabel => "Correo electrónico";
+  @override
+  String get emailHint => "Ingresa tu correo";
 }

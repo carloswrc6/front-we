@@ -157,8 +157,33 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
             const SizedBox(height: 30),
 
+            const SocialLoginRow(),
+
+            const SizedBox(height: 24),
+
+            Row(
+              children: [
+                const Expanded(child: Divider()),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    t.or.toUpperCase(),
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                const Expanded(child: Divider()),
+              ],
+            ),
+
+            const SizedBox(height: 20),
+
             CustomTextField(
-              label: t.email,
+              label: t.emailLabel,
+              hintText: t.emailHint,
               controller: emailController,
               keyboardType: TextInputType.emailAddress,
               textInputAction: TextInputAction.next,
@@ -172,6 +197,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
             CustomTextField(
               label: t.password,
+              hintText: '••••••••',
               controller: passwordController,
               keyboardType: TextInputType.visiblePassword,
               textInputAction: TextInputAction.done,
@@ -213,10 +239,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ? null
                   : () => _handleLogin(context),
             ),
-
-            const SizedBox(height: 20),
-
-            const SocialLoginRow(),
 
             const SizedBox(height: 20),
 

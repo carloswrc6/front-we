@@ -27,41 +27,12 @@ class ThemeChangerScreen extends ConsumerWidget {
 class _ThemeChangerView extends ConsumerWidget {
   const _ThemeChangerView();
 
-  String _colorLabel(AppLocalizations t, int index) {
-    const keys = [
-      'colorDeepPurple',
-      'colorBlue',
-      'colorTeal',
-      'colorGreen',
-      'colorRed',
-      'colorPurple',
-      'colorOrange',
-      'colorPink',
-      'colorPinkAccent',
-    ];
-    if (index < 0 || index >= keys.length) return '';
-    switch (keys[index]) {
-      case 'colorDeepPurple': return t.colorDeepPurple;
-      case 'colorBlue': return t.colorBlue;
-      case 'colorTeal': return t.colorTeal;
-      case 'colorGreen': return t.colorGreen;
-      case 'colorRed': return t.colorRed;
-      case 'colorPurple': return t.colorPurple;
-      case 'colorOrange': return t.colorOrange;
-      case 'colorPink': return t.colorPink;
-      case 'colorPinkAccent': return t.colorPinkAccent;
-      default: return '';
-    }
-  }
-
   @override
   Widget build(BuildContext context, ref) {
     final t = AppLocalizations.of(context)!;
     final locale = ref.watch(localeProvider);
-    final List<Color> colors = ref.watch(colorListProvider);
     final themeState = ref.watch(themeNotifierProvider);
     final isDarkmode = themeState.isDarkmode;
-    final selectedColor = themeState.selectedColor;
     final cs = Theme.of(context).colorScheme;
 
     return ListView(
@@ -93,36 +64,6 @@ class _ThemeChangerView extends ConsumerWidget {
             ref.read(localeProvider.notifier).changeLocale(newLocale);
           },
         ),
-        const Divider(),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-          child: Text(
-            t.themeSelectColor,
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              color: cs.onSurfaceVariant,
-            ),
-          ),
-        ),
-        ...colors.asMap().entries.map((entry) {
-          final index = entry.key;
-          final color = entry.value;
-
-          return ListTile(
-            leading: CircleAvatar(
-              backgroundColor: color,
-              radius: 16,
-            ),
-            title: Text(_colorLabel(t, index)),
-            trailing: index == selectedColor
-                ? Icon(Icons.check_circle, color: color)
-                : null,
-            onTap: () {
-              ref
-                  .read(themeNotifierProvider.notifier)
-                  .changeColorIndex(index);
-            },
-          );
-        }),
       ],
     );
   }
