@@ -54,8 +54,8 @@ class BottomNavBar extends ConsumerWidget {
             label: t.navAvoid,
           ),
           NavigationDestination(
-            icon: const Icon(Icons.list_alt),
-            selectedIcon: const Icon(Icons.list),
+            icon: const Icon(Icons.list),
+            selectedIcon: const Icon(Icons.list_alt),
             label: t.navHistorial,
           ),
         ],
