@@ -246,7 +246,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               onPressed: () {
                 context.push('/register');
               },
-              child: Text(t.authDescriptionLogin),
+              child: Text(t.authRegisterLink),
             ),
           ],
         ),

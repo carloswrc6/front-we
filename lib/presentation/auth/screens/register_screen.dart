@@ -239,7 +239,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               onPressed: () {
                 context.pop();
               },
-              child: Text(t.authDescriptionRegister),
+              child: Text(t.authLoginLink),
             ),
           ],
         ),

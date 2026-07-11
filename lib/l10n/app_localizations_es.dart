@@ -8,102 +8,99 @@ import 'app_localizations.dart';
 class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
+  // Auth — login, register
   @override
   String get authTitleLogin => 'Iniciar sesión';
-
   @override
   String get authTitleRegister => 'Crear cuenta';
-
   @override
-  String get authDescriptionLogin => '¿No tienes cuenta? Regístrate';
-
+  String get authRegisterLink => '¿No tienes cuenta? Regístrate';
   @override
-  String get authDescriptionRegister => 'Ya tienes cuenta? Inicia sesión';
-
-  @override
-  String get loginButton => 'Iniciar sesión';
-
+  String get authLoginLink => 'Ya tienes cuenta? Inicia sesión';
   @override
   String get fullName => 'Nombre completo';
-
   @override
   String get email => 'Correo electrónico';
-
   @override
   String get password => 'Contraseña';
-
   @override
-  String get title => 'Title app ES';
-
+  String get emailLabel => "Correo electrónico";
   @override
-  String get subtitle => 'Subtitle app ES';
+  String get emailHint => "Ingresa tu correo";
+  @override
+  String get or => "o";
 
+  // Auth — forgot / reset password
   @override
   String get subtitleForgotPassword => 'Recuperar contraseña';
-
   @override
   String get subtitleChangePassword => 'Cambiar contraseña';
-
   @override
   String get forgotPasswordCodeSendError => 'No se pudo enviar el código';
-
   @override
   String get forgotPasswordCodeSentSuccess =>
       'Código enviado, revisa tu correo electrónico';
-
   @override
   String get enterVerificationCode => 'Ingrese el código';
-
   @override
   String get verificationCodeMustBeSixDigits =>
       'El código debe tener 6 dígitos';
-
   @override
   String get confirmPassword => 'Confirme la contraseña';
-
   @override
   String get passwordsDoNotMatch => 'Las contraseñas no coinciden';
-
   @override
   String get passwordUpdateError => 'No se pudo actualizar la contraseña';
-
   @override
   String get passwordUpdatedSuccessfully =>
       'Contraseña actualizada correctamente';
-
   @override
   String get sixDigitCodeSentTo => 'Se envió un código de 6 dígitos a:';
-
   @override
   String get verificationCode => 'Código';
-
   @override
   String get confirmPasswordLabel => 'Confirmar contraseña';
-
   @override
   String get updatePassword => 'Actualizar contraseña';
-
   @override
   String get backToLogin => 'Volver al login';
+  @override
+  String get forgotPassword => "Has olvidado tu contraseña?";
+  @override
+  String get sendCodeEmail => "Enviar codigo";
+  @override
+  String get returnLogin => "Regresar al login";
+  @override
+  String get verifyCodeButton => "Verificar código";
+  @override
+  String get resendCode => "Reenviar código";
+  @override
+  String get codeSentToEmail => "Hemos enviado un código de 6 dígitos a:";
+  @override
+  String get enterCodeDescription =>
+      "Ingresa el código a continuación para continuar";
 
-  // Validation auth
+  // App — general
+  @override
+  String get title => 'Title app ES';
+  @override
+  String get subtitle => 'Subtitle app ES';
+
+  // Validation
   @override
   String get valFullname => "El nombre es obligatorio";
   @override
   String get valMayusMinusNumber => "mayúscula, minúscula y un número";
   @override
   String get valMinSixStr => "Mínimo 6 caracteres";
-
   @override
   String get valPwd => "La contraseña es obligatoria";
-
   @override
   String get valEmailInvalid => "Email no válido";
-
   @override
   String get valRequiredEmail => "El email es obligatorio";
 
-  // Menu
+  // Menu — sidebar
   @override
   String get menuDishes => "Platos";
   @override
@@ -121,33 +118,13 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get menuAvoidSubtitle => "Platos que evitas";
   @override
-  String get sectionNavigation => "Navegación";
-  @override
-  String get sectionSettings => "Configuración";
-  @override
   String get menuHistory => "Historial";
   @override
   String get menuHistorySubtitle => "Platos vistos";
   @override
-  String get dishesEmpty => "No hay platos disponibles";
+  String get sectionNavigation => "Navegación";
   @override
-  String get filterAll => "Todos";
-  @override
-  String get filterCountry => "País";
-  @override
-  String get filterMealType => "Tipo de comida";
-  @override
-  String get searchDishes => "Buscar platos...";
-  @override
-  String get filterEmpty => "Ningún plato coincide con los filtros";
-  @override
-  String get spinButton => "Girar!";
-  @override
-  String get mealTypeBreakfast => "Desayuno";
-  @override
-  String get mealTypeLunch => "Almuerzo";
-  @override
-  String get mealTypeDinner => "Cena";
+  String get sectionSettings => "Configuración";
   @override
   String get menuProfile => "Perfil";
   @override
@@ -162,6 +139,28 @@ class AppLocalizationsEs extends AppLocalizations {
   String get menuThemeSubtitle => "Personaliza la app";
   @override
   String get menuLogout => "Cerrar sesión";
+
+  // Dishes — list / search
+  @override
+  String get dishesEmpty => "No hay platos disponibles";
+  @override
+  String get filterAll => "Todos";
+  @override
+  String get filterCountry => "País";
+  @override
+  String get filterMealType => "Tipo de comida";
+  @override
+  String get searchDishes => "Buscar platos...";
+  @override
+  String get filterEmpty => "Ningún plato coincide con los filtros";
+  @override
+  String get mealTypeBreakfast => "Desayuno";
+  @override
+  String get mealTypeLunch => "Almuerzo";
+  @override
+  String get mealTypeDinner => "Cena";
+  @override
+  String get spinButton => "Girar!";
   @override
   String get retryButton => "Reintentar";
   @override
@@ -176,42 +175,24 @@ class AppLocalizationsEs extends AppLocalizations {
   String get dishWinner => "Plato ganador";
   @override
   String get dishSelected => "Plato seleccionado";
-  @override
-  String get themeTitle => "Preferencias";
-  @override
-  String get themeDarkMode => "Modo oscuro";
-  @override
-  String get themeLanguage => "Idioma";
-  @override
-  String get themeSelectColor => "Color de acento";
-  @override
-  String get colorDeepPurple => "Púrpura profundo";
-  @override
-  String get colorBlue => "Azul";
-  @override
-  String get colorTeal => "Verde azulado";
-  @override
-  String get colorGreen => "Verde";
-  @override
-  String get colorRed => "Rojo";
-  @override
-  String get colorPurple => "Púrpura";
-  @override
-  String get colorOrange => "Naranja";
-  @override
-  String get colorPink => "Rosa";
-  @override
-  String get colorPinkAccent => "Rosa acento";
 
+  // Create dish
   @override
-  String get subsTitleMenu => "Planes de suscripción";
+  String get createDishTitle => "Agregar plato";
   @override
-  String get subsTitle => "Elige tu plan";
+  String get dishName => "Nombre";
   @override
-  String get subsDescription => "Desbloquea todas las funcionalidades";
+  String get dishIngredients => "Ingredientes (separados por coma)";
   @override
-  String get subsRecommended => "Recomendado";
-  // Bottom nav
+  String get dishImage => "URL de la imagen";
+  @override
+  String get dishMealType => "Tipo de comida";
+  @override
+  String get createDish => "Guardar";
+  @override
+  String get dishCreated => "Plato creado exitosamente";
+
+  // Bottom navigation
   @override
   String get navPlatos => "Platos";
   @override
@@ -222,6 +203,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get navAvoid => "Evitar";
   @override
   String get navHistorial => "Historial";
+
+  // Screen titles
   @override
   String get platosTitle => "Todos los platos";
   @override
@@ -237,41 +220,7 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get historialEmpty => "Aún no tienes historial";
 
-  @override
-  String get forgotPassword => "Has olvidado tu contraseña?";
-
-  @override
-  String get sendCodeEmail => "Enviar codigo";
-  @override
-  String get returnLogin => "Regresar al login";
-
-  @override
-  String get verifyCodeButton => "Verificar código";
-
-  @override
-  String get resendCode => "Reenviar código";
-
-  @override
-  String get codeSentToEmail => "Hemos enviado un código de 6 dígitos a:";
-
-  @override
-  String get enterCodeDescription =>
-      "Ingresa el código a continuación para continuar";
-
-  @override
-  String get createDishTitle => "Agregar plato";
-  @override
-  String get dishName => "Nombre";
-  @override
-  String get dishIngredients => "Ingredientes (separados por coma)";
-  @override
-  String get dishImage => "URL de la imagen";
-  @override
-  String get dishMealType => "Tipo de comida";
-  @override
-  String get createDish => "Guardar";
-  @override
-  String get dishCreated => "Plato creado exitosamente";
+  // History
   @override
   String get historialToday => "Hoy";
   @override
@@ -296,6 +245,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get historialSpin => "Ruleta";
   @override
   String get historialView => "Visualizados";
+
+  // Wheel — settings sheet
   @override
   String get wheelSettingsTitle => "Personalizar giro";
   @override
@@ -334,10 +285,42 @@ class AppLocalizationsEs extends AppLocalizations {
   String get wheelSettingsCancel => "Cancelar";
   @override
   String get wheelSettingsApply => "Aplicar";
+
+  // Theme
   @override
-  String get or => "o";
+  String get themeTitle => "Preferencias";
   @override
-  String get emailLabel => "Correo electrónico";
+  String get themeDarkMode => "Modo oscuro";
   @override
-  String get emailHint => "Ingresa tu correo";
+  String get themeLanguage => "Idioma";
+  @override
+  String get themeSelectColor => "Color de acento";
+  @override
+  String get colorDeepPurple => "Púrpura profundo";
+  @override
+  String get colorBlue => "Azul";
+  @override
+  String get colorTeal => "Verde azulado";
+  @override
+  String get colorGreen => "Verde";
+  @override
+  String get colorRed => "Rojo";
+  @override
+  String get colorPurple => "Púrpura";
+  @override
+  String get colorOrange => "Naranja";
+  @override
+  String get colorPink => "Rosa";
+  @override
+  String get colorPinkAccent => "Rosa acento";
+
+  // Subscription
+  @override
+  String get subsTitleMenu => "Planes de suscripción";
+  @override
+  String get subsTitle => "Elige tu plan";
+  @override
+  String get subsDescription => "Desbloquea todas las funcionalidades";
+  @override
+  String get subsRecommended => "Recomendado";
 }

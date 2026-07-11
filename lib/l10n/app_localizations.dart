@@ -35,16 +35,19 @@ abstract class AppLocalizations {
     Locale('es'),
   ];
 
+  // Auth — login, register
   String get authTitleLogin;
   String get authTitleRegister;
-  String get authDescriptionLogin;
-  String get authDescriptionRegister;
-  String get loginButton;
+  String get authRegisterLink;
+  String get authLoginLink;
   String get fullName;
   String get email;
   String get password;
-  String get title;
-  String get subtitle;
+  String get emailLabel;
+  String get emailHint;
+  String get or;
+
+  // Auth — forgot / reset password
   String get subtitleForgotPassword;
   String get subtitleChangePassword;
   String get forgotPasswordCodeSendError;
@@ -60,12 +63,27 @@ abstract class AppLocalizations {
   String get confirmPasswordLabel;
   String get updatePassword;
   String get backToLogin;
+  String get forgotPassword;
+  String get sendCodeEmail;
+  String get returnLogin;
+  String get verifyCodeButton;
+  String get resendCode;
+  String get codeSentToEmail;
+  String get enterCodeDescription;
+
+  // App — general
+  String get title;
+  String get subtitle;
+
+  // Validation
   String get valFullname;
   String get valMayusMinusNumber;
   String get valMinSixStr;
   String get valPwd;
   String get valEmailInvalid;
   String get valRequiredEmail;
+
+  // Menu — sidebar
   String get menuDishes;
   String get menuDishesSubtitle;
   String get menuWheel;
@@ -74,20 +92,10 @@ abstract class AppLocalizations {
   String get menuFavoritesSubtitle;
   String get menuAvoid;
   String get menuAvoidSubtitle;
-  String get sectionNavigation;
-  String get sectionSettings;
   String get menuHistory;
   String get menuHistorySubtitle;
-  String get dishesEmpty;
-  String get filterAll;
-  String get filterCountry;
-  String get filterMealType;
-  String get searchDishes;
-  String get filterEmpty;
-  String get spinButton;
-  String get mealTypeBreakfast;
-  String get mealTypeLunch;
-  String get mealTypeDinner;
+  String get sectionNavigation;
+  String get sectionSettings;
   String get menuProfile;
   String get menuProfileSubtitle;
   String get menuSubscription;
@@ -95,6 +103,18 @@ abstract class AppLocalizations {
   String get menuTheme;
   String get menuThemeSubtitle;
   String get menuLogout;
+
+  // Dishes — list / search
+  String get dishesEmpty;
+  String get filterAll;
+  String get filterCountry;
+  String get filterMealType;
+  String get searchDishes;
+  String get filterEmpty;
+  String get mealTypeBreakfast;
+  String get mealTypeLunch;
+  String get mealTypeDinner;
+  String get spinButton;
   String get retryButton;
   String get errorLabel;
   String get ingredientsTitle;
@@ -102,42 +122,8 @@ abstract class AppLocalizations {
   String get viewList;
   String get dishWinner;
   String get dishSelected;
-  String get themeTitle;
-  String get themeDarkMode;
-  String get themeLanguage;
-  String get themeSelectColor;
-  String get colorDeepPurple;
-  String get colorBlue;
-  String get colorTeal;
-  String get colorGreen;
-  String get colorRed;
-  String get colorPurple;
-  String get colorOrange;
-  String get colorPink;
-  String get colorPinkAccent;
-  String get subsTitleMenu;
-  String get subsTitle;
-  String get subsDescription;
-  String get subsRecommended;
-  String get navPlatos;
-  String get navFavoritos;
-  String get navRuleta;
-  String get navAvoid;
-  String get navHistorial;
-  String get platosTitle;
-  String get favoritosTitle;
-  String get avoidTitle;
-  String get historialTitle;
-  String get favoritosEmpty;
-  String get avoidEmpty;
-  String get historialEmpty;
-  String get forgotPassword;
-  String get sendCodeEmail;
-  String get returnLogin;
-  String get verifyCodeButton;
-  String get resendCode;
-  String get codeSentToEmail;
-  String get enterCodeDescription;
+
+  // Create dish
   String get createDishTitle;
   String get dishName;
   String get dishIngredients;
@@ -145,6 +131,24 @@ abstract class AppLocalizations {
   String get dishMealType;
   String get createDish;
   String get dishCreated;
+
+  // Bottom navigation
+  String get navPlatos;
+  String get navFavoritos;
+  String get navRuleta;
+  String get navAvoid;
+  String get navHistorial;
+
+  // Screen titles
+  String get platosTitle;
+  String get favoritosTitle;
+  String get avoidTitle;
+  String get historialTitle;
+  String get favoritosEmpty;
+  String get avoidEmpty;
+  String get historialEmpty;
+
+  // History
   String get historialToday;
   String get historialYesterday;
   String get historialThisWeek;
@@ -157,6 +161,8 @@ abstract class AppLocalizations {
   String get historialSelectedCount;
   String get historialSpin;
   String get historialView;
+
+  // Wheel — settings sheet
   String get wheelSettingsTitle;
   String get wheelSettingsAvoidRepeat;
   String get wheelSettingsAvoidThreeDays;
@@ -176,9 +182,27 @@ abstract class AppLocalizations {
   String get wheelSettingsMin;
   String get wheelSettingsCancel;
   String get wheelSettingsApply;
-  String get or;
-  String get emailLabel;
-  String get emailHint;
+
+  // Theme
+  String get themeTitle;
+  String get themeDarkMode;
+  String get themeLanguage;
+  String get themeSelectColor;
+  String get colorDeepPurple;
+  String get colorBlue;
+  String get colorTeal;
+  String get colorGreen;
+  String get colorRed;
+  String get colorPurple;
+  String get colorOrange;
+  String get colorPink;
+  String get colorPinkAccent;
+
+  // Subscription
+  String get subsTitleMenu;
+  String get subsTitle;
+  String get subsDescription;
+  String get subsRecommended;
 }
 
 class _AppLocalizationsDelegate
