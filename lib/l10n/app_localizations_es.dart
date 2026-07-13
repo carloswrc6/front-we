@@ -247,6 +247,8 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get historialSelectedCount => "seleccionados";
   @override
+  String get historialBoth => "Ambos";
+  @override
   String get historialSpin => "Ruleta";
   @override
   String get historialView => "Visualizados";

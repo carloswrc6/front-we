@@ -20,7 +20,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
   final _searchController = TextEditingController();
   String _searchQuery = '';
   String? _dateFilter;
-  String? _sourceFilter;
+  String? _sourceFilter = 'spin';
   final Set<DishHistory> _selectedEntries = {};
 
   @override
@@ -184,7 +184,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                   separatorBuilder: (_, __) => const SizedBox(width: 8),
                   itemBuilder: (_, i) {
                     final sourceFilters = [
-                      _DateFilter(id: null, label: t.filterAll),
+                      _DateFilter(id: null, label: t.historialBoth),
                       _DateFilter(id: 'spin', label: t.historialSpin),
                       _DateFilter(id: 'view', label: t.historialView),
                     ];
