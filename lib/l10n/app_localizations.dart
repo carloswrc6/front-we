@@ -169,6 +169,7 @@ abstract class AppLocalizations {
 
   // Wheel — settings sheet
   String get wheelSettingsTitle;
+  String get wheelSettingsRepetition;
   String get wheelSettingsAvoidRepeat;
   String get wheelSettingsAvoidThreeDays;
   String get wheelSettingsSpeed;
@@ -182,6 +183,7 @@ abstract class AppLocalizations {
   String get wheelSettingsPreferences;
   String get wheelSettingsPrioritizeFavorites;
   String get wheelSettingsSurpriseMode;
+  String get wheelSettingsSurpriseModeDesc;
   String get wheelSettingsHealthyMode;
   String get wheelSettingsMaxTime;
   String get wheelSettingsMin;

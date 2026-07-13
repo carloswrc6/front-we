@@ -109,7 +109,6 @@ class _WheelSettingsContentState extends State<_WheelSettingsContent> {
     _prioritizeFavorites = widget.initialPrioritizeFavorites;
     _surpriseMode = widget.initialSurpriseMode;
     _healthyMode = widget.initialHealthyMode;
-    debugPrint('[WheelSettingsSheet] opened with initialSpeed=${widget.initialSpeed}');
   }
 
   @override
@@ -117,6 +116,7 @@ class _WheelSettingsContentState extends State<_WheelSettingsContent> {
     final t = AppLocalizations.of(context)!;
     final cs = Theme.of(context).colorScheme;
     final bottom = MediaQuery.of(context).padding.bottom;
+    final textTheme = Theme.of(context).textTheme;
 
     return Padding(
       padding: EdgeInsets.only(bottom: bottom),
@@ -144,61 +144,157 @@ class _WheelSettingsContentState extends State<_WheelSettingsContent> {
                 const SizedBox(width: 8),
                 Text(
                   t.wheelSettingsTitle,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  style: textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 20),
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
               children: [
-                _CheckboxTile(
-                  value: _avoidRepeat,
-                  label: t.wheelSettingsAvoidRepeat,
-                  onChanged: (v) => setState(() => _avoidRepeat = v),
+                Padding(
+                  padding: const EdgeInsets.only(left: 4, bottom: 8),
+                  child: Text(t.wheelSettingsRepetition,
+                    style: textTheme.titleSmall?.copyWith(
+                      color: cs.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
-                _CheckboxTile(
-                  value: _avoidThreeDays,
-                  label: t.wheelSettingsAvoidThreeDays,
-                  onChanged: (v) => setState(() => _avoidThreeDays = v),
-                ),
-                const _SectionDivider(),
-                _sectionLabel(context, t.wheelSettingsSpeed),
-                _RadioGroup<String>(
-                  value: _speed,
-                  options: [
-                    _RadioOption(t.wheelSettingsFast, 'fast', Icons.bolt),
-                    _RadioOption(t.wheelSettingsNormal, 'normal', Icons.speed),
-                    _RadioOption(t.wheelSettingsSlow, 'slow', Icons.timer_outlined),
+                _sectionCard(
+                  context,
+                  children: [
+                    SwitchListTile(
+                      value: _avoidRepeat,
+                      onChanged: (v) => setState(() => _avoidRepeat = v),
+                      title: Text(t.wheelSettingsAvoidRepeat),
+                      contentPadding: EdgeInsets.zero,
+                      dense: true,
+                    ),
+                    const Divider(height: 1, indent: 0),
+                    SwitchListTile(
+                      value: _avoidThreeDays,
+                      onChanged: (v) => setState(() => _avoidThreeDays = v),
+                      title: Text(t.wheelSettingsAvoidThreeDays),
+                      contentPadding: EdgeInsets.zero,
+                      dense: true,
+                    ),
                   ],
-                  onChanged: (v) {
-                    debugPrint('[WheelSettingsSheet] speed radio changed to: $v');
-                    setState(() => _speed = v);
-                  },
                 ),
-                const _SectionDivider(),
-                _sectionLabel(context, t.wheelSettingsDifficulty),
-                _buildDifficultyCheckboxes(),
-                const _SectionDivider(),
-                _sectionLabel(context, t.wheelSettingsPreferences),
-                _CheckboxTile(
-                  value: _prioritizeFavorites,
-                  label: t.wheelSettingsPrioritizeFavorites,
-                  onChanged: (v) => setState(() => _prioritizeFavorites = v),
+                const SizedBox(height: 12),
+                Padding(
+                  padding: const EdgeInsets.only(left: 4, bottom: 8),
+                  child: Text(t.wheelSettingsSpeed,
+                    style: textTheme.titleSmall?.copyWith(
+                      color: cs.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
-                _CheckboxTile(
-                  value: _surpriseMode,
-                  label: t.wheelSettingsSurpriseMode,
-                  onChanged: (v) => setState(() => _surpriseMode = v),
+                _sectionCard(
+                  context,
+                  children: [
+                    SegmentedButton<String>(
+                      segments: [
+                        ButtonSegment(value: 'fast', label: Text(t.wheelSettingsFast), icon: const Icon(Icons.bolt)),
+                        ButtonSegment(value: 'normal', label: Text(t.wheelSettingsNormal), icon: const Icon(Icons.speed)),
+                        ButtonSegment(value: 'slow', label: Text(t.wheelSettingsSlow), icon: const Icon(Icons.timer_outlined)),
+                      ],
+                      selected: {_speed},
+                      onSelectionChanged: (v) => setState(() => _speed = v.first),
+                      style: ButtonStyle(
+                        visualDensity: VisualDensity.compact,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                    ),
+                  ],
                 ),
-                _CheckboxTile(
-                  value: _healthyMode,
-                  label: t.wheelSettingsHealthyMode,
-                  onChanged: (v) => setState(() => _healthyMode = v),
+                const SizedBox(height: 12),
+                Padding(
+                  padding: const EdgeInsets.only(left: 4, bottom: 8),
+                  child: Text(t.wheelSettingsDifficulty,
+                    style: textTheme.titleSmall?.copyWith(
+                      color: cs.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                _sectionCard(
+                  context,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+                      child: Wrap(
+                        spacing: 10,
+                        runSpacing: 6,
+                        children: [
+                          FilterChip(
+                            label: Text(t.wheelSettingsEasy),
+                            selected: _easy,
+                            onSelected: (v) => setState(() => _easy = v),
+                            visualDensity: VisualDensity.compact,
+                            showCheckmark: false,
+                          ),
+                          FilterChip(
+                            label: Text(t.wheelSettingsMedium),
+                            selected: _medium,
+                            onSelected: (v) => setState(() => _medium = v),
+                            visualDensity: VisualDensity.compact,
+                            showCheckmark: false,
+                          ),
+                          FilterChip(
+                            label: Text(t.wheelSettingsHard),
+                            selected: _hard,
+                            onSelected: (v) => setState(() => _hard = v),
+                            visualDensity: VisualDensity.compact,
+                            showCheckmark: false,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Padding(
+                  padding: const EdgeInsets.only(left: 4, bottom: 8),
+                  child: Text(t.wheelSettingsPreferences,
+                    style: textTheme.titleSmall?.copyWith(
+                      color: cs.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                _sectionCard(
+                  context,
+                  children: [
+                    SwitchListTile(
+                      value: _prioritizeFavorites,
+                      onChanged: (v) => setState(() => _prioritizeFavorites = v),
+                      title: Text(t.wheelSettingsPrioritizeFavorites),
+                      contentPadding: EdgeInsets.zero,
+                      dense: true,
+                    ),
+                    const Divider(height: 1, indent: 0),
+                    SwitchListTile(
+                      value: _surpriseMode,
+                      onChanged: (v) => setState(() => _surpriseMode = v),
+                      title: Text(t.wheelSettingsSurpriseMode),
+                      contentPadding: EdgeInsets.zero,
+                      dense: true,
+                    ),
+                    const Divider(height: 1, indent: 0),
+                    SwitchListTile(
+                      value: _healthyMode,
+                      onChanged: (v) => setState(() => _healthyMode = v),
+                      title: Text(t.wheelSettingsHealthyMode),
+                      contentPadding: EdgeInsets.zero,
+                      dense: true,
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 16),
               ],
@@ -222,7 +318,6 @@ class _WheelSettingsContentState extends State<_WheelSettingsContent> {
                 Expanded(
                   child: FilledButton(
                     onPressed: () {
-                      debugPrint('[WheelSettingsSheet] Aplicar pressed, speed=$_speed easy=$_easy medium=$_medium hard=$_hard surpriseMode=$_surpriseMode avoidRepeat=$_avoidRepeat avoidThreeDays=$_avoidThreeDays healthyMode=$_healthyMode prioritizeFavorites=$_prioritizeFavorites');
                       widget.onApply(
                         speed: _speed,
                         difficultyEasy: _easy,
@@ -247,136 +342,25 @@ class _WheelSettingsContentState extends State<_WheelSettingsContent> {
     );
   }
 
-  Widget _sectionLabel(BuildContext context, String label) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Text(
-        label,
-        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-          color: Theme.of(context).colorScheme.primary,
-          fontWeight: FontWeight.w600,
+  Widget _sectionCard(BuildContext context, {required List<Widget> children}) {
+    return Card(
+      margin: EdgeInsets.zero,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(
+          color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.5),
         ),
       ),
-    );
-  }
-
-  Widget _buildDifficultyCheckboxes() {
-    return Column(
-      children: [
-        _CheckboxTile(
-          value: _easy,
-          label: AppLocalizations.of(context)!.wheelSettingsEasy,
-          onChanged: (v) => setState(() => _easy = v),
-        ),
-        _CheckboxTile(
-          value: _medium,
-          label: AppLocalizations.of(context)!.wheelSettingsMedium,
-          onChanged: (v) => setState(() => _medium = v),
-        ),
-        _CheckboxTile(
-          value: _hard,
-          label: AppLocalizations.of(context)!.wheelSettingsHard,
-          onChanged: (v) => setState(() => _hard = v),
-        ),
-      ],
-    );
-  }
-}
-
-class _RadioOption<T> {
-  final String label;
-  final T value;
-  final IconData icon;
-  const _RadioOption(this.label, this.value, this.icon);
-}
-
-class _RadioGroup<T> extends StatelessWidget {
-  final T value;
-  final List<_RadioOption<T>> options;
-  final ValueChanged<T> onChanged;
-
-  const _RadioGroup({
-    required this.value,
-    required this.options,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(12),
-      child: Material(
-        color: cs.surfaceContainerLow,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
         child: Column(
-          children: options.map((opt) {
-            final selected = value == opt.value;
-            return RadioListTile<T>(
-            title: Row(
-              children: [
-                Icon(opt.icon, size: 18, color: selected ? cs.primary : cs.onSurfaceVariant),
-                const SizedBox(width: 8),
-                Text(opt.label),
-              ],
-            ),
-            value: opt.value,
-            groupValue: value,
-            onChanged: (v) {
-              if (v != null) onChanged(v);
-            },
-            contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-            visualDensity: VisualDensity.compact,
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            selected: selected,
-            activeColor: cs.primary,
-          );
-        }).toList(),
-      ),
+          mainAxisSize: MainAxisSize.min,
+          children: children,
+        ),
       ),
     );
   }
 }
 
-class _CheckboxTile extends StatelessWidget {
-  final bool value;
-  final String label;
-  final ValueChanged<bool> onChanged;
 
-  const _CheckboxTile({
-    required this.value,
-    required this.label,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return CheckboxListTile(
-      value: value,
-      onChanged: (v) {
-        if (v != null) onChanged(v);
-      },
-      title: Text(label),
-      contentPadding: EdgeInsets.zero,
-      visualDensity: VisualDensity.compact,
-      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      controlAffinity: ListTileControlAffinity.leading,
-      activeColor: Theme.of(context).colorScheme.primary,
-    );
-  }
-}
-
-class _SectionDivider extends StatelessWidget {
-  const _SectionDivider();
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Divider(
-        height: 1,
-        color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.5),
-      ),
-    );
-  }
-}

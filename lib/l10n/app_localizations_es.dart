@@ -257,11 +257,13 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get wheelSettingsTitle => "Personalizar giro";
   @override
+  String get wheelSettingsRepetition => "Repetición";
+  @override
   String get wheelSettingsAvoidRepeat => "Evitar repetir último resultado";
   @override
   String get wheelSettingsAvoidThreeDays => "Evitar comer lo mismo 3 días seguidos";
   @override
-  String get wheelSettingsSpeed => "Velocidad";
+  String get wheelSettingsSpeed => "Velocidad de giro";
   @override
   String get wheelSettingsFast => "Rápido";
   @override
@@ -269,7 +271,7 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get wheelSettingsSlow => "Lento";
   @override
-  String get wheelSettingsDifficulty => "Dificultad";
+  String get wheelSettingsDifficulty => "Dificultad de preparación";
   @override
   String get wheelSettingsEasy => "Fácil";
   @override
@@ -282,6 +284,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get wheelSettingsPrioritizeFavorites => "Priorizar favoritos";
   @override
   String get wheelSettingsSurpriseMode => "Modo sorpresa";
+  @override
+  String get wheelSettingsSurpriseModeDesc => "Muestra platos aleatorios fuera de tus preferencias habituales para descubrir nuevas opciones.";
   @override
   String get wheelSettingsHealthyMode => "Modo saludable";
   @override
