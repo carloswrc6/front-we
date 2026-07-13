@@ -9,6 +9,12 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+// me quede en leer el sqlite
+// en evit1ar comer lo mismo 3 dias, falta probarlos
+// nav bottom
+// icono 24px
+// label 12px
+// probar en varios dispositivos
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: '.env');
@@ -29,8 +35,9 @@ class MyApp extends ConsumerWidget {
       routerConfig: appRouter,
       title: 'Front We',
 
-      // NUEVO THEME
       theme: theme.getTheme(),
+      darkTheme: theme.getTheme(),
+      themeMode: theme.isDarkmode ? ThemeMode.dark : ThemeMode.light,
 
       // LOCALE
       locale: locale,
