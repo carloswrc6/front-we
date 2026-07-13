@@ -28,7 +28,12 @@ class CustomButton extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 if (icon != null) ...[icon!, const SizedBox(width: 8)],
-                Text(label),
+                Flexible(
+                  child: Text(
+                    label,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
               ],
             ),
     );

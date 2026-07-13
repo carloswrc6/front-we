@@ -187,15 +187,15 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen>
                                                         child: Container(
                                                           padding: const EdgeInsets.all(8),
                                                           decoration: BoxDecoration(
-                                                            color: dish.isFavorite
-                                                                ? Colors.red.withValues(alpha: 0.85)
-                                                                : Colors.grey.withValues(alpha: 0.2),
+                                                          color: dish.isFavorite
+                                                                  ? Theme.of(context).colorScheme.error.withValues(alpha: 0.85)
+                                                                  : Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
                                                             borderRadius: BorderRadius.circular(12),
                                                           ),
                                                           child: Icon(
                                                             dish.isFavorite ? Icons.favorite : Icons.favorite_border,
                                                             size: 20,
-                                                            color: dish.isFavorite ? Colors.white : Colors.grey,
+                                                              color: dish.isFavorite ? Theme.of(context).colorScheme.onError : Theme.of(context).colorScheme.outline,
                                                           ),
                                                         ),
                                                       ),
@@ -207,15 +207,15 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen>
                                                         child: Container(
                                                           padding: const EdgeInsets.all(8),
                                                           decoration: BoxDecoration(
-                                                            color: dish.isAvoided
-                                                                ? Colors.blueGrey.withValues(alpha: 0.85)
-                                                                : Colors.grey.withValues(alpha: 0.2),
+                                                          color: dish.isAvoided
+                                                                  ? Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.85)
+                                                                  : Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
                                                             borderRadius: BorderRadius.circular(12),
                                                           ),
                                                           child: Icon(
                                                             dish.isAvoided ? Icons.thumb_down : Icons.thumb_down_outlined,
                                                             size: 20,
-                                                            color: dish.isAvoided ? Colors.white : Colors.grey,
+                                                              color: dish.isAvoided ? Theme.of(context).colorScheme.onTertiary : Theme.of(context).colorScheme.outline,
                                                           ),
                                                         ),
                                                       ),

@@ -30,6 +30,11 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get or => "o";
 
+  @override
+  String get continueWithGoogle => 'Continuar con Google';
+  @override
+  String get continueWithApple => 'Continuar con Apple';
+
   // Auth — forgot / reset password
   @override
   String get subtitleForgotPassword => 'Recuperar contraseña';

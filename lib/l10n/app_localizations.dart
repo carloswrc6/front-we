@@ -47,6 +47,10 @@ abstract class AppLocalizations {
   String get emailHint;
   String get or;
 
+  // Auth — social login
+  String get continueWithGoogle;
+  String get continueWithApple;
+
   // Auth — forgot / reset password
   String get subtitleForgotPassword;
   String get subtitleChangePassword;

@@ -140,14 +140,14 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
                             child: Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: Colors.red.withValues(alpha: 0.85),
+                                color: Theme.of(context).colorScheme.error.withValues(alpha: 0.85),
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              child: const Icon(
-                                Icons.favorite,
-                                size: 20,
-                                color: Colors.white,
-                              ),
+                              child: Icon(
+                                  Icons.favorite,
+                                  size: 20,
+                                  color: Theme.of(context).colorScheme.onError,
+                                ),
                             ),
                           ),
                           const SizedBox(width: 8),

@@ -137,14 +137,14 @@ class _EvitarScreenState extends ConsumerState<EvitarScreen> {
                       child: Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: Colors.blueGrey.withValues(alpha: 0.85),
+                          color: Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.85),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const Icon(
-                          Icons.close,
-                          size: 20,
-                          color: Colors.white,
-                        ),
+                        child: Icon(
+                                  Icons.close,
+                                  size: 20,
+                                  color: Theme.of(context).colorScheme.onTertiary,
+                                ),
                       ),
                     ),
                     const SizedBox(width: 8),
