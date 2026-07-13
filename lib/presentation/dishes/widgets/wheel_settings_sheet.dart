@@ -282,7 +282,16 @@ class _WheelSettingsContentState extends State<_WheelSettingsContent> {
                     SwitchListTile(
                       value: _surpriseMode,
                       onChanged: (v) => setState(() => _surpriseMode = v),
-                      title: Text(t.wheelSettingsSurpriseMode),
+                      title: Row(
+                        children: [
+                          Text(t.wheelSettingsSurpriseMode),
+                          const SizedBox(width: 4),
+                          Tooltip(
+                            message: t.wheelSettingsSurpriseModeDesc,
+                            child: Icon(Icons.help_outline, size: 18, color: cs.onSurfaceVariant),
+                          ),
+                        ],
+                      ),
                       contentPadding: EdgeInsets.zero,
                       dense: true,
                     ),
