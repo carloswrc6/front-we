@@ -154,4 +154,20 @@ class DishLocalDatasource {
     final count = await _db.countryCount();
     return count > 0;
   }
+
+  Future<void> saveCustomAvoidReason(String label) async {
+    await _db.saveCustomAvoidReason(label);
+  }
+
+  Future<List<String>> getCustomAvoidReasons() async {
+    return _db.getCustomAvoidReasons();
+  }
+
+  Future<void> setPreference(String key, String value) async {
+    await _db.setPreference(key, value);
+  }
+
+  Future<String?> getPreference(String key) async {
+    return _db.getPreference(key);
+  }
 }

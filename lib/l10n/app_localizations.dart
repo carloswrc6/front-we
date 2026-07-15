@@ -210,6 +210,13 @@ abstract class AppLocalizations {
   String get subsTitle;
   String get subsDescription;
   String get subsRecommended;
+
+  // Avoid reasons
+  String get avoidReasonTitle;
+  String get avoidReasonOther;
+  String get avoidReasonOtherHint;
+  String get avoidReasonSave;
+  String get avoidReasonClear;
 }
 
 class _AppLocalizationsDelegate

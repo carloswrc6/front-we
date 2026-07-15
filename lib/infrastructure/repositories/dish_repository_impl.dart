@@ -106,4 +106,24 @@ class DishRepositoryImpl extends DishRepository {
   Future<void> setAvoidReason(String dishId, String? reason) {
     return localDatasource.setAvoidReason(dishId, reason);
   }
+
+  @override
+  Future<void> saveCustomAvoidReason(String label) {
+    return localDatasource.saveCustomAvoidReason(label);
+  }
+
+  @override
+  Future<List<String>> getCustomAvoidReasons() {
+    return localDatasource.getCustomAvoidReasons();
+  }
+
+  @override
+  Future<void> setPreference(String key, String value) {
+    return localDatasource.setPreference(key, value);
+  }
+
+  @override
+  Future<String?> getPreference(String key) {
+    return localDatasource.getPreference(key);
+  }
 }

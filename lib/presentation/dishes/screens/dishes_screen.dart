@@ -4,6 +4,8 @@ import 'package:frontwe/domain/entities/dish.dart';
 import 'package:frontwe/l10n/app_localizations.dart';
 import 'package:frontwe/presentation/dishes/providers/dish_providers.dart';
 import 'package:frontwe/presentation/dishes/widgets/filter_bar.dart';
+import 'package:frontwe/presentation/shared/widgets/avoid_reason_dialog.dart';
+import 'package:frontwe/presentation/shared/providers/avoid_reason_provider.dart';
 import 'package:frontwe/presentation/shared/widgets/BottomNavBar.dart';
 import 'package:frontwe/presentation/shared/widgets/SideMenu.dart';
 import 'package:frontwe/presentation/shared/widgets/CountrySelector.dart';
@@ -25,10 +27,14 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen>
   String? _selectedMealType;
   late AnimationController _pulseController;
   late Animation<double> _pulseAnimation;
+  List<String> _customReasons = [];
+  bool _sugerenciasExpanded = true;
+  bool _tusMotivosExpanded = true;
 
   @override
   void initState() {
     super.initState();
+    _loadCustomReasons();
     _pulseController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1200),
@@ -51,6 +57,7 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen>
     final cs = Theme.of(context).colorScheme;
     final dishesAsync = ref.watch(localDishesProvider);
     final countriesAsync = ref.watch(localCountriesProvider);
+    ref.watch(avoidReasonsProvider);
 
     return dishesAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
@@ -285,41 +292,38 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen>
   }
 
   Future<void> _showAvoidReasonDialog(Dish dish) async {
-    final controller = TextEditingController(text: dish.avoidReason ?? '');
-    final reason = await showDialog<String>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Motivo'),
-        content: TextField(
-          controller: controller,
-          decoration: const InputDecoration(
-            hintText: '¿Por qué lo evitas?',
-            border: OutlineInputBorder(),
-          ),
-          maxLines: 3,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, '__clear__'),
-            child: const Text('Limpiar'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, controller.text),
-            child: const Text('Guardar'),
-          ),
-        ],
-      ),
+    final repo = ref.read(dishRepositoryProvider);
+    final apiReasonsAsync = ref.read(avoidReasonsProvider);
+    final apiReasons = apiReasonsAsync.whenOrNull(
+      data: (list) => list.map((m) => AvoidReason(m.key, m.label, m.description)).toList(),
+    );
+    final reason = await showAvoidReasonDialog(
+      context,
+      initialReason: dish.avoidReason,
+      predefined: apiReasons ?? [],
+      customReasons: _customReasons,
+      onSaveCustomReason: (label) => repo.saveCustomAvoidReason(label),
+      sugerenciasExpanded: _sugerenciasExpanded,
+      tusMotivosExpanded: _tusMotivosExpanded,
+      onSugerenciasExpandedChanged: (v) => _sugerenciasExpanded = v,
+      onTusMotivosExpandedChanged: (v) => _tusMotivosExpanded = v,
     );
     if (reason != null) {
       if (!dish.isAvoided) {
-        await ref.read(dishRepositoryProvider).toggleAvoided(dish.id);
+        await repo.toggleAvoided(dish.id);
       }
-      await ref.read(dishRepositoryProvider).setAvoidReason(
+      await repo.setAvoidReason(
         dish.id,
         reason == '__clear__' ? null : reason,
       );
       ref.invalidate(localDishesProvider);
     }
+    _loadCustomReasons();
+  }
+
+  Future<void> _loadCustomReasons() async {
+    final reasons = await ref.read(dishRepositoryProvider).getCustomAvoidReasons();
+    if (mounted) setState(() => _customReasons = reasons);
   }
 
   Widget _dishImage(Dish dish, ColorScheme cs) {

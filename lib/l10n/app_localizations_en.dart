@@ -333,4 +333,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subsDescription => "Unlock all features";
   @override
   String get subsRecommended => "Recommended";
+
+  // Avoid reasons
+  @override
+  String get avoidReasonTitle => "Why do you avoid it?";
+  @override
+  String get avoidReasonOther => "Other";
+  @override
+  String get avoidReasonOtherHint => "Write your reason...";
+  @override
+  String get avoidReasonSave => "Save";
+  @override
+  String get avoidReasonClear => "Clear";
 }

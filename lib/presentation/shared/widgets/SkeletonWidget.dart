@@ -10,7 +10,7 @@ class ShimmerLayout extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Shimmer.fromColors(
       baseColor: isDark ? Colors.grey[850]! : Colors.grey[300]!,
-      highlightColor: isDark ? Colors.grey[750]! : Colors.grey[100]!,
+      highlightColor: isDark ? Colors.grey[700]! : Colors.grey[100]!,
       child: child,
     );
   }

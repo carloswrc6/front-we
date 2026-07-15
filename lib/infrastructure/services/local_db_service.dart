@@ -22,7 +22,7 @@ class LocalDbService {
 
     return openDatabase(
       path,
-      version: 9,
+      version: 11,
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE dishes (
@@ -63,6 +63,18 @@ class LocalDbService {
             ingredients TEXT NOT NULL,
             from_spin INTEGER NOT NULL DEFAULT 0,
             selected_at TEXT NOT NULL
+          )
+        ''');
+        await db.execute('''
+          CREATE TABLE IF NOT EXISTS custom_avoid_reasons (
+            label TEXT PRIMARY KEY,
+            created_at TEXT NOT NULL
+          )
+        ''');
+        await db.execute('''
+          CREATE TABLE IF NOT EXISTS app_preferences (
+            key TEXT PRIMARY KEY,
+            value TEXT NOT NULL
           )
         ''');
       },
@@ -119,6 +131,22 @@ class LocalDbService {
         if (oldVersion < 9) {
           await db.execute('''
             ALTER TABLE dishes ADD COLUMN is_healthy INTEGER NOT NULL DEFAULT 0
+          ''');
+        }
+        if (oldVersion < 10) {
+          await db.execute('''
+            CREATE TABLE IF NOT EXISTS custom_avoid_reasons (
+              label TEXT PRIMARY KEY,
+              created_at TEXT NOT NULL
+            )
+          ''');
+        }
+        if (oldVersion < 11) {
+          await db.execute('''
+            CREATE TABLE IF NOT EXISTS app_preferences (
+              key TEXT PRIMARY KEY,
+              value TEXT NOT NULL
+            )
           ''');
         }
       },
@@ -224,5 +252,34 @@ class LocalDbService {
     final db = await database;
     await _ensureHistoryTable();
     await db.delete('dish_history');
+  }
+
+  Future<void> saveCustomAvoidReason(String label) async {
+    final db = await database;
+    await db.insert('custom_avoid_reasons', {
+      'label': label,
+      'created_at': DateTime.now().toIso8601String(),
+    }, conflictAlgorithm: ConflictAlgorithm.ignore);
+  }
+
+  Future<List<String>> getCustomAvoidReasons() async {
+    final db = await database;
+    final rows = await db.query('custom_avoid_reasons', orderBy: 'created_at DESC');
+    return rows.map((r) => r['label'] as String).toList();
+  }
+
+  Future<void> setPreference(String key, String value) async {
+    final db = await database;
+    await db.insert('app_preferences', {
+      'key': key,
+      'value': value,
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  Future<String?> getPreference(String key) async {
+    final db = await database;
+    final rows = await db.query('app_preferences', where: 'key = ?', whereArgs: [key]);
+    if (rows.isEmpty) return null;
+    return rows.first['value'] as String;
   }
 }

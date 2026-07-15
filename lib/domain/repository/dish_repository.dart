@@ -20,4 +20,8 @@ abstract class DishRepository {
   Future<void> toggleFavorite(String dishId);
   Future<void> toggleAvoided(String dishId);
   Future<void> setAvoidReason(String dishId, String? reason);
+  Future<void> saveCustomAvoidReason(String label);
+  Future<List<String>> getCustomAvoidReasons();
+  Future<void> setPreference(String key, String value);
+  Future<String?> getPreference(String key);
 }
