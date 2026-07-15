@@ -28,7 +28,6 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
   Dish? _selectedDish;
   bool _fromSpin = false;
   bool _defaultsInitialized = false;
-  bool _showFavorites = false;
 
   @override
   Widget build(BuildContext context) {
@@ -107,13 +106,14 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                         avoidThreeDays: wheelState.avoidThreeDays,
                         healthyMode: wheelState.healthyMode,
                         prioritizeFavorites: wheelState.prioritizeFavorites,
+                        showFavorites: wheelState.showFavorites,
                       );
                     }
                   });
                 }
               }
               final filtered = _filter(dishes, wheelState);
-              final extraFavs = _showFavorites
+              final extraFavs = wheelState.showFavorites
                   ? dishes.where((d) => d.isFavorite && !filtered.any((f) => f.id == d.id)).toList()
                   : <Dish>[];
               final filteredByFav = [...filtered, ...extraFavs];
@@ -186,6 +186,7 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                             avoidThreeDays: wheelState.avoidThreeDays,
                             healthyMode: wheelState.healthyMode,
                             prioritizeFavorites: wheelState.prioritizeFavorites,
+                            showFavorites: wheelState.showFavorites,
                           );
                         },
                         rightAligned: true,
@@ -194,8 +195,23 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                       bottomChild: DishFilterBar(
                         selectedMealType: wheelState.selectedMealType,
                         dishCount: filtered.length,
-                        showFavorites: _showFavorites,
-                        onFavoritesChanged: () => setState(() => _showFavorites = !_showFavorites),
+                        showFavorites: wheelState.showFavorites,
+                        onFavoritesChanged: () {
+                          ref.read(wheelStateProvider.notifier).state = WheelState(
+                            selectedMealType: wheelState.selectedMealType,
+                            selectedCountryId: wheelState.selectedCountryId,
+                            speed: wheelState.speed,
+                            difficultyEasy: wheelState.difficultyEasy,
+                            difficultyMedium: wheelState.difficultyMedium,
+                            difficultyHard: wheelState.difficultyHard,
+                            surpriseMode: wheelState.surpriseMode,
+                            avoidRepeat: wheelState.avoidRepeat,
+                            avoidThreeDays: wheelState.avoidThreeDays,
+                            healthyMode: wheelState.healthyMode,
+                            prioritizeFavorites: wheelState.prioritizeFavorites,
+                            showFavorites: !wheelState.showFavorites,
+                          );
+                        },
                         onMealTypeChanged: (v) {
                           setState(() => _selectedDish = null);
                           ref.read(wheelStateProvider.notifier).state = WheelState(
@@ -210,6 +226,7 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                             avoidThreeDays: wheelState.avoidThreeDays,
                             healthyMode: wheelState.healthyMode,
                             prioritizeFavorites: wheelState.prioritizeFavorites,
+                            showFavorites: wheelState.showFavorites,
                           );
                         },
                       ),
@@ -281,6 +298,7 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                               avoidThreeDays: avoidThreeDays,
                               healthyMode: healthyMode,
                               prioritizeFavorites: prioritizeFavorites,
+                              showFavorites: wheelState.showFavorites,
                             );
                           },
                         ),

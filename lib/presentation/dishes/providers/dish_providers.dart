@@ -69,6 +69,7 @@ class WheelState {
   final bool avoidThreeDays;
   final bool healthyMode;
   final bool prioritizeFavorites;
+  final bool showFavorites;
   const WheelState({
     this.selectedCountryId,
     this.selectedMealType,
@@ -81,6 +82,7 @@ class WheelState {
     this.avoidThreeDays = true,
     this.healthyMode = false,
     this.prioritizeFavorites = true,
+    this.showFavorites = false,
   });
 }
 
