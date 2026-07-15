@@ -102,18 +102,6 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
             );
           }
           final filtered = _filtered(history);
-          if (filtered.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.search_off, size: 48, color: cs.onSurfaceVariant),
-                  const SizedBox(height: 8),
-                  Text(t.filterEmpty, style: Theme.of(context).textTheme.bodyLarge),
-                ],
-              ),
-            );
-          }
           final dateFilters = [
             _DateFilter(id: null, label: t.filterAll),
             _DateFilter(id: 'today', label: t.historialToday),
@@ -204,24 +192,35 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                 ),
               ),
               Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-                  children: [
-                    for (final group in grouped) ...[
-                      _SectionHeader(label: group.label),
-                      for (final entry in group.entries) _HistoryItem(
-                        entry: entry,
-                        isSelected: _selectedEntries.contains(entry),
-                        onTap: () => _onItemTap(entry),
-                        onLongPress: () => _toggleSelection(entry),
-                        getFlag: _codeToFlag,
-                        getMealTypeLabel: (mt) => _mealTypeLabel(t, mt),
-                        getMealTypeIcon: _mealTypeIcon,
-                        formatDate: _formatDate,
+                child: filtered.isEmpty
+                    ? Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.search_off, size: 48, color: cs.onSurfaceVariant),
+                            const SizedBox(height: 8),
+                            Text(t.filterEmpty, style: Theme.of(context).textTheme.bodyLarge),
+                          ],
+                        ),
+                      )
+                    : ListView(
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                        children: [
+                          for (final group in grouped) ...[
+                            _SectionHeader(label: group.label),
+                            for (final entry in group.entries) _HistoryItem(
+                              entry: entry,
+                              isSelected: _selectedEntries.contains(entry),
+                              onTap: () => _onItemTap(entry),
+                              onLongPress: () => _toggleSelection(entry),
+                              getFlag: _codeToFlag,
+                              getMealTypeLabel: (mt) => _mealTypeLabel(t, mt),
+                              getMealTypeIcon: _mealTypeIcon,
+                              formatDate: _formatDate,
+                            ),
+                          ],
+                        ],
                       ),
-                    ],
-                  ],
-                ),
               ),
             ],
           );

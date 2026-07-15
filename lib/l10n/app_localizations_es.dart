@@ -125,7 +125,7 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get menuHistory => "Historial";
   @override
-  String get menuHistorySubtitle => "Platos vistos";
+  String get menuHistorySubtitle => "Platos vistos y seleccionados al azar";
   @override
   String get sectionNavigation => "Navegación";
   @override
