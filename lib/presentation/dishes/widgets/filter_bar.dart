@@ -5,12 +5,16 @@ class DishFilterBar extends StatelessWidget {
   final String? selectedMealType;
   final int dishCount;
   final ValueChanged<String?> onMealTypeChanged;
+  final bool showFavorites;
+  final VoidCallback? onFavoritesChanged;
 
   const DishFilterBar({
     super.key,
     required this.selectedMealType,
     this.dishCount = 0,
     required this.onMealTypeChanged,
+    this.showFavorites = false,
+    this.onFavoritesChanged,
   });
 
   @override
@@ -31,23 +35,41 @@ class DishFilterBar extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: Row(
               spacing: 6,
-              children: mealTypes.map((mt) {
-                final selected = selectedMealType == mt;
-                return FilterChip(
-                  label: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(mealTypeIcons[mt], size: 14),
-                      const SizedBox(width: 4),
-                      Text(_mealTypeLabel(t, mt), style: const TextStyle(fontSize: 12)),
-                    ],
+              children: [
+                ...mealTypes.map((mt) {
+                  final selected = selectedMealType == mt;
+                  return FilterChip(
+                    label: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(mealTypeIcons[mt], size: 14),
+                        const SizedBox(width: 4),
+                        Text(_mealTypeLabel(t, mt), style: const TextStyle(fontSize: 12)),
+                      ],
+                    ),
+                    selected: selected,
+                    visualDensity: VisualDensity.compact,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    onSelected: (_) => onMealTypeChanged(selected ? null : mt),
+                  );
+                }),
+                if (onFavoritesChanged != null) ...[
+                  FilterChip(
+                    label: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.favorite, size: 14),
+                        const SizedBox(width: 4),
+                        Text(t.menuFavorites, style: const TextStyle(fontSize: 12)),
+                      ],
+                    ),
+                    selected: showFavorites,
+                    visualDensity: VisualDensity.compact,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    onSelected: (_) => onFavoritesChanged!(),
                   ),
-                  selected: selected,
-                  visualDensity: VisualDensity.compact,
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  onSelected: (_) => onMealTypeChanged(selected ? null : mt),
-                );
-              }).toList(),
+                ],
+              ],
             ),
           ),
         ),

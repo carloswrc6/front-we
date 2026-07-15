@@ -28,6 +28,7 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
   Dish? _selectedDish;
   bool _fromSpin = false;
   bool _defaultsInitialized = false;
+  bool _showFavorites = false;
 
   @override
   Widget build(BuildContext context) {
@@ -112,6 +113,10 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                 }
               }
               final filtered = _filter(dishes, wheelState);
+              final extraFavs = _showFavorites
+                  ? dishes.where((d) => d.isFavorite && !filtered.any((f) => f.id == d.id)).toList()
+                  : <Dish>[];
+              final filteredByFav = [...filtered, ...extraFavs];
               if (wheelState.surpriseMode) {
                 debugPrint('[SurpriseMode] ACTIVO - ignorando filtros de pais y mealType, total=${filtered.length}');
               }
@@ -128,14 +133,14 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
               }
               final recentIds = recentEntries.map((h) => h.dishId).toSet();
               debugPrint('[ThreeDaysFilter] unique dishIds to exclude: $recentIds');
-              final wheelDishes = recentIds.isNotEmpty
-                  ? filtered.where((d) => !recentIds.contains(d.id)).toList()
-                  : filtered;
+              final wheelList = recentIds.isNotEmpty
+                  ? filteredByFav.where((d) => !recentIds.contains(d.id)).toList()
+                  : filteredByFav;
               debugPrint('[ThreeDaysFilter] filtered count (antes de exclusion): ${filtered.length}');
-              debugPrint('[ThreeDaysFilter] filtered count (despues de exclusion): ${wheelDishes.length}');
-              debugPrint('[ThreeDaysFilter] IDs excluidos: ${filtered.where((d) => recentIds.contains(d.id)).map((d) => "${d.id} - ${d.name}").toList()}');
-              final effectiveWheel = wheelDishes.isNotEmpty ? wheelDishes : filtered;
-              if (wheelDishes.isEmpty && wheelState.avoidThreeDays) {
+              debugPrint('[ThreeDaysFilter] filtered count (despues de exclusion): ${wheelList.length}');
+              debugPrint('[ThreeDaysFilter] IDs excluidos: ${filteredByFav.where((d) => recentIds.contains(d.id)).map((d) => "${d.id} - ${d.name}").toList()}');
+              final effectiveWheel = wheelList.isNotEmpty ? wheelList : filteredByFav;
+              if (wheelList.isEmpty && wheelState.avoidThreeDays) {
                 debugPrint('[ThreeDaysFilter] ATENCION: no quedan platos, se usa la lista completa (fallback)');
               }
               final lastSpinEntry = history.where((h) => h.fromSpin).toList();
@@ -189,6 +194,8 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                       bottomChild: DishFilterBar(
                         selectedMealType: wheelState.selectedMealType,
                         dishCount: filtered.length,
+                        showFavorites: _showFavorites,
+                        onFavoritesChanged: () => setState(() => _showFavorites = !_showFavorites),
                         onMealTypeChanged: (v) {
                           setState(() => _selectedDish = null);
                           ref.read(wheelStateProvider.notifier).state = WheelState(
