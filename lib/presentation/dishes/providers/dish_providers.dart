@@ -87,3 +87,14 @@ class WheelState {
 }
 
 final wheelStateProvider = StateProvider<WheelState>((ref) => const WheelState());
+
+class DishesFilterState {
+  final String? selectedCountryId;
+  final String? selectedMealType;
+  const DishesFilterState({
+    this.selectedCountryId,
+    this.selectedMealType,
+  });
+}
+
+final dishesFilterProvider = StateProvider<DishesFilterState>((ref) => const DishesFilterState());

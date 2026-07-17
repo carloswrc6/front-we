@@ -30,8 +30,6 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen>
     with SingleTickerProviderStateMixin {
   final _searchController = TextEditingController();
   String _searchQuery = '';
-  String? _selectedCountryId;
-  String? _selectedMealType;
   late AnimationController _pulseController;
   late Animation<double> _pulseAnimation;
   List<String> _customReasons = [];
@@ -64,6 +62,7 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen>
     final cs = Theme.of(context).colorScheme;
     final dishesAsync = ref.watch(localDishesProvider);
     final countriesAsync = ref.watch(localCountriesProvider);
+    final filterState = ref.watch(dishesFilterProvider);
     ref.watch(avoidReasonsProvider);
 
     return dishesAsync.when(
@@ -105,7 +104,7 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen>
             loading: () => const LinearProgressIndicator(),
             error: (err, _) => Center(child: Text('Error: $err')),
             data: (countries) {
-              final filtered = _filter(dishes).where((d) {
+              final filtered = _filter(dishes, filterState.selectedCountryId, filterState.selectedMealType).where((d) {
                 if (_searchQuery.isEmpty) return true;
                 return d.name.toLowerCase().contains(_searchQuery);
               }).toList();
@@ -122,6 +121,15 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen>
                             decoration: InputDecoration(
                               hintText: t.searchDishes,
                               prefixIcon: const Icon(Icons.search, size: 20),
+                              suffixIcon: _searchQuery.isNotEmpty
+                                  ? IconButton(
+                                      icon: const Icon(Icons.clear, size: 18),
+                                      onPressed: () {
+                                        _searchController.clear();
+                                        setState(() => _searchQuery = '');
+                                      },
+                                    )
+                                  : null,
                               filled: true,
                               fillColor: cs.surface,
                               border: OutlineInputBorder(
@@ -141,16 +149,22 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen>
                             compact: true,
                             showAll: true,
                             countries: countries,
-                            selectedCountryId: _selectedCountryId,
-                            onChanged: (v) => setState(() => _selectedCountryId = v),
+                            selectedCountryId: filterState.selectedCountryId,
+                            onChanged: (v) => ref.read(dishesFilterProvider.notifier).state = DishesFilterState(
+                    selectedCountryId: v,
+                    selectedMealType: filterState.selectedMealType,
+                  ),
                           ),
                         ),
                       ],
                     ),
                     bottomChild: DishFilterBar(
-                      selectedMealType: _selectedMealType,
+                      selectedMealType: filterState.selectedMealType,
                       dishCount: filtered.length,
-                      onMealTypeChanged: (v) => setState(() => _selectedMealType = v),
+                      onMealTypeChanged: (v) => ref.read(dishesFilterProvider.notifier).state = DishesFilterState(
+                        selectedCountryId: filterState.selectedCountryId,
+                        selectedMealType: v,
+                      ),
                     ),
                   ),
                   Expanded(
@@ -274,12 +288,12 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen>
     );
   }
 
-  List<Dish> _filter(List<Dish> dishes) {
+  List<Dish> _filter(List<Dish> dishes, String? countryId, String? mealType) {
     return dishes.where((d) {
-      if (_selectedCountryId != null && d.country.id != _selectedCountryId) {
+      if (countryId != null && d.country.id != countryId) {
         return false;
       }
-      if (_selectedMealType != null && d.mealType != _selectedMealType) {
+      if (mealType != null && d.mealType != mealType) {
         return false;
       }
       return true;

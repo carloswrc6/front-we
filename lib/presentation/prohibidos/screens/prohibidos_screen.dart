@@ -64,26 +64,6 @@ class _EvitarScreenState extends ConsumerState<EvitarScreen> {
             return d.name.toLowerCase().contains(_searchQuery);
           }).toList();
 
-          if (filtered.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    _searchQuery.isNotEmpty ? Icons.search_off : Icons.thumb_down_outlined,
-                    size: 64,
-                    color: cs.onSurfaceVariant,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    _searchQuery.isNotEmpty ? t.filterEmpty : t.avoidEmpty,
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                ],
-              ),
-            );
-          }
-
           return countriesAsync.when(
             loading: () => const LinearProgressIndicator(),
             error: (err, _) => Center(child: Text('Error: $err')),
@@ -96,6 +76,15 @@ class _EvitarScreenState extends ConsumerState<EvitarScreen> {
                       decoration: InputDecoration(
                         hintText: t.searchDishes,
                         prefixIcon: const Icon(Icons.search, size: 20),
+                        suffixIcon: _searchQuery.isNotEmpty
+                            ? IconButton(
+                                icon: const Icon(Icons.clear, size: 18),
+                                onPressed: () {
+                                  _searchController.clear();
+                                  setState(() => _searchQuery = '');
+                                },
+                              )
+                            : null,
                         filled: true,
                         fillColor: cs.surface,
                         border: OutlineInputBorder(
@@ -110,21 +99,39 @@ class _EvitarScreenState extends ConsumerState<EvitarScreen> {
                     bottomChild: const SizedBox.shrink(),
                   ),
                   Expanded(
-                    child: ListView.builder(
-                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-                      itemCount: filtered.length,
-                      itemBuilder: (context, index) {
-                        final dish = filtered[index];
-                        final isRemoving = _removingIds.contains(dish.id);
-                        final dishCountry = countries.where((c) => c.id == dish.country.id).firstOrNull;
+                    child: filtered.isEmpty
+                        ? Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  _searchQuery.isNotEmpty ? Icons.search_off : Icons.thumb_down_outlined,
+                                  size: 64,
+                                  color: cs.onSurfaceVariant,
+                                ),
+                                const SizedBox(height: 16),
+                                Text(
+                                  _searchQuery.isNotEmpty ? t.filterEmpty : t.avoidEmpty,
+                                  style: Theme.of(context).textTheme.bodyLarge,
+                                ),
+                              ],
+                            ),
+                          )
+                        : ListView.builder(
+                            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                            itemCount: filtered.length,
+                            itemBuilder: (context, index) {
+                              final dish = filtered[index];
+                              final isRemoving = _removingIds.contains(dish.id);
+                              final dishCountry = countries.where((c) => c.id == dish.country.id).firstOrNull;
 
-                        return AnimatedOpacity(
-                          duration: const Duration(milliseconds: 400),
-                          opacity: isRemoving ? 0.0 : 1.0,
-                          child: _buildCard(dish, dishCountry, cs, t, apiReasons ?? []),
-                        );
-                      },
-                    ),
+                              return AnimatedOpacity(
+                                duration: const Duration(milliseconds: 400),
+                                opacity: isRemoving ? 0.0 : 1.0,
+                                child: _buildCard(dish, dishCountry, cs, t, apiReasons ?? []),
+                              );
+                            },
+                          ),
                   ),
                 ],
               );

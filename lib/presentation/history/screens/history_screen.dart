@@ -19,8 +19,6 @@ class HistoryScreen extends ConsumerStatefulWidget {
 class _HistoryScreenState extends ConsumerState<HistoryScreen> {
   final _searchController = TextEditingController();
   String _searchQuery = '';
-  String? _dateFilter;
-  String? _sourceFilter = 'spin';
   final Set<DishHistory> _selectedEntries = {};
 
   @override
@@ -34,6 +32,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
     final t = AppLocalizations.of(context)!;
     final cs = Theme.of(context).colorScheme;
     final historyAsync = ref.watch(historyProvider);
+    final historyFilter = ref.watch(historyFilterProvider);
     final selectionMode = _selectedEntries.isNotEmpty;
 
     return Scaffold(
@@ -45,11 +44,10 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
         leading: selectionMode
             ? IconButton(
                 icon: const Icon(Icons.close),
-                onPressed: () => setState(() {
-                  _selectedEntries.clear();
-                  _dateFilter = null;
-                  _sourceFilter = null;
-                }),
+                onPressed: () {
+                  setState(_selectedEntries.clear);
+                  ref.read(historyFilterProvider.notifier).state = const HistoryFilterState();
+                },
               )
             : null,
         actions: [
@@ -109,8 +107,8 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
             _DateFilter(id: 'week', label: t.historialThisWeek),
             _DateFilter(id: 'earlier', label: t.historialPrevious),
           ];
-          final dateFiltered = _dateFilter != null
-              ? _filterByDate(filtered, _dateFilter!)
+          final dateFiltered = historyFilter.dateFilter != null
+              ? _filterByDate(filtered, historyFilter.dateFilter!)
               : filtered;
           final grouped = _groupByDate(dateFiltered, t);
           return Column(
@@ -122,6 +120,19 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                   decoration: InputDecoration(
                     hintText: t.searchDishes,
                     prefixIcon: const Icon(Icons.search, size: 20),
+                    suffixIcon: _searchQuery.isNotEmpty
+                        ? IconButton(
+                            icon: const Icon(Icons.clear, size: 18),
+                            onPressed: () {
+                              _searchController.clear();
+                              setState(() {
+                                _searchQuery = '';
+                                _selectedEntries.clear();
+                              });
+                              ref.read(historyFilterProvider.notifier).state = const HistoryFilterState();
+                            },
+                          )
+                        : null,
                     filled: true,
                     fillColor: cs.surfaceContainerHighest.withValues(alpha: 0.5),
                     border: OutlineInputBorder(
@@ -133,8 +144,6 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                   ),
                   onChanged: (v) => setState(() {
                     _searchQuery = v.toLowerCase();
-                    _dateFilter = null;
-                    _sourceFilter = null;
                     _selectedEntries.clear();
                   }),
                 ),
@@ -148,16 +157,19 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                   separatorBuilder: (_, __) => const SizedBox(width: 8),
                   itemBuilder: (_, i) {
                     final f = dateFilters[i];
-                    final selected = _dateFilter == f.id;
+                    final selected = historyFilter.dateFilter == f.id;
                     return FilterChip(
                       label: Text(f.label, style: const TextStyle(fontSize: 13)),
                       selected: selected,
                       visualDensity: VisualDensity.compact,
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      onSelected: (_) => setState(() {
-                        _dateFilter = f.id;
-                        _selectedEntries.clear();
-                      }),
+                      onSelected: (_) {
+                        setState(_selectedEntries.clear);
+                        ref.read(historyFilterProvider.notifier).state = HistoryFilterState(
+                          dateFilter: f.id,
+                          sourceFilter: historyFilter.sourceFilter,
+                        );
+                      },
                     );
                   },
                 ),
@@ -177,16 +189,19 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                       _DateFilter(id: 'view', label: t.historialView),
                     ];
                     final f = sourceFilters[i];
-                    final selected = _sourceFilter == f.id;
+                    final selected = historyFilter.sourceFilter == f.id;
                     return FilterChip(
                       label: Text(f.label, style: const TextStyle(fontSize: 13)),
                       selected: selected,
                       visualDensity: VisualDensity.compact,
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      onSelected: (_) => setState(() {
-                        _sourceFilter = f.id;
-                        _selectedEntries.clear();
-                      }),
+                      onSelected: (_) {
+                        setState(_selectedEntries.clear);
+                        ref.read(historyFilterProvider.notifier).state = HistoryFilterState(
+                          dateFilter: historyFilter.dateFilter,
+                          sourceFilter: f.id,
+                        );
+                      },
                     );
                   },
                 ),
@@ -248,10 +263,11 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
   }
 
   List<DishHistory> _filtered(List<DishHistory> history) {
+    final filter = ref.read(historyFilterProvider);
     var result = history;
-    if (_sourceFilter != null) {
+    if (filter.sourceFilter != null) {
       result = result.where((e) =>
-        _sourceFilter == 'spin' ? e.fromSpin : !e.fromSpin
+        filter.sourceFilter == 'spin' ? e.fromSpin : !e.fromSpin
       ).toList();
     }
     if (_searchQuery.isNotEmpty) {
