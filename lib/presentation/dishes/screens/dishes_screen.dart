@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontwe/domain/entities/dish.dart';
@@ -10,6 +11,12 @@ import 'package:frontwe/presentation/shared/widgets/BottomNavBar.dart';
 import 'package:frontwe/presentation/shared/widgets/SideMenu.dart';
 import 'package:frontwe/presentation/shared/widgets/CountrySelector.dart';
 import 'package:go_router/go_router.dart';
+
+String _codeToFlag(String code) {
+  return code.toUpperCase().split('').map((c) {
+    return String.fromCharCode(c.codeUnitAt(0) - 0x41 + 0x1F1E6);
+  }).join('');
+}
 
 
 class PlatosScreen extends ConsumerStatefulWidget {
@@ -163,6 +170,7 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen>
                             itemCount: filtered.length,
                             itemBuilder: (context, index) {
                               final dish = filtered[index];
+                              final dishCountry = countries.where((c) => c.id == dish.country.id).firstOrNull;
                               return Card(
                                 margin: const EdgeInsets.only(bottom: 12),
                                 clipBehavior: Clip.antiAlias,
@@ -179,77 +187,74 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen>
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-                                        child: Row(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Row(
-                                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                                    children: [
-                                                      InkWell(
-                                                        onTap: () => _toggleFavorite(dish),
-                                                        borderRadius: BorderRadius.circular(12),
-                                                        child: Container(
-                                                          padding: const EdgeInsets.all(8),
-                                                          decoration: BoxDecoration(
-                                                          color: dish.isFavorite
-                                                                  ? Theme.of(context).colorScheme.error.withValues(alpha: 0.85)
-                                                                  : Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
-                                                            borderRadius: BorderRadius.circular(12),
-                                                          ),
-                                                          child: Icon(
-                                                            dish.isFavorite ? Icons.favorite : Icons.favorite_border,
-                                                            size: 20,
-                                                              color: dish.isFavorite ? Theme.of(context).colorScheme.onError : Theme.of(context).colorScheme.outline,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      const SizedBox(width: 4),
-                                                      InkWell(
-                                                        onTap: () => _toggleAvoided(dish),
-                                                        onLongPress: () => _showAvoidReasonDialog(dish),
-                                                        borderRadius: BorderRadius.circular(12),
-                                                        child: Container(
-                                                          padding: const EdgeInsets.all(8),
-                                                          decoration: BoxDecoration(
-                                                          color: dish.isAvoided
-                                                                  ? Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.85)
-                                                                  : Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
-                                                            borderRadius: BorderRadius.circular(12),
-                                                          ),
-                                                          child: Icon(
-                                                            dish.isAvoided ? Icons.thumb_down : Icons.thumb_down_outlined,
-                                                            size: 20,
-                                                              color: dish.isAvoided ? Theme.of(context).colorScheme.onTertiary : Theme.of(context).colorScheme.outline,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      const SizedBox(width: 8),
-                                                      Expanded(
-                                                        child: Text(
-                                                          dish.name,
-                                                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                                            fontWeight: FontWeight.w600,
-                                                          ),
-                                                          maxLines: 1,
-                                                          overflow: TextOverflow.ellipsis,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  const SizedBox(height: 4),
-                                                  Text(
-                                                    dish.country.name,
+                                            Text(
+                                              dish.name,
+                                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Row(
+                                              children: [
+                                                Text(_codeToFlag(dishCountry?.code ?? ''), style: const TextStyle(fontSize: 20)),
+                                                const SizedBox(width: 6),
+                                                Icon(_mealTypeIcon(dish.mealType), size: 16, color: cs.onSurfaceVariant),
+                                                const SizedBox(width: 4),
+                                                Expanded(
+                                                  child: Text(
+                                                    '${_mealTypeLabel(t, dish.mealType)} · ${dishCountry?.name ?? dish.country.name}',
                                                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                                       color: cs.onSurfaceVariant,
                                                     ),
+                                                    maxLines: 1,
+                                                    overflow: TextOverflow.ellipsis,
                                                   ),
-                                                ],
-                                              ),
+                                                ),
+                                                InkWell(
+                                                  onTap: () => _toggleFavorite(dish),
+                                                  borderRadius: BorderRadius.circular(12),
+                                                  child: Container(
+                                                    padding: const EdgeInsets.all(8),
+                                                    decoration: BoxDecoration(
+                                                      color: dish.isFavorite
+                                                          ? Theme.of(context).colorScheme.error.withValues(alpha: 0.85)
+                                                          : Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
+                                                      borderRadius: BorderRadius.circular(12),
+                                                    ),
+                                                    child: Icon(
+                                                      dish.isFavorite ? Icons.favorite : Icons.favorite_border,
+                                                      size: 20,
+                                                      color: dish.isFavorite ? Theme.of(context).colorScheme.onError : Theme.of(context).colorScheme.outline,
+                                                    ),
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 4),
+                                                InkWell(
+                                                  onTap: () => _toggleAvoided(dish),
+                                                  onLongPress: () => _showAvoidReasonDialog(dish),
+                                                  borderRadius: BorderRadius.circular(12),
+                                                  child: Container(
+                                                    padding: const EdgeInsets.all(8),
+                                                    decoration: BoxDecoration(
+                                                      color: dish.isAvoided
+                                                          ? Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.85)
+                                                          : Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
+                                                      borderRadius: BorderRadius.circular(12),
+                                                    ),
+                                                    child: Icon(
+                                                      dish.isAvoided ? Icons.thumb_down : Icons.thumb_down_outlined,
+                                                      size: 20,
+                                                      color: dish.isAvoided ? Theme.of(context).colorScheme.onTertiary : Theme.of(context).colorScheme.outline,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                            Icon(Icons.chevron_right, color: cs.onSurfaceVariant),
                                           ],
                                         ),
                                       ),
@@ -326,6 +331,32 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen>
     if (mounted) setState(() => _customReasons = reasons);
   }
 
+  String _mealTypeLabel(AppLocalizations t, String mealType) {
+    switch (mealType) {
+      case 'breakfast':
+        return t.mealTypeBreakfast;
+      case 'lunch':
+        return t.mealTypeLunch;
+      case 'dinner':
+        return t.mealTypeDinner;
+      default:
+        return mealType;
+    }
+  }
+
+  IconData _mealTypeIcon(String mealType) {
+    switch (mealType) {
+      case 'breakfast':
+        return Icons.free_breakfast;
+      case 'lunch':
+        return Icons.restaurant;
+      case 'dinner':
+        return Icons.dinner_dining;
+      default:
+        return Icons.restaurant;
+    }
+  }
+
   Widget _dishImage(Dish dish, ColorScheme cs) {
     return Stack(
       fit: StackFit.expand,
@@ -336,7 +367,10 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen>
           Image.network(
             dish.image,
             fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) => _imagePlaceholder(cs),
+            errorBuilder: (_, error, __) {
+              debugPrint('[dishes_screen] image error for ${dish.name}: $error');
+              return _imagePlaceholder(cs);
+            },
             loadingBuilder: (context, child, loadingProgress) {
               if (loadingProgress == null) return child;
               return Container(

@@ -1,3 +1,4 @@
+import 'package:frontwe/config/constants/enviroment.dart';
 import 'package:frontwe/domain/entities/country.dart';
 import 'package:frontwe/domain/entities/dish.dart';
 
@@ -31,7 +32,7 @@ class DishHistory {
   Dish get dish => Dish(
     id: dishId,
     name: dishName,
-    image: dishImage,
+    image: Environment.resolveImageUrl(dishImage),
     mealType: mealType,
     country: Country(id: countryId, code: countryCode, name: countryName),
     ingredients: ingredients,

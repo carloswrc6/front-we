@@ -1,3 +1,4 @@
+import 'package:frontwe/config/constants/enviroment.dart';
 import 'package:frontwe/domain/entities/dish.dart';
 import 'package:frontwe/infrastructure/services/local_db_service.dart';
 import 'package:frontwe/domain/entities/country.dart';
@@ -99,7 +100,7 @@ class DishLocalDatasource {
       return Dish(
         id: r['id'] as String,
         name: r['name'] as String,
-        image: r['image'] as String,
+        image: Environment.resolveImageUrl(r['image'] as String),
         mealType: r['meal_type'] as String,
         ingredients: (r['ingredients'] as String).split('||'),
         country: Country(

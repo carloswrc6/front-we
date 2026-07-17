@@ -76,7 +76,7 @@ class WheelState {
     this.speed = 'normal',
     this.difficultyEasy = true,
     this.difficultyMedium = true,
-    this.difficultyHard = false,
+    this.difficultyHard = true,
     this.surpriseMode = false,
     this.avoidRepeat = true,
     this.avoidThreeDays = true,
@@ -86,4 +86,4 @@ class WheelState {
   });
 }
 
-final wheelStateProvider = StateProvider<WheelState>((ref) => const WheelState(selectedMealType: 'lunch'));
+final wheelStateProvider = StateProvider<WheelState>((ref) => const WheelState());
