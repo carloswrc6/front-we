@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontwe/domain/entities/country.dart';
 import 'package:frontwe/domain/entities/dish.dart';
 import 'package:frontwe/l10n/app_localizations.dart';
 import 'package:frontwe/presentation/dishes/providers/dish_providers.dart';
@@ -41,6 +42,7 @@ class _EvitarScreenState extends ConsumerState<EvitarScreen> {
     final t = AppLocalizations.of(context)!;
     final cs = Theme.of(context).colorScheme;
     final dishesAsync = ref.watch(localDishesProvider);
+    final countriesAsync = ref.watch(localCountriesProvider);
     final reasonsAsync = ref.watch(avoidReasonsProvider);
     final apiReasons = reasonsAsync.whenOrNull(
       data: (list) => list.map((m) => AvoidReason(m.key, m.label, m.description)).toList(),
@@ -82,51 +84,58 @@ class _EvitarScreenState extends ConsumerState<EvitarScreen> {
             );
           }
 
-          return Column(
-            children: [
-              FilterContainer(
-                topChild: TextField(
-                  controller: _searchController,
-                  decoration: InputDecoration(
-                    hintText: t.searchDishes,
-                    prefixIcon: const Icon(Icons.search, size: 20),
-                    filled: true,
-                    fillColor: cs.surface,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
+          return countriesAsync.when(
+            loading: () => const LinearProgressIndicator(),
+            error: (err, _) => Center(child: Text('Error: $err')),
+            data: (countries) {
+              return Column(
+                children: [
+                  FilterContainer(
+                    topChild: TextField(
+                      controller: _searchController,
+                      decoration: InputDecoration(
+                        hintText: t.searchDishes,
+                        prefixIcon: const Icon(Icons.search, size: 20),
+                        filled: true,
+                        fillColor: cs.surface,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        isDense: true,
+                      ),
+                      onChanged: (v) => setState(() => _searchQuery = v.toLowerCase()),
                     ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    isDense: true,
+                    bottomChild: const SizedBox.shrink(),
                   ),
-                  onChanged: (v) => setState(() => _searchQuery = v.toLowerCase()),
-                ),
-                bottomChild: const SizedBox.shrink(),
-              ),
-              Expanded(
-                child: ListView.builder(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-                  itemCount: filtered.length,
-                  itemBuilder: (context, index) {
-                    final dish = filtered[index];
-                    final isRemoving = _removingIds.contains(dish.id);
+                  Expanded(
+                    child: ListView.builder(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                      itemCount: filtered.length,
+                      itemBuilder: (context, index) {
+                        final dish = filtered[index];
+                        final isRemoving = _removingIds.contains(dish.id);
+                        final dishCountry = countries.where((c) => c.id == dish.country.id).firstOrNull;
 
-                    return AnimatedOpacity(
-                      duration: const Duration(milliseconds: 400),
-                      opacity: isRemoving ? 0.0 : 1.0,
-                      child: _buildCard(dish, cs, t, apiReasons ?? []),
-                    );
-                  },
-                ),
-              ),
-            ],
+                        return AnimatedOpacity(
+                          duration: const Duration(milliseconds: 400),
+                          opacity: isRemoving ? 0.0 : 1.0,
+                          child: _buildCard(dish, dishCountry, cs, t, apiReasons ?? []),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              );
+            },
           );
         },
       ),
     );
   }
 
-  Widget _buildCard(Dish dish, ColorScheme cs, AppLocalizations t, List<AvoidReason> reasons) {
+  Widget _buildCard(Dish dish, Country? dishCountry, ColorScheme cs, AppLocalizations t, List<AvoidReason> reasons) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       clipBehavior: Clip.antiAlias,
@@ -142,9 +151,31 @@ class _EvitarScreenState extends ConsumerState<EvitarScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Text(
+                  dish.name,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 4),
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    Text(_codeToFlag(dishCountry?.code ?? ''), style: const TextStyle(fontSize: 20)),
+                    const SizedBox(width: 6),
+                    Icon(_mealTypeIcon(dish.mealType), size: 16, color: cs.onSurfaceVariant),
+                    const SizedBox(width: 4),
+                    Expanded(
+                      child: Text(
+                        '${_mealTypeLabel(t, dish.mealType)} · ${dishCountry?.name ?? dish.country.name}',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: cs.onSurfaceVariant,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                     InkWell(
                       onTap: () => _removeAvoided(dish),
                       borderRadius: BorderRadius.circular(12),
@@ -155,31 +186,13 @@ class _EvitarScreenState extends ConsumerState<EvitarScreen> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Icon(
-                                  Icons.close,
-                                  size: 20,
-                                  color: Theme.of(context).colorScheme.onTertiary,
-                                ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        dish.name,
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
+                          Icons.close,
+                          size: 20,
+                          color: Theme.of(context).colorScheme.onTertiary,
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  dish.country.name,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: cs.onSurfaceVariant,
-                  ),
                 ),
               ],
             ),
@@ -234,6 +247,32 @@ class _EvitarScreenState extends ConsumerState<EvitarScreen> {
   Future<void> _clearReason(Dish dish) async {
     await ref.read(dishRepositoryProvider).setAvoidReason(dish.id, null);
     ref.invalidate(localDishesProvider);
+  }
+
+  String _mealTypeLabel(AppLocalizations t, String mealType) {
+    switch (mealType) {
+      case 'breakfast':
+        return t.mealTypeBreakfast;
+      case 'lunch':
+        return t.mealTypeLunch;
+      case 'dinner':
+        return t.mealTypeDinner;
+      default:
+        return mealType;
+    }
+  }
+
+  IconData _mealTypeIcon(String mealType) {
+    switch (mealType) {
+      case 'breakfast':
+        return Icons.free_breakfast;
+      case 'lunch':
+        return Icons.restaurant;
+      case 'dinner':
+        return Icons.dinner_dining;
+      default:
+        return Icons.restaurant;
+    }
   }
 
   Widget _dishImage(Dish dish, ColorScheme cs, List<AvoidReason> reasons) {
@@ -335,4 +374,10 @@ class _EvitarScreenState extends ConsumerState<EvitarScreen> {
       ),
     );
   }
+}
+
+String _codeToFlag(String code) {
+  return code.toUpperCase().split('').map((c) {
+    return String.fromCharCode(c.codeUnitAt(0) - 0x41 + 0x1F1E6);
+  }).join('');
 }
