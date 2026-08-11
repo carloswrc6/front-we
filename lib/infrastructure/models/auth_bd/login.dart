@@ -4,6 +4,7 @@ class AuthLoginMdl {
   final String email;
   final String fullName;
   final String token;
+  final String? refreshToken;
 
   AuthLoginMdl({
     required this.id,
@@ -11,6 +12,7 @@ class AuthLoginMdl {
     required this.email,
     required this.fullName,
     required this.token,
+    this.refreshToken,
   });
 
   factory AuthLoginMdl.fromJson(Map<String, dynamic> json) => AuthLoginMdl(
@@ -19,6 +21,7 @@ class AuthLoginMdl {
     email: json["email"],
     fullName: json["fullName"],
     token: json["token"],
+    refreshToken: json["refreshToken"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -27,5 +30,6 @@ class AuthLoginMdl {
     "email": email,
     "fullName": fullName,
     "token": token,
+    "refreshToken": refreshToken,
   };
 }

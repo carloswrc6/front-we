@@ -23,6 +23,21 @@ class AuthStorage implements TokenStorageDatasource {
   }
 
   @override
+  Future<void> saveRefreshToken(String token) async {
+    await storage.write(key: 'refresh_token', value: token);
+  }
+
+  @override
+  Future<String?> getRefreshToken() async {
+    return storage.read(key: 'refresh_token');
+  }
+
+  @override
+  Future<void> deleteRefreshToken() async {
+    await storage.delete(key: 'refresh_token');
+  }
+
+  @override
   Future<void> saveUserData({
     required String id,
     required String fullName,

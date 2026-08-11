@@ -36,6 +36,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
           email: auth.email,
           fullName: auth.fullName,
           token: auth.token,
+          refreshToken: auth.refreshToken,
         ),
         isAuthenticated: true,
         token: auth.token,

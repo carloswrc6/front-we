@@ -7,6 +7,7 @@ class AuthRegisterMdl {
   final bool isActive;
   final List<String> roles;
   final String token;
+  final String? refreshToken;
 
   AuthRegisterMdl({
     required this.email,
@@ -17,6 +18,7 @@ class AuthRegisterMdl {
     required this.isActive,
     required this.roles,
     required this.token,
+    this.refreshToken,
   });
 
   factory AuthRegisterMdl.fromJson(Map<String, dynamic> json) =>
@@ -29,6 +31,7 @@ class AuthRegisterMdl {
         isActive: json["isActive"],
         roles: List<String>.from(json["roles"].map((x) => x)),
         token: json["token"],
+        refreshToken: json["refreshToken"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -40,5 +43,6 @@ class AuthRegisterMdl {
     "isActive": isActive,
     "roles": List<dynamic>.from(roles.map((x) => x)),
     "token": token,
+    "refreshToken": refreshToken,
   };
 }

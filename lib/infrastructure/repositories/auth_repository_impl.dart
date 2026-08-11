@@ -21,6 +21,9 @@ class AuthRepositoryImpl implements AuthRepository {
     final auth = await authDatasource.loginUser(user);
 
     await storageDatasource.saveToken(auth.token);
+    if (auth.refreshToken != null) {
+      await storageDatasource.saveRefreshToken(auth.refreshToken!);
+    }
     await storageDatasource.saveUserData(
       id: auth.id,
       fullName: auth.fullName,
@@ -36,6 +39,9 @@ class AuthRepositoryImpl implements AuthRepository {
     final auth = await authDatasource.userRegister(user);
 
     await storageDatasource.saveToken(auth.token);
+    if (auth.refreshToken != null) {
+      await storageDatasource.saveRefreshToken(auth.refreshToken!);
+    }
     await storageDatasource.saveUserData(
       id: auth.id,
       fullName: auth.fullName,
@@ -51,6 +57,9 @@ class AuthRepositoryImpl implements AuthRepository {
     final auth = await socialDatasource.loginWithGoogle();
 
     await storageDatasource.saveToken(auth.token);
+    if (auth.refreshToken != null) {
+      await storageDatasource.saveRefreshToken(auth.refreshToken!);
+    }
     await storageDatasource.saveUserData(
       id: auth.id,
       fullName: auth.fullName,
@@ -75,6 +84,7 @@ class AuthRepositoryImpl implements AuthRepository {
     await socialDatasource.signOut();
 
     await storageDatasource.deleteToken();
+    await storageDatasource.deleteRefreshToken();
     await storageDatasource.deleteUserData();
   }
 

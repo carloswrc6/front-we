@@ -38,6 +38,7 @@ class GoogleSignInService implements SocialAuthDatasource {
       email: backendResp['email'],
       fullName: backendResp['fullName'],
       token: backendResp['token'],
+      refreshToken: backendResp['refreshToken'],
     );
   }
 

@@ -17,6 +17,7 @@ class AuthRegisterOutput {
   final String id;
   final String token;
   final List<String> roles;
+  final String? refreshToken;
 
   AuthRegisterOutput({
     required this.email,
@@ -24,6 +25,7 @@ class AuthRegisterOutput {
     required this.id,
     required this.token,
     required this.roles,
+    this.refreshToken,
   });
 }
 
@@ -58,12 +60,14 @@ class AuthLoginOutput {
   final String fullName;
   final String email;
   final String token;
+  final String? refreshToken;
   AuthLoginOutput({
     required this.id,
     required this.provider,
     required this.email,
     required this.fullName,
     required this.token,
+    this.refreshToken,
   });
 }
 

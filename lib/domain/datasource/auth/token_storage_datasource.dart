@@ -3,6 +3,10 @@ abstract class TokenStorageDatasource {
   Future<String?> getToken();
   Future<void> deleteToken();
 
+  Future<void> saveRefreshToken(String token);
+  Future<String?> getRefreshToken();
+  Future<void> deleteRefreshToken();
+
   Future<void> saveUserData({
     required String id,
     required String fullName,

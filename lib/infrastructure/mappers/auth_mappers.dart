@@ -10,6 +10,7 @@ class AuthMapper {
         id: authDB.id,
         token: authDB.token,
         roles: authDB.roles,
+        refreshToken: authDB.refreshToken,
       );
   static AuthLoginOutput authLoginDBToEntity(AuthLoginMdl authLoginDB) =>
       AuthLoginOutput(
@@ -18,5 +19,6 @@ class AuthMapper {
         email: authLoginDB.email,
         fullName: authLoginDB.fullName,
         token: authLoginDB.token,
+        refreshToken: authLoginDB.refreshToken,
       );
 }
