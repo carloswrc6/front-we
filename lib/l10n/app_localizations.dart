@@ -135,6 +135,9 @@ abstract class AppLocalizations {
   String get dishMealType;
   String get createDish;
   String get dishCreated;
+  String get imageLoadError;
+  String get imageUrlHint;
+  String get youLabel;
 
   // Bottom navigation
   String get navPlatos;

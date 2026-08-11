@@ -196,6 +196,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get createDish => "Guardar";
   @override
   String get dishCreated => "Plato creado exitosamente";
+  @override
+  String get imageLoadError => "No se pudo cargar la imagen";
+  @override
+  String get imageUrlHint => "Pega una URL directa de imagen (https://...)";
+  @override
+  String get youLabel => "Tú";
 
   // Bottom navigation
   @override

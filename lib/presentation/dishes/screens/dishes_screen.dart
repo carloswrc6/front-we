@@ -197,7 +197,7 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen>
                                         aspectRatio: 16 / 9,
                                         child: FavoriteDoubleTapImage(
                                           onDoubleTap: () => _toggleFavorite(dish),
-                                          child: _dishImage(dish, cs),
+                                          child: _dishImage(dish, cs, t),
                                         ),
                                       ),
                                       Padding(
@@ -372,7 +372,7 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen>
     }
   }
 
-  Widget _dishImage(Dish dish, ColorScheme cs) {
+  Widget _dishImage(Dish dish, ColorScheme cs, AppLocalizations t) {
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -416,7 +416,7 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen>
                   Icon(Icons.person, size: 11, color: Colors.white70),
                   const SizedBox(width: 3),
                   Text(
-                    'Tú',
+                    t.youLabel,
                     style: TextStyle(fontSize: 10, color: Colors.white, fontWeight: FontWeight.w600),
                   ),
                 ],

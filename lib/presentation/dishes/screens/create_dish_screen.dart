@@ -205,6 +205,12 @@ class _CreateDishScreenState extends ConsumerState<CreateDishScreen> {
                 textInputAction: TextInputAction.done,
                 keyboardType: TextInputType.url,
               ),
+              const SizedBox(height: 12),
+              _ImagePreview(
+                controller: _imageController,
+                errorText: t.imageLoadError,
+                urlHint: t.imageUrlHint,
+              ),
               const SizedBox(height: 24),
               CustomButton(
                 label: t.createDish,
@@ -229,5 +235,87 @@ class _CreateDishScreenState extends ConsumerState<CreateDishScreen> {
       default:
         return mealType;
     }
+  }
+}
+
+class _ImagePreview extends StatefulWidget {
+  final TextEditingController controller;
+  final String errorText;
+  final String urlHint;
+
+  const _ImagePreview({
+    required this.controller,
+    required this.errorText,
+    required this.urlHint,
+  });
+
+  @override
+  State<_ImagePreview> createState() => _ImagePreviewState();
+}
+
+class _ImagePreviewState extends State<_ImagePreview> {
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(_onChanged);
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_onChanged);
+    super.dispose();
+  }
+
+  void _onChanged() => setState(() {});
+
+  @override
+  Widget build(BuildContext context) {
+    final url = widget.controller.text.trim();
+    if (url.isEmpty) return const SizedBox.shrink();
+
+    final isHttpUrl = url.startsWith('http://') || url.startsWith('https://');
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: AspectRatio(
+        aspectRatio: 16 / 9,
+        child: Image.network(
+          url,
+          key: ValueKey(url),
+          fit: BoxFit.cover,
+          errorBuilder: (context, _, __) => _errorBox(context, isHttpUrl),
+          loadingBuilder: (context, child, progress) {
+            if (progress == null) return child;
+            return Container(
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              child: const Center(child: CircularProgressIndicator()),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _errorBox(BuildContext context, bool isHttpUrl) {
+    final cs = Theme.of(context).colorScheme;
+    return Container(
+      color: cs.surfaceContainerHighest,
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.broken_image_outlined, size: 40, color: cs.error),
+            const SizedBox(height: 8),
+            Text(
+              isHttpUrl ? widget.errorText : widget.urlHint,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: cs.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

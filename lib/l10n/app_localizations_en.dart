@@ -195,6 +195,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get createDish => "Save";
   @override
   String get dishCreated => "Dish created successfully";
+  @override
+  String get imageLoadError => "Could not load the image";
+  @override
+  String get imageUrlHint => "Paste a direct image URL (https://...)";
+  @override
+  String get youLabel => "You";
 
   // Bottom navigation
   @override
