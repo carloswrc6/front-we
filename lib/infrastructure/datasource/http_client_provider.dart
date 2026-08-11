@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontwe/config/constants/enviroment.dart';
+import 'package:frontwe/config/router/router_keys.dart';
 import 'package:frontwe/infrastructure/datasource/auth_storage.dart';
 import 'package:frontwe/providers/lang/locale_provider.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -32,9 +33,11 @@ final httpClientProvider = Provider<Dio>((ref) {
 
           return handler.next(options);
         },
-        onError: (error, handler) {
+        onError: (error, handler) async {
           if (error.response?.statusCode == 401) {
-            storage.deleteToken();
+            await storage.deleteToken();
+            await storage.deleteUserData();
+            await goToLogin();
           }
           return handler.next(error);
         },

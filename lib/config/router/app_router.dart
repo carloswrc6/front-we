@@ -2,7 +2,9 @@ import 'package:frontwe/presentation/auth/screens/forgot_password_screen.dart';
 import 'package:frontwe/presentation/auth/screens/login_screen.dart';
 import 'package:frontwe/presentation/auth/screens/register_screen.dart';
 import 'package:frontwe/presentation/auth/screens/reset_password_screen.dart';
+import 'package:frontwe/presentation/auth/screens/splash_screen.dart';
 import 'package:frontwe/presentation/auth/screens/verify_code_screen.dart';
+import 'package:frontwe/config/router/router_keys.dart';
 import 'package:frontwe/presentation/dishes/screens/create_dish_screen.dart';
 import 'package:frontwe/presentation/dishes/screens/dishes_screen.dart';
 import 'package:frontwe/presentation/favorites/screens/favorites_screen.dart';
@@ -14,8 +16,13 @@ import 'package:frontwe/presentation/prohibidos/screens/prohibidos_screen.dart';
 import 'package:go_router/go_router.dart';
 
 final appRouter = GoRouter(
-  initialLocation: '/login',
+  navigatorKey: rootNavigatorKey,
+  initialLocation: '/splash',
   routes: [
+    GoRoute(
+      path: '/splash',
+      builder: (context, state) => const SplashScreen(),
+    ),
     GoRoute(
       path: '/platos',
       pageBuilder: (context, state) => CustomTransitionPage(
