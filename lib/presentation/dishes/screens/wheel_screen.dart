@@ -114,7 +114,13 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
               }
               final filtered = _filter(dishes, wheelState);
               final extraFavs = wheelState.showFavorites
-                  ? dishes.where((d) => d.isFavorite && !filtered.any((f) => f.id == d.id)).toList()
+                  ? dishes
+                        .where(
+                          (d) =>
+                              d.isFavorite &&
+                              !filtered.any((f) => f.id == d.id),
+                        )
+                        .toList()
                   : <Dish>[];
               final filteredByFav = [...filtered, ...extraFavs];
               if (wheelState.surpriseMode) {
@@ -194,7 +200,7 @@ class _DishesScreenState extends ConsumerState<DishesScreen> {
                       ),
                       bottomChild: DishFilterBar(
                         selectedMealType: wheelState.selectedMealType,
-                        dishCount: filtered.length,
+                        dishCount: sortedWheel.length,
                         showFavorites: wheelState.showFavorites,
                         onFavoritesChanged: () {
                           ref.read(wheelStateProvider.notifier).state = WheelState(
