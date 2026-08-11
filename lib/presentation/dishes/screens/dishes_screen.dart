@@ -5,6 +5,7 @@ import 'package:frontwe/domain/entities/dish.dart';
 import 'package:frontwe/l10n/app_localizations.dart';
 import 'package:frontwe/presentation/dishes/providers/dish_providers.dart';
 import 'package:frontwe/presentation/dishes/widgets/filter_bar.dart';
+import 'package:frontwe/presentation/dishes/widgets/double_tap_favorite_image.dart';
 import 'package:frontwe/presentation/shared/widgets/avoid_reason_dialog.dart';
 import 'package:frontwe/presentation/shared/providers/avoid_reason_provider.dart';
 import 'package:frontwe/presentation/shared/widgets/BottomNavBar.dart';
@@ -194,7 +195,7 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen>
                                     children: [
                                       AspectRatio(
                                         aspectRatio: 16 / 9,
-                                        child: GestureDetector(
+                                        child: FavoriteDoubleTapImage(
                                           onDoubleTap: () => _toggleFavorite(dish),
                                           child: _dishImage(dish, cs),
                                         ),

@@ -5,6 +5,7 @@ import 'package:frontwe/domain/entities/dish.dart';
 import 'package:frontwe/l10n/app_localizations.dart';
 import 'package:frontwe/presentation/dishes/providers/dish_providers.dart';
 import 'package:frontwe/presentation/dishes/widgets/filter_bar.dart';
+import 'package:frontwe/presentation/dishes/widgets/double_tap_favorite_image.dart';
 import 'package:frontwe/presentation/shared/widgets/BottomNavBar.dart';
 import 'package:frontwe/presentation/shared/widgets/SideMenu.dart';
 
@@ -137,7 +138,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
         children: [
           AspectRatio(
             aspectRatio: 16 / 9,
-            child: GestureDetector(
+            child: FavoriteDoubleTapImage(
               onDoubleTap: () => _toggleFavorite(dish),
               child: _dishImage(dish, cs),
             ),
