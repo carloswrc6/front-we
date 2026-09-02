@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontwe/domain/entities/auth.dart';
 import 'package:frontwe/domain/repository/auth_repository.dart';
+import 'package:frontwe/infrastructure/services/purchase_service.dart';
 import 'package:frontwe/presentation/auth/state/auth_state.dart';
 
 class AuthNotifier extends StateNotifier<AuthState> {
@@ -143,12 +144,13 @@ class AuthNotifier extends StateNotifier<AuthState> {
               )
             : null,
       );
+      await PurchaseService.instance.identify(userData?['id'] ?? '');
     }
   }
 
   Future<void> logout() async {
     await authRepository.logout();
-
+    await PurchaseService.instance.reset();
     state = AuthState();
   }
 

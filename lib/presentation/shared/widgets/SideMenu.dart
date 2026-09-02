@@ -66,18 +66,67 @@ class _SideMenuState extends ConsumerState<SideMenu> {
 
         _sectionHeader(t.sectionNavigation),
 
-        _menuItem(0, Icons.casino, t.menuWheel, t.menuWheelSubtitle, navDrawerIndex),
-        _menuItem(1, Icons.dining, t.menuDishes, t.menuDishesSubtitle, navDrawerIndex),
-        _menuItem(2, Icons.favorite_border, t.menuFavorites, t.menuFavoritesSubtitle, navDrawerIndex),
-        _menuItem(3, Icons.thumb_down, t.menuAvoid, t.menuAvoidSubtitle, navDrawerIndex),
-        _menuItem(4, Icons.history, t.menuHistory, t.menuHistorySubtitle, navDrawerIndex),
+        _menuItem(
+          0,
+          Icons.casino,
+          t.menuWheel,
+          t.menuWheelSubtitle,
+          navDrawerIndex,
+        ),
+        _menuItem(
+          1,
+          Icons.dining,
+          t.menuDishes,
+          t.menuDishesSubtitle,
+          navDrawerIndex,
+        ),
+        _menuItem(
+          2,
+          Icons.favorite_border,
+          t.menuFavorites,
+          t.menuFavoritesSubtitle,
+          navDrawerIndex,
+        ),
+        _menuItem(
+          3,
+          Icons.thumb_down,
+          t.menuAvoid,
+          t.menuAvoidSubtitle,
+          navDrawerIndex,
+        ),
+        _menuItem(
+          4,
+          Icons.history,
+          t.menuHistory,
+          t.menuHistorySubtitle,
+          navDrawerIndex,
+        ),
 
         const Divider(),
 
         _sectionHeader(t.sectionSettings),
 
-        _menuItem(5, Icons.person_outline, t.menuProfile, t.menuProfileSubtitle, navDrawerIndex),
-        _menuItem(6, Icons.palette_outlined, t.menuTheme, t.menuThemeSubtitle, navDrawerIndex),
+        _menuItem(
+          5,
+          Icons.workspace_premium_outlined,
+          t.menuSubscription,
+          t.menuSubscriptionSubtitle,
+          navDrawerIndex,
+        ),
+        _menuItem(
+          6,
+          Icons.person_outline,
+          t.menuProfile,
+          t.menuProfileSubtitle,
+          navDrawerIndex,
+        ),
+        _menuItem(
+          7,
+          Icons.palette_outlined,
+          t.menuTheme,
+          t.menuThemeSubtitle,
+          navDrawerIndex,
+        ),
 
         const Divider(),
 
@@ -109,18 +158,30 @@ class _SideMenuState extends ConsumerState<SideMenu> {
     );
   }
 
-  Widget _menuItem(int index, IconData icon, String title, String subtitle, int selectedIndex) {
+  Widget _menuItem(
+    int index,
+    IconData icon,
+    String title,
+    String subtitle,
+    int selectedIndex,
+  ) {
     final cs = Theme.of(context).colorScheme;
     final isSelected = index == selectedIndex;
 
     return ListTile(
       dense: true,
       leading: Icon(icon, size: 20, color: isSelected ? cs.primary : null),
-      title: Text(title, style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-        color: isSelected ? cs.primary : null,
-        fontWeight: isSelected ? FontWeight.w600 : null,
-      )),
-      subtitle: Text(subtitle, style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 11)),
+      title: Text(
+        title,
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+          color: isSelected ? cs.primary : null,
+          fontWeight: isSelected ? FontWeight.w600 : null,
+        ),
+      ),
+      subtitle: Text(
+        subtitle,
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 11),
+      ),
       selected: isSelected,
       selectedTileColor: cs.primaryContainer.withValues(alpha: 0.3),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

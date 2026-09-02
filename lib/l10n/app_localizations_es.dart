@@ -340,6 +340,86 @@ class AppLocalizationsEs extends AppLocalizations {
   String get subsDescription => "Desbloquea todas las funcionalidades";
   @override
   String get subsRecommended => "Recomendado";
+  @override
+  String get subsLoading => "Cargando planes...";
+  @override
+  String get subsNoProducts => "No hay planes disponibles";
+  @override
+  String get subsNoProductsHint => "Configura los productos en RevenueCat e inicia el proyecto.";
+  @override
+  String get subsRestore => "Restaurar compras";
+  @override
+  String get subsSubscribe => "Suscribirme";
+  @override
+  String get subsAlreadyPremium => "¡Ya eres Premium!";
+  @override
+  String get subsRestored => "Compras restauradas";
+  @override
+  String get subsPurchaseError => "No se pudo completar la compra. Inténtalo de nuevo.";
+  @override
+  String get subsPurchaseCanceled => "Compra cancelada";
+  @override
+  String get subsPremiumBadge => "PREMIUM";
+  @override
+  String get subsFreeBadge => "GRATIS";
+  @override
+  String get subsFreePlanTitle => "Plan Gratis";
+  @override
+  String get subsFreePlanDesc => "Perfecto para empezar a decidir qué comer.";
+  @override
+  String get subsFreeCurrent => "Plan actual";
+  @override
+  String get subsFreeQuotaDishes => "Hasta 15 platos creados";
+  @override
+  String get subsFreeQuotaFavorites => "Hasta 10 favoritos";
+  @override
+  String get subsFreeQuotaAvoid => "Hasta 5 platos evitados";
+  @override
+  String get subsFreeHistory => "Historial de los últimos 7 días";
+  @override
+  String get subsFreeBasicFilters => "Filtros básicos (país, comida, dificultad)";
+  @override
+  String get subsFeatureSurprise => "Modo sorpresa";
+  @override
+  String get subsFeatureNoRepeat => "Evitar repetir plato (no repetir / últimos 3 días)";
+  @override
+  String get subsFeaturePrioritize => "Priorizar favoritos en la rueda";
+  @override
+  String get subsFeatureHealthy => "Modo saludable";
+  @override
+  String get subsFeatureSpeed => "Velocidad y ajustes avanzados de la rueda";
+  @override
+  String get subsFeatureUnlimited => "Platos ilimitados y estadísticas de historial";
+  @override
+  String get subsPremiumLocked => "Solo Premium";
+  @override
+  String get subsPremiumLockedMessage => "Esta función está disponible solo para suscriptores Premium.";
+  @override
+  String get subsGoPremium => "Ver planes";
+  @override
+  String get subsUpgrade => "Mejorar a Premium";
+  @override
+  String get subsPerDay => "/día";
+  @override
+  String get subsFreeTrial => "Prueba gratis incluida";
+
+  // Premium limits
+  @override
+  String get subsLimitDishesTitle => "Límite de platos alcanzado";
+  @override
+  String get subsLimitDishesMessage => "El plan gratis permite hasta 15 platos. Actualiza a Premium para crear platos ilimitados.";
+  @override
+  String get subsLimitFavoritesTitle => "Límite de favoritos alcanzado";
+  @override
+  String get subsLimitFavoritesMessage => "El plan gratis permite hasta 10 favoritos. Actualiza a Premium para guardar todos los que quieras.";
+  @override
+  String get subsLimitAvoidTitle => "Límite de evitados alcanzado";
+  @override
+  String get subsLimitAvoidMessage => "El plan gratis permite hasta 5 platos evitados. Actualiza a Premium para evitarlos todos.";
+  @override
+  String get subsHistoryLimitTitle => "Historial limitado";
+  @override
+  String get subsHistoryLimitMessage => "El plan gratis muestra los últimos 7 días. Actualiza a Premium para ver todo tu historial.";
 
   // Avoid reasons
   @override

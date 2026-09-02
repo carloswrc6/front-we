@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:frontwe/infrastructure/services/purchase_service.dart';
 import 'package:frontwe/l10n/app_localizations.dart';
+import 'package:frontwe/presentation/shared/widgets/premium_lock_dialog.dart';
 
 class WheelSettingsSheet {
   static void show(
@@ -170,16 +172,22 @@ class _WheelSettingsContentState extends State<_WheelSettingsContent> {
                   children: [
                     SwitchListTile(
                       value: _avoidRepeat,
-                      onChanged: (v) => setState(() => _avoidRepeat = v),
-                      title: Text(t.wheelSettingsAvoidRepeat),
+                      onChanged: (v) {
+                        if (!_guardPremium()) return;
+                        setState(() => _avoidRepeat = v);
+                      },
+                      title: _premiumTitle(t.wheelSettingsAvoidRepeat),
                       contentPadding: EdgeInsets.zero,
                       dense: true,
                     ),
                     const Divider(height: 1, indent: 0),
                     SwitchListTile(
                       value: _avoidThreeDays,
-                      onChanged: (v) => setState(() => _avoidThreeDays = v),
-                      title: Text(t.wheelSettingsAvoidThreeDays),
+                      onChanged: (v) {
+                        if (!_guardPremium()) return;
+                        setState(() => _avoidThreeDays = v);
+                      },
+                      title: _premiumTitle(t.wheelSettingsAvoidThreeDays),
                       contentPadding: EdgeInsets.zero,
                       dense: true,
                     ),
@@ -205,7 +213,10 @@ class _WheelSettingsContentState extends State<_WheelSettingsContent> {
                         ButtonSegment(value: 'slow', label: Text(t.wheelSettingsSlow), icon: const Icon(Icons.timer_outlined)),
                       ],
                       selected: {_speed},
-                      onSelectionChanged: (v) => setState(() => _speed = v.first),
+                      onSelectionChanged: (v) {
+                        if (!_guardPremium()) return;
+                        setState(() => _speed = v.first);
+                      },
                       style: ButtonStyle(
                         visualDensity: VisualDensity.compact,
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -273,15 +284,21 @@ class _WheelSettingsContentState extends State<_WheelSettingsContent> {
                   children: [
                     SwitchListTile(
                       value: _prioritizeFavorites,
-                      onChanged: (v) => setState(() => _prioritizeFavorites = v),
-                      title: Text(t.wheelSettingsPrioritizeFavorites),
+                      onChanged: (v) {
+                        if (!_guardPremium()) return;
+                        setState(() => _prioritizeFavorites = v);
+                      },
+                      title: _premiumTitle(t.wheelSettingsPrioritizeFavorites),
                       contentPadding: EdgeInsets.zero,
                       dense: true,
                     ),
                     const Divider(height: 1, indent: 0),
                     SwitchListTile(
                       value: _surpriseMode,
-                      onChanged: (v) => setState(() => _surpriseMode = v),
+                      onChanged: (v) {
+                        if (!_guardPremium()) return;
+                        setState(() => _surpriseMode = v);
+                      },
                       title: Row(
                         children: [
                           Text(t.wheelSettingsSurpriseMode),
@@ -298,8 +315,11 @@ class _WheelSettingsContentState extends State<_WheelSettingsContent> {
                     const Divider(height: 1, indent: 0),
                     SwitchListTile(
                       value: _healthyMode,
-                      onChanged: (v) => setState(() => _healthyMode = v),
-                      title: Text(t.wheelSettingsHealthyMode),
+                      onChanged: (v) {
+                        if (!_guardPremium()) return;
+                        setState(() => _healthyMode = v);
+                      },
+                      title: _premiumTitle(t.wheelSettingsHealthyMode),
                       contentPadding: EdgeInsets.zero,
                       dense: true,
                     ),
@@ -368,6 +388,27 @@ class _WheelSettingsContentState extends State<_WheelSettingsContent> {
           children: children,
         ),
       ),
+    );
+  }
+
+  bool _guardPremium() {
+    if (PurchaseService.instance.isPremium) return true;
+    showPremiumLockDialog(context);
+    return false;
+  }
+
+  Widget _premiumTitle(String label) {
+    final cs = Theme.of(context).colorScheme;
+    final premium = !PurchaseService.instance.isPremium;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Flexible(child: Text(label)),
+        if (premium) ...[
+          const SizedBox(width: 4),
+          Icon(Icons.lock_outline, size: 15, color: cs.primary),
+        ],
+      ],
     );
   }
 }

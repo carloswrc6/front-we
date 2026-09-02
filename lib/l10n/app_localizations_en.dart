@@ -339,6 +339,86 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subsDescription => "Unlock all features";
   @override
   String get subsRecommended => "Recommended";
+  @override
+  String get subsLoading => "Loading plans...";
+  @override
+  String get subsNoProducts => "No plans available";
+  @override
+  String get subsNoProductsHint => "Set up the products in RevenueCat and launch the project.";
+  @override
+  String get subsRestore => "Restore purchases";
+  @override
+  String get subsSubscribe => "Subscribe";
+  @override
+  String get subsAlreadyPremium => "You're Premium!";
+  @override
+  String get subsRestored => "Purchases restored";
+  @override
+  String get subsPurchaseError => "Could not complete the purchase. Please try again.";
+  @override
+  String get subsPurchaseCanceled => "Purchase canceled";
+  @override
+  String get subsPremiumBadge => "PREMIUM";
+  @override
+  String get subsFreeBadge => "FREE";
+  @override
+  String get subsFreePlanTitle => "Free Plan";
+  @override
+  String get subsFreePlanDesc => "Perfect to start deciding what to eat.";
+  @override
+  String get subsFreeCurrent => "Current plan";
+  @override
+  String get subsFreeQuotaDishes => "Up to 15 created dishes";
+  @override
+  String get subsFreeQuotaFavorites => "Up to 10 favorites";
+  @override
+  String get subsFreeQuotaAvoid => "Up to 5 avoided dishes";
+  @override
+  String get subsFreeHistory => "Last 7 days of history";
+  @override
+  String get subsFreeBasicFilters => "Basic filters (country, meal, difficulty)";
+  @override
+  String get subsFeatureSurprise => "Surprise mode";
+  @override
+  String get subsFeatureNoRepeat => "Avoid repeating dish (no repeat / last 3 days)";
+  @override
+  String get subsFeaturePrioritize => "Prioritize favorites on the wheel";
+  @override
+  String get subsFeatureHealthy => "Healthy mode";
+  @override
+  String get subsFeatureSpeed => "Wheel speed and advanced settings";
+  @override
+  String get subsFeatureUnlimited => "Unlimited dishes and history stats";
+  @override
+  String get subsPremiumLocked => "Premium only";
+  @override
+  String get subsPremiumLockedMessage => "This feature is only available for Premium subscribers.";
+  @override
+  String get subsGoPremium => "View plans";
+  @override
+  String get subsUpgrade => "Upgrade to Premium";
+  @override
+  String get subsPerDay => "/day";
+  @override
+  String get subsFreeTrial => "Free trial included";
+
+  // Premium limits
+  @override
+  String get subsLimitDishesTitle => "Dish limit reached";
+  @override
+  String get subsLimitDishesMessage => "The free plan allows up to 15 dishes. Upgrade to Premium to create unlimited dishes.";
+  @override
+  String get subsLimitFavoritesTitle => "Favorite limit reached";
+  @override
+  String get subsLimitFavoritesMessage => "The free plan allows up to 10 favorites. Upgrade to Premium to save as many as you want.";
+  @override
+  String get subsLimitAvoidTitle => "Avoid limit reached";
+  @override
+  String get subsLimitAvoidMessage => "The free plan allows up to 5 avoided dishes. Upgrade to Premium to avoid them all.";
+  @override
+  String get subsHistoryLimitTitle => "Limited history";
+  @override
+  String get subsHistoryLimitMessage => "The free plan shows the last 7 days. Upgrade to Premium to see all your history.";
 
   // Avoid reasons
   @override

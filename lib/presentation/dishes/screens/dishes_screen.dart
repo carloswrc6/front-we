@@ -8,6 +8,8 @@ import 'package:frontwe/presentation/dishes/widgets/filter_bar.dart';
 import 'package:frontwe/presentation/dishes/widgets/double_tap_favorite_image.dart';
 import 'package:frontwe/presentation/shared/widgets/avoid_reason_dialog.dart';
 import 'package:frontwe/presentation/shared/providers/avoid_reason_provider.dart';
+import 'package:frontwe/presentation/shared/widgets/premium_lock_dialog.dart';
+import 'package:frontwe/infrastructure/services/purchase_service.dart';
 import 'package:frontwe/presentation/shared/widgets/BottomNavBar.dart';
 import 'package:frontwe/presentation/shared/widgets/SideMenu.dart';
 import 'package:frontwe/presentation/shared/widgets/CountrySelector.dart';
@@ -91,7 +93,19 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen>
                     ],
                   ),
                   child: IconButton(
-                    onPressed: () => context.push('/crear-plato'),
+                    onPressed: () {
+                      final userCreated = dishes.where((d) => d.isUserCreated).length;
+                      final isPremium = PurchaseService.instance.isPremium;
+                      if (!isPremium && userCreated >= 15) {
+                        showLimitDialog(
+                          context,
+                          title: t.subsLimitDishesTitle,
+                          message: t.subsLimitDishesMessage,
+                        );
+                        return;
+                      }
+                      context.push('/crear-plato');
+                    },
                     icon: const Icon(Icons.add),
                     color: cs.onPrimary,
                     tooltip: 'Add dish',
@@ -302,11 +316,39 @@ class _PlatosScreenState extends ConsumerState<PlatosScreen>
   }
 
   Future<void> _toggleFavorite(Dish dish) async {
+    final t = AppLocalizations.of(context)!;
+    if (!dish.isFavorite) {
+      final isPremium = PurchaseService.instance.isPremium;
+      final all = ref.read(localDishesProvider).asData?.value ?? const <Dish>[];
+      final favCount = all.where((d) => d.isFavorite).length;
+      if (!isPremium && favCount >= 10) {
+        showLimitDialog(
+          context,
+          title: t.subsLimitFavoritesTitle,
+          message: t.subsLimitFavoritesMessage,
+        );
+        return;
+      }
+    }
     await ref.read(dishRepositoryProvider).toggleFavorite(dish.id);
     ref.invalidate(localDishesProvider);
   }
 
   Future<void> _toggleAvoided(Dish dish) async {
+    final t = AppLocalizations.of(context)!;
+    if (!dish.isAvoided) {
+      final isPremium = PurchaseService.instance.isPremium;
+      final all = ref.read(localDishesProvider).asData?.value ?? const <Dish>[];
+      final avoidCount = all.where((d) => d.isAvoided).length;
+      if (!isPremium && avoidCount >= 5) {
+        showLimitDialog(
+          context,
+          title: t.subsLimitAvoidTitle,
+          message: t.subsLimitAvoidMessage,
+        );
+        return;
+      }
+    }
     await ref.read(dishRepositoryProvider).toggleAvoided(dish.id);
     ref.invalidate(localDishesProvider);
   }

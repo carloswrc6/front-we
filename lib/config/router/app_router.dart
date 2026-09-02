@@ -12,7 +12,9 @@ import 'package:frontwe/presentation/history/screens/history_screen.dart';
 import 'package:frontwe/presentation/home/ThemeChangerScreen.dart';
 import 'package:frontwe/presentation/dishes/screens/wheel_screen.dart';
 import 'package:frontwe/presentation/profile/screens/profile_screen.dart';
-import 'package:frontwe/presentation/prohibidos/screens/prohibidos_screen.dart';import 'package:flutter/material.dart';
+import 'package:frontwe/presentation/prohibidos/screens/prohibidos_screen.dart';
+import 'package:frontwe/presentation/subscription/screens/subscription_screen.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 final appRouter = GoRouter(
@@ -105,6 +107,10 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/theme_changer',
       builder: (context, state) => const ThemeChangerScreen(),
+    ),
+    GoRoute(
+      path: '/subscription',
+      builder: (context, state) => const SubscriptionScreen(),
     ),
   ],
 );

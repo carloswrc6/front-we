@@ -213,6 +213,47 @@ abstract class AppLocalizations {
   String get subsTitle;
   String get subsDescription;
   String get subsRecommended;
+  String get subsLoading;
+  String get subsNoProducts;
+  String get subsNoProductsHint;
+  String get subsRestore;
+  String get subsSubscribe;
+  String get subsAlreadyPremium;
+  String get subsRestored;
+  String get subsPurchaseError;
+  String get subsPurchaseCanceled;
+  String get subsPremiumBadge;
+  String get subsFreeBadge;
+  String get subsFreePlanTitle;
+  String get subsFreePlanDesc;
+  String get subsFreeCurrent;
+  String get subsFreeQuotaDishes;
+  String get subsFreeQuotaFavorites;
+  String get subsFreeQuotaAvoid;
+  String get subsFreeHistory;
+  String get subsFreeBasicFilters;
+  String get subsFeatureSurprise;
+  String get subsFeatureNoRepeat;
+  String get subsFeaturePrioritize;
+  String get subsFeatureHealthy;
+  String get subsFeatureSpeed;
+  String get subsFeatureUnlimited;
+  String get subsPremiumLocked;
+  String get subsPremiumLockedMessage;
+  String get subsGoPremium;
+  String get subsUpgrade;
+  String get subsPerDay;
+  String get subsFreeTrial;
+
+  // Premium limits
+  String get subsLimitDishesTitle;
+  String get subsLimitDishesMessage;
+  String get subsLimitFavoritesTitle;
+  String get subsLimitFavoritesMessage;
+  String get subsLimitAvoidTitle;
+  String get subsLimitAvoidMessage;
+  String get subsHistoryLimitTitle;
+  String get subsHistoryLimitMessage;
 
   // Avoid reasons
   String get avoidReasonTitle;

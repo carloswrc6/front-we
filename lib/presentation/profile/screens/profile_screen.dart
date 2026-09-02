@@ -65,7 +65,7 @@ class ProfileScreen extends ConsumerWidget {
                 _OptionTile(
                   icon: Icons.subscriptions_outlined,
                   title: t.menuSubscription,
-                  onTap: () {},
+                  onTap: () => context.push('/subscription'),
                 ),
               ],
             ),

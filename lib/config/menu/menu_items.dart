@@ -46,6 +46,12 @@ const appMenuItems = <MenuItem>[
     icon: Icons.history,
   ),
   MenuItem(
+    titleKey: 'subscription',
+    subTitleKey: 'subscriptionSubtitle',
+    link: '/subscription',
+    icon: Icons.workspace_premium_outlined,
+  ),
+  MenuItem(
     titleKey: 'profile',
     subTitleKey: 'profileSubtitle',
     link: '/profile',

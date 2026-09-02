@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontwe/domain/entities/dish_history.dart';
 import 'package:frontwe/infrastructure/services/local_db_service.dart';
+import 'package:frontwe/infrastructure/services/purchase_service.dart';
 import 'package:frontwe/l10n/app_localizations.dart';
 import 'package:frontwe/presentation/dishes/widgets/detail_sheet.dart';
 import 'package:frontwe/presentation/history/providers/history_provider.dart';
 import 'package:frontwe/presentation/shared/widgets/BottomNavBar.dart';
 import 'package:frontwe/presentation/shared/widgets/SideMenu.dart';
 import 'package:frontwe/presentation/shared/widgets/SkeletonWidget.dart';
+import 'package:go_router/go_router.dart';
 
 class HistoryScreen extends ConsumerStatefulWidget {
   const HistoryScreen({super.key});
@@ -84,7 +86,14 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
           ),
         ),
         data: (history) {
-          if (history.isEmpty) {
+          final isPremium = PurchaseService.instance.isPremium;
+          final limitDate = DateTime.now().subtract(const Duration(days: 7));
+          final visibleHistory = isPremium
+              ? history
+              : history.where((h) => h.selectedAt.isAfter(limitDate)).toList();
+          final hiddenCount = history.length - visibleHistory.length;
+
+          if (visibleHistory.isEmpty) {
             return Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -92,14 +101,33 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                   Icon(Icons.history, size: 64, color: cs.onSurfaceVariant),
                   const SizedBox(height: 16),
                   Text(
-                    t.historialEmpty,
+                    hiddenCount > 0 ? t.subsHistoryLimitTitle : t.historialEmpty,
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
+                  if (hiddenCount > 0) ...[
+                    const SizedBox(height: 8),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                      child: Text(
+                        t.subsHistoryLimitMessage,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: cs.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    FilledButton.icon(
+                      onPressed: () => context.push('/subscription'),
+                      icon: const Icon(Icons.workspace_premium),
+                      label: Text(t.subsGoPremium),
+                    ),
+                  ],
                 ],
               ),
             );
           }
-          final filtered = _filtered(history);
+          final filtered = _filtered(visibleHistory);
           final dateFilters = [
             _DateFilter(id: null, label: t.filterAll),
             _DateFilter(id: 'today', label: t.historialToday),
@@ -113,6 +141,36 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
           final grouped = _groupByDate(dateFiltered, t);
           return Column(
             children: [
+              if (hiddenCount > 0)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+                  child: Material(
+                    color: cs.primaryContainer,
+                    borderRadius: BorderRadius.circular(12),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(12),
+                      onTap: () => context.push('/subscription'),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Row(
+                          children: [
+                            Icon(Icons.workspace_premium, color: cs.onPrimaryContainer),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                t.subsHistoryLimitMessage,
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  color: cs.onPrimaryContainer,
+                                ),
+                              ),
+                            ),
+                            Icon(Icons.chevron_right, color: cs.onPrimaryContainer),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
                 child: TextField(

@@ -78,10 +78,10 @@ class WheelState {
     this.difficultyMedium = true,
     this.difficultyHard = true,
     this.surpriseMode = false,
-    this.avoidRepeat = true,
-    this.avoidThreeDays = true,
+    this.avoidRepeat = false,
+    this.avoidThreeDays = false,
     this.healthyMode = false,
-    this.prioritizeFavorites = true,
+    this.prioritizeFavorites = false,
     this.showFavorites = false,
   });
 }
